@@ -1,0 +1,54 @@
+{
+  "name": "scalarjs-sdk",
+  "version": "0.0.2",
+  "author": "scalarorg",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scalarorg/scalarjs-sdk.git"
+  },
+  "main": "dist/node/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/node/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./node": {
+      "import": "./dist/node/index.js",
+      "require": "./dist/node/index.js",
+      "types": "./dist/node/index.d.ts"
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/scalarorg/scalarjs-sdk/issues"
+  },
+  "description": "",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/scalarorg/scalarjs-sdk#readme",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "name": "scalarjs-sdk",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rm -rf dist && bun run barrelsby && bun build.ts",
+    "clean": "rm -rf lib/*",
+    "test": "mocha -r ts-node/register test/*.test.ts --exit --no-timeout",
+    "lint": "tslint -c tslint.json test/*.ts",
+    "fmt": "prettier --tab-width 4 --print-width 120 --parser typescript --write test/*.ts",
+    "barrelsby": "barrelsby --config .barrelsby.json -q"
+  },
+  "types": "dist/index.d.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "@types/node": "^22.10.1",
+    "barrelsby": "^2.8.1",
+    "dts-bundle-generator": "^9.5.1",
+    "typescript": "^5.7.2"
+  }
+}
