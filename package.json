@@ -40,10 +40,18 @@
     "test": "mocha -r ts-node/register test/*.test.ts --exit --no-timeout",
     "lint": "tslint -c tslint.json test/*.ts",
     "fmt": "prettier --tab-width 4 --print-width 120 --parser typescript --write test/*.ts",
-    "barrelsby": "barrelsby --config .barrelsby.json -q"
+    "barrelsby": "barrelsby --config .barrelsby.json -q",
+    "generate": "buf generate"
   },
   "types": "dist/index.d.ts",
-  "dependencies": {},
+  "dependencies": {
+    "@axelar-network/axelarjs-sdk": "^0.17.0",
+    "@bufbuild/buf": "^1.47.2",
+    "@protobuf-ts/grpc-transport": "^2.9.4",
+    "@protobuf-ts/plugin": "^2.9.4",
+    "@protobuf-ts/runtime": "^2.9.4",
+    "@protobuf-ts/runtime-rpc": "^2.9.4"
+  },
   "devDependencies": {
     "@types/bun": "^1.1.14",
     "@types/node": "^22.10.1",

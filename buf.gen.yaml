@@ -1,0 +1,8 @@
+version: v1
+plugins:
+  - plugin: buf.build/community/timostamm-protobuf-ts
+    out: src/generated
+    opt:
+      - long_type_string
+      - output_javascript_es2015
+      - generate_dependencies
