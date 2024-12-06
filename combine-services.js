@@ -14,10 +14,21 @@ import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 `;
 
   // Add imports and collect method types
-  const methodTypes = new Set();
   services.forEach((service) => {
-    const { name, path: servicePath, sourcePath } = service;
-    dtsContent += `import { ServiceClient as ${name}ServiceClient } from "${servicePath}";\n`;
+    const { name, sourcePath } = service;
+
+    // Calculate relative path for client class import (without .d.ts extension)
+    const clientRelativePath = path.relative(
+      outputDir,
+      path.resolve(path.dirname(sourcePath), path.basename(sourcePath, ".d.ts"))
+    );
+    const adjustedClientPath = clientRelativePath.startsWith(".")
+      ? clientRelativePath
+      : `./${clientRelativePath}`;
+
+    dtsContent += `import { ${
+      service.clientClassName || "ServiceClient"
+    } as ${name}ServiceClient } from "${adjustedClientPath}";\n`;
 
     // Read the source file to extract types
     const sourceContent = fs.readFileSync(sourcePath, "utf8");
@@ -63,10 +74,21 @@ import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
   // Generate .js content
   let jsContent = `// @generated automatically
 ${services
-  .map(
-    (service) =>
-      `import { ServiceClient as ${service.name}ServiceClient } from "${service.path}";`
-  )
+  .map((service) => {
+    const clientRelativePath = path.relative(
+      outputDir,
+      path.resolve(
+        path.dirname(service.sourcePath),
+        path.basename(service.sourcePath, ".d.ts")
+      )
+    );
+    const adjustedClientPath = clientRelativePath.startsWith(".")
+      ? clientRelativePath
+      : `./${clientRelativePath}`;
+    return `import { ${service.clientClassName || "ServiceClient"} as ${
+      service.name
+    }ServiceClient } from "${adjustedClientPath}";`;
+  })
   .join("\n")}
 
 export class CombinedServiceClient {
@@ -106,16 +128,18 @@ function extractMethodDefinitions(service) {
   const methods = [];
   function visit(node) {
     if (ts.isMethodDeclaration(node)) {
-      // Get the full text of the method including comments and type annotations
       const methodText = node.getText(sourceFile);
       methods.push(methodText);
     }
     ts.forEachChild(node, visit);
   }
 
-  // Find the ServiceClient class and visit its methods
+  // Find the specified client class and visit its methods
   ts.forEachChild(sourceFile, (node) => {
-    if (ts.isClassDeclaration(node) && node.name?.text === "ServiceClient") {
+    if (
+      ts.isClassDeclaration(node) &&
+      node.name?.text === (service.clientClassName || "ServiceClient")
+    ) {
       ts.forEachChild(node, visit);
     }
   });
@@ -133,8 +157,15 @@ function generateDelegateMethods(service) {
 
   const methods = [];
   function visit(node) {
-    if (ts.isMethodDeclaration(node)) {
-      methods.push(node.name.text);
+    if (
+      ts.isClassDeclaration(node) &&
+      node.name?.text === (service.clientClassName || "ServiceClient")
+    ) {
+      ts.forEachChild(node, (child) => {
+        if (ts.isMethodDeclaration(child)) {
+          methods.push(child.name.text);
+        }
+      });
     }
     ts.forEachChild(node, visit);
   }
@@ -156,15 +187,22 @@ const config = {
     {
       name: "Node",
       varName: "node",
-      path: "./node/v1beta1/query.client",
       sourcePath: "src/generated/cosmos/base/node/v1beta1/query.client.d.ts",
+      clientClassName: "ServiceClient",
     },
     {
       name: "Tendermint",
       varName: "tendermint",
-      path: "./tendermint/v1beta1/query.client",
       sourcePath:
         "src/generated/cosmos/base/tendermint/v1beta1/query.client.d.ts",
+      clientClassName: "ServiceClient",
+    },
+    {
+      name: "Reflection",
+      varName: "reflection",
+      sourcePath:
+        "src/generated/cosmos/base/reflection/v2alpha1/reflection.client.d.ts",
+      clientClassName: "ReflectionServiceClient",
     },
   ],
 };

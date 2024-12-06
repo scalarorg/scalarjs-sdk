@@ -1,11 +1,13 @@
 // @generated automatically
-import { ServiceClient as NodeServiceClient } from "./node/v1beta1/query.client";
-import { ServiceClient as TendermintServiceClient } from "./tendermint/v1beta1/query.client";
+import { ServiceClient as NodeServiceClient } from "./cosmos/base/node/v1beta1/query.client";
+import { ServiceClient as TendermintServiceClient } from "./cosmos/base/tendermint/v1beta1/query.client";
+import { ReflectionServiceClient as ReflectionServiceClient } from "./cosmos/base/reflection/v2alpha1/reflection.client";
 
 export class CombinedServiceClient {
     constructor(_transport) {
         this.nodeClient = new NodeServiceClient(_transport);
         this.tendermintClient = new TendermintServiceClient(_transport);
+        this.reflectionClient = new ReflectionServiceClient(_transport);
     }
 
     config(...args) {
@@ -34,5 +36,29 @@ export class CombinedServiceClient {
 
     getValidatorSetByHeight(...args) {
         return this.tendermintClient.getValidatorSetByHeight(...args);
+    }
+
+    getAuthnDescriptor(...args) {
+        return this.reflectionClient.getAuthnDescriptor(...args);
+    }
+
+    getChainDescriptor(...args) {
+        return this.reflectionClient.getChainDescriptor(...args);
+    }
+
+    getCodecDescriptor(...args) {
+        return this.reflectionClient.getCodecDescriptor(...args);
+    }
+
+    getConfigurationDescriptor(...args) {
+        return this.reflectionClient.getConfigurationDescriptor(...args);
+    }
+
+    getQueryServicesDescriptor(...args) {
+        return this.reflectionClient.getQueryServicesDescriptor(...args);
+    }
+
+    getTxDescriptor(...args) {
+        return this.reflectionClient.getTxDescriptor(...args);
     }
 }
