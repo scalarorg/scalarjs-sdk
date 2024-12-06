@@ -1,0 +1,9 @@
+name: unified-client
+out: src/unified
+types:
+  - name: UnifiedClient
+    services:
+      - cosmos.base.*.v1beta1.*
+    options:
+      importPath: "@/generated"
+      rpcTransport: "@protobuf-ts/runtime-rpc"
