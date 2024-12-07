@@ -1,23 +1,151 @@
 const fs = require("fs");
 const path = require("path");
 const ts = require("typescript");
+const glob = require("glob");
+
+const DEFAULT_CONFIG = {
+  dir: "src/generated",
+  exportFileName: "scalarGrpcClient",
+};
+
+function isVersionDir(dirName) {
+  return /^v\d+/.test(dirName);
+}
+
+function compareVersions(a, b) {
+  // Extract major version numbers
+  const majorA = parseInt(a.match(/v(\d+)/)[1]);
+  const majorB = parseInt(b.match(/v(\d+)/)[1]);
+
+  if (majorA !== majorB) {
+    return majorB - majorA; // Sort by major version first
+  }
+
+  // If major versions are equal, prioritize stable versions over alpha/beta
+  const isStableA = !/alpha|beta/.test(a);
+  const isStableB = !/alpha|beta/.test(b);
+
+  if (isStableA !== isStableB) {
+    return isStableA ? -1 : 1; // Stable versions come first
+  }
+
+  // If both are alpha or both are beta, compare their numbers
+  const subVersionA = a.match(/(?:alpha|beta)(\d+)/)?.[1] || "0";
+  const subVersionB = b.match(/(?:alpha|beta)(\d+)/)?.[1] || "0";
+
+  return parseInt(subVersionB) - parseInt(subVersionA);
+}
+
+function findClientFilesInDir(dir, parentDirs = []) {
+  const results = [];
+  const items = fs.readdirSync(dir);
+  const currentDirName = path.basename(dir);
+  const dirPath = [...parentDirs, currentDirName].filter(
+    (d) => d !== "." && d !== "src" && d !== "generated"
+  );
+
+  // Group directories into version and non-version dirs
+  const versionDirs = [];
+  const nonVersionDirs = [];
+
+  for (const item of items) {
+    const fullPath = path.join(dir, item);
+    if (fs.statSync(fullPath).isDirectory()) {
+      if (isVersionDir(item)) {
+        versionDirs.push({ name: item, path: fullPath });
+      } else {
+        nonVersionDirs.push(fullPath);
+      }
+    }
+  }
+
+  // If we found version directories, select the newest one and look for client files
+  if (versionDirs.length > 0) {
+    versionDirs.sort((a, b) => compareVersions(a.name, b.name));
+    const newestVersion = versionDirs[0];
+    console.log(
+      `Found version directory: ${newestVersion.name} at ${newestVersion.path}`
+    );
+
+    const files = glob.sync("**/*.client.d.ts", {
+      cwd: newestVersion.path,
+      absolute: true,
+    });
+
+    results.push(
+      ...files.map((filePath) => {
+        const fileName = path.basename(filePath, ".client.d.ts");
+        const name = fileName.split(".")[0];
+        const serviceName = name.charAt(0).toUpperCase() + name.slice(1);
+        const varName = name.charAt(0).toLowerCase() + name.slice(1);
+
+        const content = fs.readFileSync(filePath, "utf8");
+        const clientClassMatch = content.match(
+          /export declare class (\w+Client)/
+        );
+        const clientClassName = clientClassMatch
+          ? clientClassMatch[1]
+          : "ServiceClient";
+
+        // Create a namespace from the directory path
+        const namespace = dirPath
+          .map((d) => d.charAt(0).toUpperCase() + d.slice(1))
+          .join("");
+        const uniqueServiceName = `${namespace}${serviceName}`;
+
+        console.log(
+          `Found client: ${clientClassName} (${uniqueServiceName}) in ${path.relative(
+            process.cwd(),
+            filePath
+          )}`
+        );
+
+        return {
+          name: uniqueServiceName,
+          varName: `${varName}${namespace}`, // Make varName unique too
+          sourcePath: filePath,
+          clientClassName,
+          namespace, // Store the namespace for import statements
+          fullClientName: `${namespace}${clientClassName}`,
+        };
+      })
+    );
+  }
+
+  // Recursively look into non-version directories
+  for (const subDir of nonVersionDirs) {
+    results.push(...findClientFilesInDir(subDir, dirPath));
+  }
+
+  return results;
+}
+
+function findClientFiles(sourceDir) {
+  const services = findClientFilesInDir(sourceDir);
+
+  if (services.length === 0) {
+    throw new Error(
+      `No client files found in ${sourceDir} or its subdirectories`
+    );
+  }
+
+  return services;
+}
 
 function generateCombinedFiles(servicesConfig) {
-  const { outputDir, services } = servicesConfig;
+  const { outputDir, services, exportFileName } = servicesConfig;
 
   // Generate .d.ts content
   let dtsContent = `// @generated automatically
 // tslint:disable
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
-import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
-import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 `;
 
-  // Add imports and collect method types
+  // Add imports for client classes only
   services.forEach((service) => {
-    const { name, sourcePath } = service;
+    const { sourcePath, clientClassName, namespace } = service;
 
-    // Calculate relative path for client class import (without .d.ts extension)
+    // Calculate relative path for client class import
     const clientRelativePath = path.relative(
       outputDir,
       path.resolve(path.dirname(sourcePath), path.basename(sourcePath, ".d.ts"))
@@ -26,43 +154,13 @@ import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
       ? clientRelativePath
       : `./${clientRelativePath}`;
 
-    dtsContent += `import { ${
-      service.clientClassName || "ServiceClient"
-    } as ${name}ServiceClient } from "${adjustedClientPath}";\n`;
-
-    // Read the source file to extract types
-    const sourceContent = fs.readFileSync(sourcePath, "utf8");
-    const importMatches =
-      sourceContent.match(/import type {[^}]+} from "[^"]+";/g) || [];
-    const typeImports = new Set();
-    importMatches.forEach((imp) => {
-      if (imp.includes("Request") || imp.includes("Response")) {
-        // Extract the types and original path
-        const [importClause, fromPath] = imp.split(" from ");
-        // Remove quotes from the original path
-        const originalPath = fromPath.slice(1, -2);
-
-        // Calculate relative path from output directory to the import file
-        const relativePath = path.relative(
-          outputDir,
-          path.resolve(path.dirname(sourcePath), originalPath)
-        );
-
-        // Create new import statement with adjusted path, ensuring it starts with "./"
-        const adjustedPath = relativePath.startsWith(".")
-          ? relativePath
-          : `./${relativePath}`;
-        const newImport = `${importClause} from "${adjustedPath}";`;
-        typeImports.add(newImport);
-      }
-    });
-    dtsContent += Array.from(typeImports).join("\n") + "\n";
+    dtsContent += `import { ${clientClassName} as ${namespace}${clientClassName} } from "${adjustedClientPath}";\n`;
   });
 
   // Start class declaration
-  dtsContent += `\nexport declare class CombinedServiceClient {
+  dtsContent += `\nexport declare class ScalarGrpcClient {
     private readonly ${services
-      .map((s) => `${s.varName}Client: ${s.name}ServiceClient`)
+      .map((s) => `${s.varName}Client: ${s.fullClientName}`)
       .join(";\n    private readonly ")};
     constructor(_transport: RpcTransport);
 
@@ -85,18 +183,16 @@ ${services
     const adjustedClientPath = clientRelativePath.startsWith(".")
       ? clientRelativePath
       : `./${clientRelativePath}`;
-    return `import { ${service.clientClassName || "ServiceClient"} as ${
-      service.name
-    }ServiceClient } from "${adjustedClientPath}";`;
+    return `import { ${service.clientClassName} as ${service.name}Client } from "${adjustedClientPath}";`;
   })
   .join("\n")}
 
-export class CombinedServiceClient {
+export class ScalarGrpcClient {
     constructor(_transport) {
         ${services
           .map(
             (service) =>
-              `this.${service.varName}Client = new ${service.name}ServiceClient(_transport);`
+              `this.${service.varName}Client = new ${service.name}Client(_transport);`
           )
           .join("\n        ")}
     }
@@ -113,8 +209,8 @@ export class CombinedServiceClient {
   }
 
   // Write files
-  fs.writeFileSync(path.join(outputDir, "combined-service.d.ts"), dtsContent);
-  fs.writeFileSync(path.join(outputDir, "combined-service.js"), jsContent);
+  fs.writeFileSync(path.join(outputDir, `${exportFileName}.d.ts`), dtsContent);
+  fs.writeFileSync(path.join(outputDir, `${exportFileName}.js`), jsContent);
 }
 
 function extractMethodDefinitions(service) {
@@ -128,13 +224,17 @@ function extractMethodDefinitions(service) {
   const methods = [];
   function visit(node) {
     if (ts.isMethodDeclaration(node)) {
-      const methodText = node.getText(sourceFile);
-      methods.push(methodText);
+      const methodName = node.name.text;
+      // Use full client name (with namespace prefix)
+      const prefixedMethodName = `${service.fullClientName.toLowerCase()}_${methodName}`;
+
+      methods.push(
+        `${prefixedMethodName}: ${service.fullClientName}['${methodName}'];`
+      );
     }
     ts.forEachChild(node, visit);
   }
 
-  // Find the specified client class and visit its methods
   ts.forEachChild(sourceFile, (node) => {
     if (
       ts.isClassDeclaration(node) &&
@@ -163,7 +263,14 @@ function generateDelegateMethods(service) {
     ) {
       ts.forEachChild(node, (child) => {
         if (ts.isMethodDeclaration(child)) {
-          methods.push(child.name.text);
+          const methodName = child.name.text;
+          // Use full client name (with namespace prefix)
+          const prefixedMethodName = `${service.fullClientName.toLowerCase()}_${methodName}`;
+
+          methods.push({
+            original: methodName,
+            prefixed: prefixedMethodName,
+          });
         }
       });
     }
@@ -173,38 +280,82 @@ function generateDelegateMethods(service) {
 
   return methods
     .map(
-      (method) => `${method}(...args) {
-        return this.${service.varName}Client.${method}(...args);
+      ({ original, prefixed }) => `${prefixed}(...args) {
+        return this.${service.varName}Client.${original}(...args);
     }`
     )
     .join("\n\n    ");
 }
 
-// Example usage
-const config = {
-  outputDir: "src/generated",
-  services: [
-    {
-      name: "Node",
-      varName: "node",
-      sourcePath: "src/generated/cosmos/base/node/v1beta1/query.client.d.ts",
-      clientClassName: "ServiceClient",
-    },
-    {
-      name: "Tendermint",
-      varName: "tendermint",
-      sourcePath:
-        "src/generated/cosmos/base/tendermint/v1beta1/query.client.d.ts",
-      clientClassName: "ServiceClient",
-    },
-    {
-      name: "Reflection",
-      varName: "reflection",
-      sourcePath:
-        "src/generated/cosmos/base/reflection/v2alpha1/reflection.client.d.ts",
-      clientClassName: "ReflectionServiceClient",
-    },
-  ],
-};
+// Modify the main function call
+function generateCombinedServicesFromDir(config) {
+  const services = findClientFiles(config.dir);
+  generateCombinedFiles({
+    outputDir: config.dir,
+    services,
+    exportFileName: config.exportFileName,
+  });
+}
 
-generateCombinedFiles(config);
+// --- main module ---
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const config = {
+    dir: DEFAULT_CONFIG.dir,
+    exportFileName: DEFAULT_CONFIG.exportFileName,
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    switch (args[i]) {
+      case "--dir":
+      case "-d":
+        config.dir = args[++i];
+        break;
+      case "--output":
+      case "-o":
+        config.exportFileName = args[++i];
+        break;
+      case "--help":
+      case "-h":
+        console.log(`
+Usage: node combine-services.js [options]
+
+Options:
+  -d, --dir <path>      Directory to scan for .client.d.ts files (default: "${DEFAULT_CONFIG.dir}")
+  -o, --output <name>   Base name for output files without extension (default: "${DEFAULT_CONFIG.exportFileName}")
+  -h, --help            Show this help message
+        `);
+        process.exit(0);
+    }
+  }
+
+  return config;
+}
+
+function main() {
+  try {
+    const config = parseArgs();
+    console.log(`Running with configuration:
+  Directory: ${config.dir}
+  Output filename: ${config.exportFileName}`);
+
+    generateCombinedServicesFromDir(config);
+    console.log("Successfully generated combined service files");
+  } catch (error) {
+    console.error("Error generating combined services:", error);
+    process.exit(1);
+  }
+}
+
+// Execute if this is the main module
+if (require.main === module) {
+  main();
+}
+
+// Export the main functions for use as a module
+module.exports = {
+  generateCombinedServicesFromDir,
+  generateCombinedFiles,
+  findClientFiles,
+  DEFAULT_CONFIG,
+};

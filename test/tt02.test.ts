@@ -5,7 +5,7 @@ import {
 } from "../src/generated/cosmos/base/tendermint/v1beta1/query";
 import { GrpcTransport } from "@protobuf-ts/grpc-transport";
 import { ChannelCredentials } from "@grpc/grpc-js";
-import { CombinedServiceClient } from "../src/generated/combined-service";
+import { ScalarGrpcClient } from "../src/generated/scalarGrpcClient";
 
 describe("getLatestBlock from combined client", () => {
   it("should be able to get the latest block", async () => {
@@ -20,12 +20,12 @@ describe("getLatestBlock from combined client", () => {
     });
 
     try {
-      const client = new CombinedServiceClient(transport);
+      const client = new ScalarGrpcClient(transport);
       const request = GetLatestBlockRequest.create();
 
-      const response: GetLatestBlockResponse = await client.getLatestBlock(
-        request
-      ).response;
+      const response: GetLatestBlockResponse =
+        await client.cosmosbasetendermintserviceclient_getLatestBlock(request)
+          .response;
 
       console.log("Latest block:", {
         height: response.block?.header?.height,
