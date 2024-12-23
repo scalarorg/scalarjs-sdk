@@ -1,0 +1,49 @@
+syntax = "proto3";
+package scalar.protocol.v1beta1;
+
+import "google/api/annotations.proto";
+import "scalar/protocol/v1beta1/query.proto";
+import "scalar/protocol/v1beta1/tx.proto";
+
+option go_package = "github.com/scalarorg/scalar-core/x/protocol/types";
+
+service Msg {
+  // Create protocol
+  rpc CreateProtocol(CreateProtocolRequest) returns (CreateProtocolResponse) {
+    option (google.api.http) = {
+      post: "/scalar/protocol/v1beta1/create_protocol"
+      body: "*"
+    };
+  }
+
+  rpc UpdateProtocol(UpdateProtocolRequest) returns (UpdateProtocolResponse) {
+    option (google.api.http) = {
+      post: "/scalar/protocol/v1beta1/update_protocol"
+      body: "*"
+    };
+  }
+
+  // Add DestinationChain into protocol
+  rpc AddSupportedChain(AddSupportedChainRequest) returns (AddSupportedChainResponse) {
+    option (google.api.http) = {
+      post: "/scalar/protocol/v1beta1/add_supported_chain"
+      body: "*"
+    };
+  }
+
+  // Delete DestinationChain from protocol
+  rpc UpdateSupportedChain(UpdateSupportedChainRequest) returns (UpdateSupportedChainResponse) {
+    option (google.api.http) = {
+      post: "/scalar/protocol/v1beta1/update_supported_chain"
+      body: "*"
+    };
+  }
+}
+
+// Query defines the gRPC querier service
+service Query {
+  // GetProtocols returns all Protocol
+  rpc Protocols(ProtocolsRequest) returns (ProtocolsResponse) {
+    option (google.api.http) = {get: "/scalar/protocol/v1beta1"};
+  }
+}

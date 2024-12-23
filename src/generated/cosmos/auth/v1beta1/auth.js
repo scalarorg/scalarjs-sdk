@@ -14,7 +14,7 @@ class BaseAccount$Type extends MessageType {
             { no: 2, name: "pub_key", kind: "message", T: () => Any, options: { "gogoproto.jsontag": "public_key,omitempty", "gogoproto.moretags": "yaml:\"public_key\"" } },
             { no: 3, name: "account_number", kind: "scalar", T: 4 /*ScalarType.UINT64*/, options: { "gogoproto.moretags": "yaml:\"account_number\"" } },
             { no: 4, name: "sequence", kind: "scalar", T: 4 /*ScalarType.UINT64*/ }
-        ], { "gogoproto.goproto_getters": false, "gogoproto.goproto_stringer": false, "gogoproto.equal": false, "cosmos_proto.implements_interface": "AccountI" });
+        ], { "cosmos_proto.implements_interface": "AccountI", "gogoproto.goproto_getters": false, "gogoproto.goproto_stringer": false, "gogoproto.equal": false });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));
@@ -83,7 +83,7 @@ class ModuleAccount$Type extends MessageType {
             { no: 1, name: "base_account", kind: "message", T: () => BaseAccount, options: { "gogoproto.embed": true, "gogoproto.moretags": "yaml:\"base_account\"" } },
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "permissions", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
-        ], { "gogoproto.goproto_getters": false, "gogoproto.goproto_stringer": false, "cosmos_proto.implements_interface": "ModuleAccountI" });
+        ], { "cosmos_proto.implements_interface": "ModuleAccountI", "gogoproto.goproto_getters": false, "gogoproto.goproto_stringer": false });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));

@@ -296,7 +296,7 @@ class Validator$Type extends MessageType {
     constructor() {
         super("cosmos.staking.v1beta1.Validator", [
             { no: 1, name: "operator_address", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.moretags": "yaml:\"operator_address\"" } },
-            { no: 2, name: "consensus_pubkey", kind: "message", T: () => Any, options: { "gogoproto.moretags": "yaml:\"consensus_pubkey\"", "cosmos_proto.accepts_interface": "cosmos.crypto.PubKey" } },
+            { no: 2, name: "consensus_pubkey", kind: "message", T: () => Any, options: { "cosmos_proto.accepts_interface": "cosmos.crypto.PubKey", "gogoproto.moretags": "yaml:\"consensus_pubkey\"" } },
             { no: 3, name: "jailed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
             { no: 4, name: "status", kind: "enum", T: () => ["cosmos.staking.v1beta1.BondStatus", BondStatus, "BOND_STATUS_"] },
             { no: 5, name: "tokens", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/cosmos/cosmos-sdk/types.Int" } },

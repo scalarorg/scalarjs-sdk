@@ -145,7 +145,7 @@ class AllowedMsgAllowance$Type extends MessageType {
         super("cosmos.feegrant.v1beta1.AllowedMsgAllowance", [
             { no: 1, name: "allowance", kind: "message", T: () => Any, options: { "cosmos_proto.accepts_interface": "FeeAllowanceI" } },
             { no: 2, name: "allowed_messages", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
-        ], { "gogoproto.goproto_getters": false, "cosmos_proto.implements_interface": "FeeAllowanceI" });
+        ], { "cosmos_proto.implements_interface": "FeeAllowanceI", "gogoproto.goproto_getters": false });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));

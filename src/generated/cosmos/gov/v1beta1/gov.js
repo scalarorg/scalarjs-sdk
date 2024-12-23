@@ -157,7 +157,7 @@ class TextProposal$Type extends MessageType {
         super("cosmos.gov.v1beta1.TextProposal", [
             { no: 1, name: "title", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ], { "gogoproto.equal": true, "cosmos_proto.implements_interface": "Content" });
+        ], { "cosmos_proto.implements_interface": "Content", "gogoproto.equal": true });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));

@@ -231,7 +231,7 @@ class Supply$Type extends MessageType {
     constructor() {
         super("cosmos.bank.v1beta1.Supply", [
             { no: 1, name: "total", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Coin, options: { "gogoproto.nullable": false, "gogoproto.castrepeated": "github.com/cosmos/cosmos-sdk/types.Coins" } }
-        ], { "gogoproto.goproto_getters": false, "gogoproto.equal": true, "cosmos_proto.implements_interface": "*github.com/cosmos/cosmos-sdk/x/bank/legacy/v040.SupplyI" });
+        ], { "cosmos_proto.implements_interface": "*github.com/cosmos/cosmos-sdk/x/bank/legacy/v040.SupplyI", "gogoproto.goproto_getters": false, "gogoproto.equal": true });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));

@@ -177,7 +177,7 @@ class ClientUpdateProposal$Type extends MessageType {
             { no: 2, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "subject_client_id", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.moretags": "yaml:\"subject_client_id\"" } },
             { no: 4, name: "substitute_client_id", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.moretags": "yaml:\"substitute_client_id\"" } }
-        ], { "gogoproto.goproto_getters": false, "cosmos_proto.implements_interface": "cosmos.gov.v1beta1.Content" });
+        ], { "cosmos_proto.implements_interface": "cosmos.gov.v1beta1.Content", "gogoproto.goproto_getters": false });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));
@@ -248,7 +248,7 @@ class UpgradeProposal$Type extends MessageType {
             { no: 2, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "plan", kind: "message", T: () => Plan, options: { "gogoproto.nullable": false } },
             { no: 4, name: "upgraded_client_state", kind: "message", T: () => Any, options: { "gogoproto.moretags": "yaml:\"upgraded_client_state\"" } }
-        ], { "gogoproto.goproto_getters": false, "gogoproto.goproto_stringer": false, "gogoproto.equal": true, "cosmos_proto.implements_interface": "cosmos.gov.v1beta1.Content" });
+        ], { "cosmos_proto.implements_interface": "cosmos.gov.v1beta1.Content", "gogoproto.goproto_getters": false, "gogoproto.goproto_stringer": false, "gogoproto.equal": true });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));
