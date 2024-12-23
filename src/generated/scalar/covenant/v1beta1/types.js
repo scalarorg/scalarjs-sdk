@@ -6,30 +6,30 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
- * @generated from protobuf enum scalar.covenant.v1beta1.CustodianStatus
+ * @generated from protobuf enum scalar.covenant.v1beta1.Status
  */
-export var CustodianStatus;
-(function (CustodianStatus) {
+export var Status;
+(function (Status) {
     /**
-     * @generated from protobuf enum value: CUSTODIAN_STATUS_UNSPECIFIED = 0;
+     * @generated from protobuf enum value: STATUS_UNSPECIFIED = 0;
      */
-    CustodianStatus[CustodianStatus["UNSPECIFIED"] = 0] = "UNSPECIFIED";
+    Status[Status["UNSPECIFIED"] = 0] = "UNSPECIFIED";
     /**
-     * @generated from protobuf enum value: CUSTODIAN_STATUS_ACTIVATED = 1;
+     * @generated from protobuf enum value: STATUS_ACTIVATED = 1;
      */
-    CustodianStatus[CustodianStatus["ACTIVATED"] = 1] = "ACTIVATED";
+    Status[Status["ACTIVATED"] = 1] = "ACTIVATED";
     /**
-     * @generated from protobuf enum value: CUSTODIAN_STATUS_DEACTIVATED = 2;
+     * @generated from protobuf enum value: STATUS_DEACTIVATED = 2;
      */
-    CustodianStatus[CustodianStatus["DEACTIVATED"] = 2] = "DEACTIVATED";
-})(CustodianStatus || (CustodianStatus = {}));
+    Status[Status["DEACTIVATED"] = 2] = "DEACTIVATED";
+})(Status || (Status = {}));
 // @generated message type with reflection information, may provide speed optimized methods
 class Custodian$Type extends MessageType {
     constructor() {
         super("scalar.covenant.v1beta1.Custodian", [
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "btc_pubkey", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-            { no: 3, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] },
+            { no: 3, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] },
             { no: 4, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
@@ -54,7 +54,7 @@ class Custodian$Type extends MessageType {
                 case /* bytes btc_pubkey */ 2:
                     message.btcPubkey = reader.bytes();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 3:
+                case /* scalar.covenant.v1beta1.Status status */ 3:
                     message.status = reader.int32();
                     break;
                 case /* string description */ 4:
@@ -78,7 +78,7 @@ class Custodian$Type extends MessageType {
         /* bytes btc_pubkey = 2; */
         if (message.btcPubkey.length)
             writer.tag(2, WireType.LengthDelimited).bytes(message.btcPubkey);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 3; */
+        /* scalar.covenant.v1beta1.Status status = 3; */
         if (message.status !== 0)
             writer.tag(3, WireType.Varint).int32(message.status);
         /* string description = 4; */
@@ -102,7 +102,7 @@ class CustodianGroup$Type extends MessageType {
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "btc_pubkey", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "quorum", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
-            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] },
+            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] },
             { no: 6, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "custodians", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Custodian }
         ]);
@@ -137,7 +137,7 @@ class CustodianGroup$Type extends MessageType {
                 case /* uint32 quorum */ 4:
                     message.quorum = reader.uint32();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 5:
+                case /* scalar.covenant.v1beta1.Status status */ 5:
                     message.status = reader.int32();
                     break;
                 case /* string description */ 6:
@@ -170,7 +170,7 @@ class CustodianGroup$Type extends MessageType {
         /* uint32 quorum = 4; */
         if (message.quorum !== 0)
             writer.tag(4, WireType.Varint).uint32(message.quorum);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 5; */
+        /* scalar.covenant.v1beta1.Status status = 5; */
         if (message.status !== 0)
             writer.tag(5, WireType.Varint).int32(message.status);
         /* string description = 6; */

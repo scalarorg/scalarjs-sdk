@@ -24,9 +24,9 @@ export interface Custodian {
     /**
      * "0215da913b3e87b4932b1e1b87d9667c28e7250aa0ed60b3a31095f541e1641488"
      *
-     * @generated from protobuf field: scalar.covenant.v1beta1.CustodianStatus status = 3;
+     * @generated from protobuf field: scalar.covenant.v1beta1.Status status = 3;
      */
-    status: CustodianStatus;
+    status: Status;
     /**
      * @generated from protobuf field: string description = 4;
      */
@@ -58,9 +58,9 @@ export interface CustodianGroup {
      */
     quorum: number;
     /**
-     * @generated from protobuf field: scalar.covenant.v1beta1.CustodianStatus status = 5;
+     * @generated from protobuf field: scalar.covenant.v1beta1.Status status = 5;
      */
-    status: CustodianStatus;
+    status: Status;
     /**
      * @generated from protobuf field: string description = 6;
      */
@@ -71,19 +71,19 @@ export interface CustodianGroup {
     custodians: Custodian[];
 }
 /**
- * @generated from protobuf enum scalar.covenant.v1beta1.CustodianStatus
+ * @generated from protobuf enum scalar.covenant.v1beta1.Status
  */
-export declare enum CustodianStatus {
+export declare enum Status {
     /**
-     * @generated from protobuf enum value: CUSTODIAN_STATUS_UNSPECIFIED = 0;
+     * @generated from protobuf enum value: STATUS_UNSPECIFIED = 0;
      */
     UNSPECIFIED = 0,
     /**
-     * @generated from protobuf enum value: CUSTODIAN_STATUS_ACTIVATED = 1;
+     * @generated from protobuf enum value: STATUS_ACTIVATED = 1;
      */
     ACTIVATED = 1,
     /**
-     * @generated from protobuf enum value: CUSTODIAN_STATUS_DEACTIVATED = 2;
+     * @generated from protobuf enum value: STATUS_DEACTIVATED = 2;
      */
     DEACTIVATED = 2
 }

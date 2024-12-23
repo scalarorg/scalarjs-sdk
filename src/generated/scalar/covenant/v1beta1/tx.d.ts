@@ -9,7 +9,7 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { CustodianGroup } from "./types";
 import { Custodian } from "./types";
-import { CustodianStatus } from "./types";
+import { Status } from "./types";
 /**
  * @generated from protobuf message scalar.covenant.v1beta1.CreateCustodianRequest
  */
@@ -27,9 +27,9 @@ export interface CreateCustodianRequest {
      */
     btcPubkey: Uint8Array;
     /**
-     * @generated from protobuf field: scalar.covenant.v1beta1.CustodianStatus status = 4;
+     * @generated from protobuf field: scalar.covenant.v1beta1.Status status = 4;
      */
-    status: CustodianStatus;
+    status: Status;
     /**
      * @generated from protobuf field: string description = 5;
      */
@@ -63,9 +63,9 @@ export interface UpdateCustodianRequest {
      */
     name: string;
     /**
-     * @generated from protobuf field: scalar.covenant.v1beta1.CustodianStatus status = 4;
+     * @generated from protobuf field: scalar.covenant.v1beta1.Status status = 4;
      */
-    status: CustodianStatus;
+    status: Status;
     /**
      * @generated from protobuf field: string description = 5;
      */
@@ -101,9 +101,9 @@ export interface CreateCustodianGroupRequest {
      */
     quorum: number;
     /**
-     * @generated from protobuf field: scalar.covenant.v1beta1.CustodianStatus status = 5;
+     * @generated from protobuf field: scalar.covenant.v1beta1.Status status = 5;
      */
-    status: CustodianStatus;
+    status: Status;
     /**
      * @generated from protobuf field: string description = 6;
      */
@@ -143,9 +143,9 @@ export interface UpdateCustodianGroupRequest {
      */
     quorum: number;
     /**
-     * @generated from protobuf field: scalar.covenant.v1beta1.CustodianStatus status = 5;
+     * @generated from protobuf field: scalar.covenant.v1beta1.Status status = 5;
      */
-    status: CustodianStatus;
+    status: Status;
     /**
      * @generated from protobuf field: string description = 6;
      */

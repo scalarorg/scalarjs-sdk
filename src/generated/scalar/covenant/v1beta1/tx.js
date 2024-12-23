@@ -7,7 +7,7 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { CustodianGroup } from "./types";
 import { Custodian } from "./types";
-import { CustodianStatus } from "./types";
+import { Status } from "./types";
 // @generated message type with reflection information, may provide speed optimized methods
 class CreateCustodianRequest$Type extends MessageType {
     constructor() {
@@ -15,7 +15,7 @@ class CreateCustodianRequest$Type extends MessageType {
             { no: 1, name: "sender", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.casttype": "github.com/cosmos/cosmos-sdk/types.AccAddress" } },
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "btc_pubkey", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-            { no: 4, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] },
+            { no: 4, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] },
             { no: 5, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
@@ -44,7 +44,7 @@ class CreateCustodianRequest$Type extends MessageType {
                 case /* bytes btc_pubkey */ 3:
                     message.btcPubkey = reader.bytes();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 4:
+                case /* scalar.covenant.v1beta1.Status status */ 4:
                     message.status = reader.int32();
                     break;
                 case /* string description */ 5:
@@ -71,7 +71,7 @@ class CreateCustodianRequest$Type extends MessageType {
         /* bytes btc_pubkey = 3; */
         if (message.btcPubkey.length)
             writer.tag(3, WireType.LengthDelimited).bytes(message.btcPubkey);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 4; */
+        /* scalar.covenant.v1beta1.Status status = 4; */
         if (message.status !== 0)
             writer.tag(4, WireType.Varint).int32(message.status);
         /* string description = 5; */
@@ -140,7 +140,7 @@ class UpdateCustodianRequest$Type extends MessageType {
             { no: 1, name: "sender", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.casttype": "github.com/cosmos/cosmos-sdk/types.AccAddress" } },
             { no: 2, name: "btc_pubkey", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
             { no: 3, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] },
+            { no: 4, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] },
             { no: 5, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
@@ -169,7 +169,7 @@ class UpdateCustodianRequest$Type extends MessageType {
                 case /* string name */ 3:
                     message.name = reader.string();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 4:
+                case /* scalar.covenant.v1beta1.Status status */ 4:
                     message.status = reader.int32();
                     break;
                 case /* string description */ 5:
@@ -196,7 +196,7 @@ class UpdateCustodianRequest$Type extends MessageType {
         /* string name = 3; */
         if (message.name !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.name);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 4; */
+        /* scalar.covenant.v1beta1.Status status = 4; */
         if (message.status !== 0)
             writer.tag(4, WireType.Varint).int32(message.status);
         /* string description = 5; */
@@ -266,7 +266,7 @@ class CreateCustodianGroupRequest$Type extends MessageType {
             { no: 2, name: "uid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "quorum", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
-            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] },
+            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] },
             { no: 6, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "custodian", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 12 /*ScalarType.BYTES*/ }
         ]);
@@ -301,7 +301,7 @@ class CreateCustodianGroupRequest$Type extends MessageType {
                 case /* uint32 quorum */ 4:
                     message.quorum = reader.uint32();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 5:
+                case /* scalar.covenant.v1beta1.Status status */ 5:
                     message.status = reader.int32();
                     break;
                 case /* string description */ 6:
@@ -334,7 +334,7 @@ class CreateCustodianGroupRequest$Type extends MessageType {
         /* uint32 quorum = 4; */
         if (message.quorum !== 0)
             writer.tag(4, WireType.Varint).uint32(message.quorum);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 5; */
+        /* scalar.covenant.v1beta1.Status status = 5; */
         if (message.status !== 0)
             writer.tag(5, WireType.Varint).int32(message.status);
         /* string description = 6; */
@@ -407,7 +407,7 @@ class UpdateCustodianGroupRequest$Type extends MessageType {
             { no: 2, name: "uid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "quorum", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
-            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] },
+            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] },
             { no: 6, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "custodian", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 12 /*ScalarType.BYTES*/ }
         ]);
@@ -442,7 +442,7 @@ class UpdateCustodianGroupRequest$Type extends MessageType {
                 case /* uint32 quorum */ 4:
                     message.quorum = reader.uint32();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 5:
+                case /* scalar.covenant.v1beta1.Status status */ 5:
                     message.status = reader.int32();
                     break;
                 case /* string description */ 6:
@@ -475,7 +475,7 @@ class UpdateCustodianGroupRequest$Type extends MessageType {
         /* uint32 quorum = 4; */
         if (message.quorum !== 0)
             writer.tag(4, WireType.Varint).uint32(message.quorum);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 5; */
+        /* scalar.covenant.v1beta1.Status status = 5; */
         if (message.status !== 0)
             writer.tag(5, WireType.Varint).int32(message.status);
         /* string description = 6; */

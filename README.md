@@ -18,6 +18,8 @@ npm install scalarjs-sdk
 
 ## 🌟 Generate Protobuf Types before publishing
 
+First, copy all proto files from `scalar
+
 ```bash
 bun run generate
 ```

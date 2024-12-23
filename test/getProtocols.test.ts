@@ -30,8 +30,11 @@ describe("getProtocols", () => {
         status: Status.ACTIVATED,
       });
 
-      const response: ProtocolsResponse = await client.protocols(request)
-        .response;
+      console.log("--- before response");
+
+      const response = await client.protocols(request).response;
+
+      console.log("--- after response");
 
       console.log("--- response", response);
 

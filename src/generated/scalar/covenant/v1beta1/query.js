@@ -7,14 +7,14 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { CustodianGroup } from "./types";
 import { Custodian } from "./types";
-import { CustodianStatus } from "./types";
+import { Status } from "./types";
 // @generated message type with reflection information, may provide speed optimized methods
 class CustodiansRequest$Type extends MessageType {
     constructor() {
         super("scalar.covenant.v1beta1.CustodiansRequest", [
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "pubkey", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-            { no: 3, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] }
+            { no: 3, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] }
         ]);
     }
     create(value) {
@@ -37,7 +37,7 @@ class CustodiansRequest$Type extends MessageType {
                 case /* bytes pubkey */ 2:
                     message.pubkey = reader.bytes();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 3:
+                case /* scalar.covenant.v1beta1.Status status */ 3:
                     message.status = reader.int32();
                     break;
                 default:
@@ -58,7 +58,7 @@ class CustodiansRequest$Type extends MessageType {
         /* bytes pubkey = 2; */
         if (message.pubkey.length)
             writer.tag(2, WireType.LengthDelimited).bytes(message.pubkey);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 3; */
+        /* scalar.covenant.v1beta1.Status status = 3; */
         if (message.status !== 0)
             writer.tag(3, WireType.Varint).int32(message.status);
         let u = options.writeUnknownFields;
@@ -126,7 +126,7 @@ class CustodianGroupsRequest$Type extends MessageType {
             { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "group_pubkey", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
             { no: 4, name: "custodian_pubkey", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.CustodianStatus", CustodianStatus, "CUSTODIAN_STATUS_"] }
+            { no: 5, name: "status", kind: "enum", T: () => ["scalar.covenant.v1beta1.Status", Status, "STATUS_"] }
         ]);
     }
     create(value) {
@@ -157,7 +157,7 @@ class CustodianGroupsRequest$Type extends MessageType {
                 case /* bytes custodian_pubkey */ 4:
                     message.custodianPubkey = reader.bytes();
                     break;
-                case /* scalar.covenant.v1beta1.CustodianStatus status */ 5:
+                case /* scalar.covenant.v1beta1.Status status */ 5:
                     message.status = reader.int32();
                     break;
                 default:
@@ -184,7 +184,7 @@ class CustodianGroupsRequest$Type extends MessageType {
         /* bytes custodian_pubkey = 4; */
         if (message.custodianPubkey.length)
             writer.tag(4, WireType.LengthDelimited).bytes(message.custodianPubkey);
-        /* scalar.covenant.v1beta1.CustodianStatus status = 5; */
+        /* scalar.covenant.v1beta1.Status status = 5; */
         if (message.status !== 0)
             writer.tag(5, WireType.Varint).int32(message.status);
         let u = options.writeUnknownFields;
