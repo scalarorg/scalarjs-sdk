@@ -10,7 +10,11 @@ console.log("Building...");
 // Build for browser
 await Bun.build({
   entrypoints: ["./src/index.ts"],
-  external: Object.keys(dependencies),
+  external: [
+    ...Object.keys(dependencies),
+    "@grpc/grpc-js",
+    "@protobuf-ts/grpc-transport",
+  ],
   format: "esm",
   minify: true,
   outdir: "./dist",
@@ -25,7 +29,11 @@ await Bun.build({
 // Build for node
 await Bun.build({
   entrypoints: ["./src/index.ts"],
-  external: Object.keys(dependencies),
+  external: [
+    ...Object.keys(dependencies),
+    "@grpc/grpc-js",
+    "@protobuf-ts/grpc-transport",
+  ],
   format: "esm",
   minify: true,
   outdir: "./dist/node",

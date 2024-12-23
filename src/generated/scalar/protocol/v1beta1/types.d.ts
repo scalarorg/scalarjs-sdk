@@ -31,9 +31,9 @@ export interface SupportedChain {
      */
     params?: Params;
     /**
-     * @generated from protobuf field: string pubkey = 2;
+     * @generated from protobuf field: string address = 2;
      */
-    pubkey: string;
+    address: string;
     /**
      * @generated from protobuf oneof: token
      */

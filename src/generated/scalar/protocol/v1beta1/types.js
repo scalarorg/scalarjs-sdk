@@ -93,14 +93,14 @@ class SupportedChain$Type extends MessageType {
     constructor() {
         super("scalar.protocol.v1beta1.SupportedChain", [
             { no: 1, name: "params", kind: "message", T: () => Params },
-            { no: 2, name: "pubkey", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "erc20", kind: "message", oneof: "token", T: () => ERC20TokenMetadata },
             { no: 4, name: "btc", kind: "message", oneof: "token", T: () => BtcToken }
         ]);
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));
-        message.pubkey = "";
+        message.address = "";
         message.token = { oneofKind: undefined };
         if (value !== undefined)
             reflectionMergePartial(this, message, value);
@@ -114,8 +114,8 @@ class SupportedChain$Type extends MessageType {
                 case /* scalar.chains.v1beta1.Params params */ 1:
                     message.params = Params.internalBinaryRead(reader, reader.uint32(), options, message.params);
                     break;
-                case /* string pubkey */ 2:
-                    message.pubkey = reader.string();
+                case /* string address */ 2:
+                    message.address = reader.string();
                     break;
                 case /* scalar.chains.evm.v1beta1.ERC20TokenMetadata erc20 */ 3:
                     message.token = {
@@ -144,9 +144,9 @@ class SupportedChain$Type extends MessageType {
         /* scalar.chains.v1beta1.Params params = 1; */
         if (message.params)
             Params.internalBinaryWrite(message.params, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* string pubkey = 2; */
-        if (message.pubkey !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.pubkey);
+        /* string address = 2; */
+        if (message.address !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.address);
         /* scalar.chains.evm.v1beta1.ERC20TokenMetadata erc20 = 3; */
         if (message.token.oneofKind === "erc20")
             ERC20TokenMetadata.internalBinaryWrite(message.token.erc20, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
