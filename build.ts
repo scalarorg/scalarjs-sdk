@@ -1,65 +1,54 @@
 /// <reference types="bun-types" />
 import { generateDtsBundle } from "dts-bundle-generator";
-
 import { dependencies } from "./package.json";
-
 import fs from "node:fs";
 
-console.log("Building...");
+const external = [
+  ...Object.keys(dependencies),
+  "@grpc/grpc-js",
+  "@protobuf-ts/grpc-transport",
+];
 
-// Build for browser
+// Build types bundle
+await Bun.build({
+  entrypoints: ["./src/types/index.ts"],
+  external,
+  format: "esm",
+  minify: true,
+  outdir: "./dist/types",
+  sourcemap: "external",
+  target: "browser",
+});
+
+// Build services bundle
+await Bun.build({
+  entrypoints: ["./src/services/index.ts"],
+  external,
+  format: "esm",
+  minify: true,
+  outdir: "./dist/services",
+  sourcemap: "external",
+  target: "node",
+});
+
+// Build main bundle
 await Bun.build({
   entrypoints: ["./src/index.ts"],
-  external: [
-    ...Object.keys(dependencies),
-    "@grpc/grpc-js",
-    "@protobuf-ts/grpc-transport",
-  ],
+  external,
   format: "esm",
   minify: true,
   outdir: "./dist",
   sourcemap: "external",
   target: "browser",
-  naming: {
-    entry: "[dir]/[name].[ext]",
-    chunk: "[dir]/[name].[ext]",
-  },
 });
 
-// Build for node
-await Bun.build({
-  entrypoints: ["./src/index.ts"],
-  external: [
-    ...Object.keys(dependencies),
-    "@grpc/grpc-js",
-    "@protobuf-ts/grpc-transport",
-  ],
-  format: "esm",
-  minify: true,
-  outdir: "./dist/node",
-  sourcemap: "external",
-  target: "node",
-});
+// Generate type definitions
+const generateTypes = (entryPath: string, outputPath: string) => {
+  const types = generateDtsBundle([{ filePath: entryPath }]);
+  fs.mkdirSync(outputPath, { recursive: true });
+  fs.writeFileSync(`${outputPath}/index.d.ts`, types.join("\n"));
+};
 
-console.log("JSCompiling", "Done!");
-console.log("TypeCompiling", "Building...");
-const typedContentForBrowser = generateDtsBundle([
-  {
-    filePath: "./src/index.ts",
-  },
-]);
-
-fs.mkdirSync("./dist", { recursive: true });
-
-// Write typed content to index.d.ts for both browser and node
-fs.writeFileSync("./dist/index.d.ts", typedContentForBrowser.join("\n"));
-
-const typedContent = generateDtsBundle([
-  {
-    filePath: "./src/index.ts",
-  },
-]);
-
-fs.mkdirSync("./dist/node", { recursive: true });
-fs.writeFileSync("./dist/node/index.d.ts", typedContent.join("\n"));
-console.log("TypeCompiling", "Done!");
+generateTypes("./src/types/index.ts", "./dist/types");
+generateTypes("./src/services/index.ts", "./dist/services");
+generateTypes("./src/index.ts", "./dist");

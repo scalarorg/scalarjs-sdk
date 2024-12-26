@@ -23,12 +23,7 @@ describe("getProtocols", () => {
         channelCredentials: ChannelCredentials.createInsecure(),
       });
       const client = new QueryClient(transport);
-      const request = ProtocolsRequest.create({
-        pubkey: "",
-        address: "",
-        name: "",
-        status: Status.ACTIVATED,
-      });
+      const request = ProtocolsRequest.create({});
 
       console.log("--- before response");
 

@@ -1,6 +1,6 @@
 {
   "name": "scalarjs-sdk",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "author": "scalarorg",
   "repository": {
     "type": "git",
@@ -18,6 +18,24 @@
       "import": "./dist/node/index.js",
       "require": "./dist/node/index.js",
       "types": "./dist/node/index.d.ts"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.js",
+      "node": "./dist/types/index.js",
+      "browser": "./dist/types/index.js",
+      "default": "./dist/types/index.js"
+    },
+    "./dist/types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.js",
+      "default": "./dist/types/index.js"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.ts",
+      "import": "./dist/services/index.js"
     }
   },
   "bugs": {

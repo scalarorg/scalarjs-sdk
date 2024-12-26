@@ -7,7 +7,7 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { CustodianGroup } from "../../covenant/v1beta1/types";
 import { BtcToken } from "../../chains/btc/v1beta1/types";
-import { ERC20TokenMetadata } from "../../chains/evm/v1beta1/types";
+import { ERC20TokenMetadata } from "../../chains/v1beta1/tokens";
 import { Params } from "../../chains/v1beta1/params";
 /**
  * @generated from protobuf enum scalar.protocol.v1beta1.LiquidityModel
@@ -117,7 +117,7 @@ class SupportedChain$Type extends MessageType {
                 case /* string address */ 2:
                     message.address = reader.string();
                     break;
-                case /* scalar.chains.evm.v1beta1.ERC20TokenMetadata erc20 */ 3:
+                case /* scalar.chains.v1beta1.ERC20TokenMetadata erc20 */ 3:
                     message.token = {
                         oneofKind: "erc20",
                         erc20: ERC20TokenMetadata.internalBinaryRead(reader, reader.uint32(), options, message.token.erc20)
@@ -147,7 +147,7 @@ class SupportedChain$Type extends MessageType {
         /* string address = 2; */
         if (message.address !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.address);
-        /* scalar.chains.evm.v1beta1.ERC20TokenMetadata erc20 = 3; */
+        /* scalar.chains.v1beta1.ERC20TokenMetadata erc20 = 3; */
         if (message.token.oneofKind === "erc20")
             ERC20TokenMetadata.internalBinaryWrite(message.token.erc20, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         /* scalar.chains.btc.v1beta1.BtcToken btc = 4; */

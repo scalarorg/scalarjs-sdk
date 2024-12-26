@@ -1,5 +1,9 @@
 {
-  "directory": ["./src/types"],
-  "exclude": ["dist", ".test.ts", "dist", "test", "build.ts"],
-  "delete": true
+  "directory": [
+    "./src/types",
+    "./src/services"
+  ],
+  "exclude": ["dist", ".test.ts", "test", "build.ts"],
+  "delete": true,
+  "structure": "flat"
 }

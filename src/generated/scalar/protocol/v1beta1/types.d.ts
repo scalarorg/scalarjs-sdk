@@ -9,7 +9,7 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { CustodianGroup } from "../../covenant/v1beta1/types";
 import { BtcToken } from "../../chains/btc/v1beta1/types";
-import { ERC20TokenMetadata } from "../../chains/evm/v1beta1/types";
+import { ERC20TokenMetadata } from "../../chains/v1beta1/tokens";
 import { Params } from "../../chains/v1beta1/params";
 /**
  * @generated from protobuf message scalar.protocol.v1beta1.ProtocolAttribute
@@ -40,7 +40,7 @@ export interface SupportedChain {
     token: {
         oneofKind: "erc20";
         /**
-         * @generated from protobuf field: scalar.chains.evm.v1beta1.ERC20TokenMetadata erc20 = 3;
+         * @generated from protobuf field: scalar.chains.v1beta1.ERC20TokenMetadata erc20 = 3;
          */
         erc20: ERC20TokenMetadata;
     } | {

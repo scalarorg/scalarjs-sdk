@@ -15,7 +15,7 @@ class Params$Type extends MessageType {
             { no: 2, name: "confirmation_height", kind: "scalar", T: 4 /*ScalarType.UINT64*/ },
             { no: 3, name: "network_kind", kind: "enum", T: () => ["scalar.chains.v1beta1.NetworkKind", NetworkKind, "NETWORK_KIND_"] },
             { no: 4, name: "revote_locking_period", kind: "scalar", T: 3 /*ScalarType.INT64*/ },
-            { no: 5, name: "chain_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/cosmos/cosmos-sdk/types.Int" } },
+            { no: 5, name: "chain_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/cosmos/cosmos-sdk/types.Int", "gogoproto.customname": "ChainID" } },
             { no: 6, name: "voting_threshold", kind: "message", T: () => Threshold, options: { "gogoproto.nullable": false } },
             { no: 7, name: "min_voter_count", kind: "scalar", T: 3 /*ScalarType.INT64*/ },
             { no: 8, name: "voting_grace_period", kind: "scalar", T: 3 /*ScalarType.INT64*/ },

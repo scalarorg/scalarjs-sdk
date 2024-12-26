@@ -9,27 +9,6 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Any } from "../../../google/protobuf/any";
 /**
- * @generated from protobuf message scalar.chains.v1beta1.Proof
- */
-export interface Proof {
-    /**
-     * @generated from protobuf field: repeated string addresses = 1;
-     */
-    addresses: string[];
-    /**
-     * @generated from protobuf field: repeated string weights = 2;
-     */
-    weights: string[];
-    /**
-     * @generated from protobuf field: string threshold = 3;
-     */
-    threshold: string;
-    /**
-     * @generated from protobuf field: repeated string signatures = 4;
-     */
-    signatures: string[];
-}
-/**
  * @generated from protobuf message scalar.chains.v1beta1.StakingTx
  */
 export interface StakingTx {
@@ -96,6 +75,27 @@ export interface CommandBatchMetadata {
     signature?: Any;
 }
 /**
+ * @generated from protobuf message scalar.chains.v1beta1.Proof
+ */
+export interface Proof {
+    /**
+     * @generated from protobuf field: repeated string addresses = 1;
+     */
+    addresses: string[];
+    /**
+     * @generated from protobuf field: repeated string weights = 2;
+     */
+    weights: string[];
+    /**
+     * @generated from protobuf field: string threshold = 3;
+     */
+    threshold: string;
+    /**
+     * @generated from protobuf field: repeated string signatures = 4;
+     */
+    signatures: string[];
+}
+/**
  * @generated from protobuf message scalar.chains.v1beta1.Command
  */
 export interface Command {
@@ -119,6 +119,190 @@ export interface Command {
      * @generated from protobuf field: scalar.chains.v1beta1.CommandType type = 5;
      */
     type: CommandType;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.PollMapping
+ */
+export interface PollMapping {
+    /**
+     * @generated from protobuf field: bytes tx_id = 1;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: uint64 poll_id = 2;
+     */
+    pollId: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.PollMetadata
+ */
+export interface PollMetadata {
+    /**
+     * @generated from protobuf field: string chain = 1;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes tx_id = 2;
+     */
+    txId: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.PollFailed
+ */
+export interface PollFailed {
+    /**
+     * @generated from protobuf field: bytes tx_id = 1;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: uint64 poll_id = 3;
+     */
+    pollId: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.PollExpired
+ */
+export interface PollExpired {
+    /**
+     * @generated from protobuf field: bytes tx_id = 1;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: uint64 poll_id = 3;
+     */
+    pollId: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.PollCompleted
+ */
+export interface PollCompleted {
+    /**
+     * @generated from protobuf field: bytes tx_id = 1;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: uint64 poll_id = 3;
+     */
+    pollId: string;
+}
+/**
+ * SigMetadata stores necessary information for external apps to map signature
+ * results to chains relay transaction types
+ *
+ * @generated from protobuf message scalar.chains.v1beta1.SigMetadata
+ */
+export interface SigMetadata {
+    /**
+     * @generated from protobuf field: scalar.chains.v1beta1.SigType type = 1;
+     */
+    type: SigType;
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes command_batch_id = 3;
+     */
+    commandBatchId: Uint8Array;
+}
+/**
+ * TransferKey contains information for a transfer operatorship
+ *
+ * @generated from protobuf message scalar.chains.v1beta1.TransferKey
+ */
+export interface TransferKey {
+    /**
+     * @generated from protobuf field: bytes tx_id = 1;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: string next_key_id = 3;
+     */
+    nextKeyId: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.Asset
+ */
+export interface Asset {
+    /**
+     * @generated from protobuf field: string chain = 1;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: string name = 2;
+     */
+    name: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.TokenDetails
+ */
+export interface TokenDetails {
+    /**
+     * @generated from protobuf field: string token_name = 1;
+     */
+    tokenName: string;
+    /**
+     * @generated from protobuf field: string symbol = 2;
+     */
+    symbol: string;
+    /**
+     * @generated from protobuf field: uint32 decimals = 3;
+     */
+    decimals: number;
+    /**
+     * @generated from protobuf field: bytes capacity = 4;
+     */
+    capacity: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.Gateway
+ */
+export interface Gateway {
+    /**
+     * @generated from protobuf field: bytes address = 1;
+     */
+    address: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.BurnerInfo
+ */
+export interface BurnerInfo {
+    /**
+     * @generated from protobuf field: bytes burner_address = 1;
+     */
+    burnerAddress: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes token_address = 2;
+     */
+    tokenAddress: Uint8Array;
+    /**
+     * @generated from protobuf field: string destination_chain = 3;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: string symbol = 4;
+     */
+    symbol: string;
+    /**
+     * @generated from protobuf field: string asset = 5;
+     */
+    asset: string;
+    /**
+     * @generated from protobuf field: bytes salt = 6;
+     */
+    salt: Uint8Array;
 }
 /**
  * @generated from protobuf enum scalar.chains.v1beta1.NetworkKind
@@ -176,24 +360,106 @@ export declare enum StakingTxStatus {
     COMPLETED = 3
 }
 /**
+ * @generated from protobuf enum scalar.chains.v1beta1.SigType
+ */
+export declare enum SigType {
+    /**
+     * @generated from protobuf enum value: SIG_TYPE_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * @generated from protobuf enum value: SIG_TYPE_TX = 1;
+     */
+    TX = 1,
+    /**
+     * @generated from protobuf enum value: SIG_TYPE_COMMAND = 2;
+     */
+    COMMAND = 2
+}
+/**
+ * @generated from protobuf enum scalar.chains.v1beta1.DepositStatus
+ */
+export declare enum DepositStatus {
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_PENDING = 1;
+     */
+    PENDING = 1,
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_CONFIRMED = 2;
+     */
+    CONFIRMED = 2,
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_BURNED = 3;
+     */
+    BURNED = 3
+}
+/**
+ * @generated from protobuf enum scalar.chains.v1beta1.Status
+ */
+export declare enum Status {
+    /**
+     * these enum values are used for bitwise operations, therefore they need to
+     * be powers of 2
+     *
+     * @generated from protobuf enum value: STATUS_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * @generated from protobuf enum value: STATUS_INITIALIZED = 1;
+     */
+    INITIALIZED = 1,
+    /**
+     * @generated from protobuf enum value: STATUS_PENDING = 2;
+     */
+    PENDING = 2,
+    /**
+     * @generated from protobuf enum value: STATUS_CONFIRMED = 4;
+     */
+    CONFIRMED = 4
+}
+/**
  * @generated from protobuf enum scalar.chains.v1beta1.CommandType
  */
 export declare enum CommandType {
     /**
-     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_BRIDGE_CALL = 0;
+     * @generated from protobuf enum value: COMMAND_TYPE_UNSPECIFIED = 0;
      */
-    APPROVE_BRIDGE_CALL = 0
+    UNSPECIFIED = 0,
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_MINT_TOKEN = 1;
+     */
+    MINT_TOKEN = 1,
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_DEPLOY_TOKEN = 2;
+     */
+    DEPLOY_TOKEN = 2,
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_BURN_TOKEN = 3;
+     */
+    BURN_TOKEN = 3,
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_TRANSFER_OPERATORSHIP = 4;
+     */
+    TRANSFER_OPERATORSHIP = 4,
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_CONTRACT_CALL_WITH_MINT = 5;
+     */
+    APPROVE_CONTRACT_CALL_WITH_MINT = 5,
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_CONTRACT_CALL = 6;
+     */
+    APPROVE_CONTRACT_CALL = 6,
+    /**
+     * For chains
+     *
+     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_BRIDGE_CALL = 7;
+     */
+    APPROVE_BRIDGE_CALL = 7
 }
-declare class Proof$Type extends MessageType<Proof> {
-    constructor();
-    create(value?: PartialMessage<Proof>): Proof;
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Proof): Proof;
-    internalBinaryWrite(message: Proof, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
-}
-/**
- * @generated MessageType for protobuf message scalar.chains.v1beta1.Proof
- */
-export declare const Proof: Proof$Type;
 declare class StakingTx$Type extends MessageType<StakingTx> {
     constructor();
     create(value?: PartialMessage<StakingTx>): StakingTx;
@@ -214,6 +480,16 @@ declare class CommandBatchMetadata$Type extends MessageType<CommandBatchMetadata
  * @generated MessageType for protobuf message scalar.chains.v1beta1.CommandBatchMetadata
  */
 export declare const CommandBatchMetadata: CommandBatchMetadata$Type;
+declare class Proof$Type extends MessageType<Proof> {
+    constructor();
+    create(value?: PartialMessage<Proof>): Proof;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Proof): Proof;
+    internalBinaryWrite(message: Proof, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.Proof
+ */
+export declare const Proof: Proof$Type;
 declare class Command$Type extends MessageType<Command> {
     constructor();
     create(value?: PartialMessage<Command>): Command;
@@ -224,4 +500,114 @@ declare class Command$Type extends MessageType<Command> {
  * @generated MessageType for protobuf message scalar.chains.v1beta1.Command
  */
 export declare const Command: Command$Type;
+declare class PollMapping$Type extends MessageType<PollMapping> {
+    constructor();
+    create(value?: PartialMessage<PollMapping>): PollMapping;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PollMapping): PollMapping;
+    internalBinaryWrite(message: PollMapping, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollMapping
+ */
+export declare const PollMapping: PollMapping$Type;
+declare class PollMetadata$Type extends MessageType<PollMetadata> {
+    constructor();
+    create(value?: PartialMessage<PollMetadata>): PollMetadata;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PollMetadata): PollMetadata;
+    internalBinaryWrite(message: PollMetadata, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollMetadata
+ */
+export declare const PollMetadata: PollMetadata$Type;
+declare class PollFailed$Type extends MessageType<PollFailed> {
+    constructor();
+    create(value?: PartialMessage<PollFailed>): PollFailed;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PollFailed): PollFailed;
+    internalBinaryWrite(message: PollFailed, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollFailed
+ */
+export declare const PollFailed: PollFailed$Type;
+declare class PollExpired$Type extends MessageType<PollExpired> {
+    constructor();
+    create(value?: PartialMessage<PollExpired>): PollExpired;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PollExpired): PollExpired;
+    internalBinaryWrite(message: PollExpired, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollExpired
+ */
+export declare const PollExpired: PollExpired$Type;
+declare class PollCompleted$Type extends MessageType<PollCompleted> {
+    constructor();
+    create(value?: PartialMessage<PollCompleted>): PollCompleted;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PollCompleted): PollCompleted;
+    internalBinaryWrite(message: PollCompleted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollCompleted
+ */
+export declare const PollCompleted: PollCompleted$Type;
+declare class SigMetadata$Type extends MessageType<SigMetadata> {
+    constructor();
+    create(value?: PartialMessage<SigMetadata>): SigMetadata;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SigMetadata): SigMetadata;
+    internalBinaryWrite(message: SigMetadata, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.SigMetadata
+ */
+export declare const SigMetadata: SigMetadata$Type;
+declare class TransferKey$Type extends MessageType<TransferKey> {
+    constructor();
+    create(value?: PartialMessage<TransferKey>): TransferKey;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TransferKey): TransferKey;
+    internalBinaryWrite(message: TransferKey, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.TransferKey
+ */
+export declare const TransferKey: TransferKey$Type;
+declare class Asset$Type extends MessageType<Asset> {
+    constructor();
+    create(value?: PartialMessage<Asset>): Asset;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Asset): Asset;
+    internalBinaryWrite(message: Asset, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.Asset
+ */
+export declare const Asset: Asset$Type;
+declare class TokenDetails$Type extends MessageType<TokenDetails> {
+    constructor();
+    create(value?: PartialMessage<TokenDetails>): TokenDetails;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TokenDetails): TokenDetails;
+    internalBinaryWrite(message: TokenDetails, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.TokenDetails
+ */
+export declare const TokenDetails: TokenDetails$Type;
+declare class Gateway$Type extends MessageType<Gateway> {
+    constructor();
+    create(value?: PartialMessage<Gateway>): Gateway;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Gateway): Gateway;
+    internalBinaryWrite(message: Gateway, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.Gateway
+ */
+export declare const Gateway: Gateway$Type;
+declare class BurnerInfo$Type extends MessageType<BurnerInfo> {
+    constructor();
+    create(value?: PartialMessage<BurnerInfo>): BurnerInfo;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: BurnerInfo): BurnerInfo;
+    internalBinaryWrite(message: BurnerInfo, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.BurnerInfo
+ */
+export declare const BurnerInfo: BurnerInfo$Type;
 export {};

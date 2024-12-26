@@ -7,6 +7,122 @@ import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { TokenDetails } from "./types";
+import { PollParticipants } from "../../vote/exported/v1beta1/types";
+import { PollMapping } from "./types";
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.EventConfirmSourceTxsStarted
+ */
+export interface EventConfirmSourceTxsStarted {
+    /**
+     * @generated from protobuf field: repeated scalar.chains.v1beta1.PollMapping poll_mappings = 1;
+     */
+    pollMappings: PollMapping[];
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: uint64 confirmation_height = 3;
+     */
+    confirmationHeight: string;
+    /**
+     * @generated from protobuf field: repeated bytes participants = 4;
+     */
+    participants: Uint8Array[];
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.ConfirmDepositStarted
+ */
+export interface ConfirmDepositStarted {
+    /**
+     * @generated from protobuf field: bytes tx_id = 1;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes deposit_address = 3;
+     */
+    depositAddress: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes token_address = 4;
+     */
+    tokenAddress: Uint8Array;
+    /**
+     * @generated from protobuf field: uint64 confirmation_height = 5;
+     */
+    confirmationHeight: string;
+    /**
+     * @generated from protobuf field: scalar.vote.exported.v1beta1.PollParticipants participants = 6;
+     */
+    participants?: PollParticipants;
+    /**
+     * @generated from protobuf field: string asset = 7;
+     */
+    asset: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.ConfirmTokenStarted
+ */
+export interface ConfirmTokenStarted {
+    /**
+     * @generated from protobuf field: bytes tx_id = 1;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes gateway_address = 3;
+     */
+    gatewayAddress: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes token_address = 4;
+     */
+    tokenAddress: Uint8Array;
+    /**
+     * @generated from protobuf field: scalar.chains.v1beta1.TokenDetails token_details = 5;
+     */
+    tokenDetails?: TokenDetails;
+    /**
+     * @generated from protobuf field: uint64 confirmation_height = 6;
+     */
+    confirmationHeight: string;
+    /**
+     * @generated from protobuf field: scalar.vote.exported.v1beta1.PollParticipants participants = 7;
+     */
+    participants?: PollParticipants;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.ConfirmKeyTransferStarted
+ */
+export interface ConfirmKeyTransferStarted {
+    /**
+     * @generated from protobuf field: string chain = 1;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes tx_id = 2;
+     */
+    txId: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes gateway_address = 3;
+     */
+    gatewayAddress: Uint8Array;
+    /**
+     * @generated from protobuf field: uint64 confirmation_height = 4;
+     */
+    confirmationHeight: string;
+    /**
+     * @generated from protobuf field: scalar.vote.exported.v1beta1.PollParticipants participants = 5;
+     */
+    participants?: PollParticipants;
+}
 /**
  * @generated from protobuf message scalar.chains.v1beta1.VoteEvents
  */
@@ -19,6 +135,183 @@ export interface VoteEvents {
      * @generated from protobuf field: repeated scalar.chains.v1beta1.Event events = 2;
      */
     events: Event[];
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.SourceTxConfirmationEvent
+ */
+export interface SourceTxConfirmationEvent {
+    /**
+     * @generated from protobuf field: string sender = 1;
+     */
+    sender: string;
+    /**
+     * @generated from protobuf field: string destination_chain = 2;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: uint64 amount = 3;
+     */
+    amount: string;
+    /**
+     * @generated from protobuf field: string asset = 4;
+     */
+    asset: string;
+    /**
+     * @generated from protobuf field: bytes payload_hash = 5;
+     */
+    payloadHash: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes payload = 6;
+     */
+    payload: Uint8Array;
+    /**
+     * @generated from protobuf field: string destination_contract_address = 7;
+     */
+    destinationContractAddress: string;
+    /**
+     * @generated from protobuf field: string destination_recipient_address = 8;
+     */
+    destinationRecipientAddress: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.EventTokenSent
+ */
+export interface EventTokenSent {
+    /**
+     * @generated from protobuf field: bytes sender = 1;
+     */
+    sender: Uint8Array;
+    /**
+     * @generated from protobuf field: string destination_chain = 2;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: string destination_address = 3;
+     */
+    destinationAddress: string;
+    /**
+     * @generated from protobuf field: string symbol = 4;
+     */
+    symbol: string;
+    /**
+     * @generated from protobuf field: bytes amount = 5;
+     */
+    amount: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.EventContractCall
+ */
+export interface EventContractCall {
+    /**
+     * @generated from protobuf field: bytes sender = 1;
+     */
+    sender: Uint8Array;
+    /**
+     * @generated from protobuf field: string destination_chain = 2;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: string contract_address = 3;
+     */
+    contractAddress: string;
+    /**
+     * @generated from protobuf field: bytes payload_hash = 4;
+     */
+    payloadHash: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.EventContractCallWithToken
+ */
+export interface EventContractCallWithToken {
+    /**
+     * @generated from protobuf field: bytes sender = 1;
+     */
+    sender: Uint8Array;
+    /**
+     * @generated from protobuf field: string destination_chain = 2;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: string contract_address = 3;
+     */
+    contractAddress: string;
+    /**
+     * @generated from protobuf field: bytes payload_hash = 4;
+     */
+    payloadHash: Uint8Array;
+    /**
+     * @generated from protobuf field: string symbol = 5;
+     */
+    symbol: string;
+    /**
+     * @generated from protobuf field: bytes amount = 6;
+     */
+    amount: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.EventTransfer
+ */
+export interface EventTransfer {
+    /**
+     * @generated from protobuf field: bytes to = 1;
+     */
+    to: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes amount = 2;
+     */
+    amount: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.EventTokenDeployed
+ */
+export interface EventTokenDeployed {
+    /**
+     * @generated from protobuf field: string symbol = 1;
+     */
+    symbol: string;
+    /**
+     * @generated from protobuf field: bytes token_address = 2;
+     */
+    tokenAddress: Uint8Array;
+}
+/**
+ * @deprecated
+ * @generated from protobuf message scalar.chains.v1beta1.EventMultisigOwnershipTransferred
+ */
+export interface EventMultisigOwnershipTransferred {
+    /**
+     * @generated from protobuf field: repeated bytes pre_owners = 1;
+     */
+    preOwners: Uint8Array[];
+    /**
+     * @generated from protobuf field: bytes prev_threshold = 2;
+     */
+    prevThreshold: Uint8Array;
+    /**
+     * @generated from protobuf field: repeated bytes new_owners = 3;
+     */
+    newOwners: Uint8Array[];
+    /**
+     * @generated from protobuf field: bytes new_threshold = 4;
+     */
+    newThreshold: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.EventMultisigOperatorshipTransferred
+ */
+export interface EventMultisigOperatorshipTransferred {
+    /**
+     * @generated from protobuf field: repeated bytes new_operators = 3;
+     */
+    newOperators: Uint8Array[];
+    /**
+     * @generated from protobuf field: bytes new_threshold = 4;
+     */
+    newThreshold: Uint8Array;
+    /**
+     * @generated from protobuf field: repeated bytes new_weights = 5;
+     */
+    newWeights: Uint8Array[];
 }
 /**
  * @generated from protobuf message scalar.chains.v1beta1.Event
@@ -44,11 +337,49 @@ export interface Event {
      * @generated from protobuf oneof: event
      */
     event: {
-        oneofKind: "confirmationEvent";
+        oneofKind: "tokenSent";
         /**
-         * @generated from protobuf field: scalar.chains.v1beta1.ConfirmationEvent confirmation_event = 5;
+         * @generated from protobuf field: scalar.chains.v1beta1.EventTokenSent token_sent = 5;
          */
-        confirmationEvent: ConfirmationEvent;
+        tokenSent: EventTokenSent;
+    } | {
+        oneofKind: "contractCall";
+        /**
+         * @generated from protobuf field: scalar.chains.v1beta1.EventContractCall contract_call = 6;
+         */
+        contractCall: EventContractCall;
+    } | {
+        oneofKind: "contractCallWithToken";
+        /**
+         * @generated from protobuf field: scalar.chains.v1beta1.EventContractCallWithToken contract_call_with_token = 7;
+         */
+        contractCallWithToken: EventContractCallWithToken;
+    } | {
+        oneofKind: "transfer";
+        /**
+         * @generated from protobuf field: scalar.chains.v1beta1.EventTransfer transfer = 8;
+         */
+        transfer: EventTransfer;
+    } | {
+        oneofKind: "tokenDeployed";
+        /**
+         * @generated from protobuf field: scalar.chains.v1beta1.EventTokenDeployed token_deployed = 9;
+         */
+        tokenDeployed: EventTokenDeployed;
+    } | {
+        oneofKind: "multisigOperatorshipTransferred";
+        /**
+         * @generated from protobuf field: scalar.chains.v1beta1.EventMultisigOperatorshipTransferred multisig_operatorship_transferred = 10;
+         */
+        multisigOperatorshipTransferred: EventMultisigOperatorshipTransferred;
+    } | {
+        oneofKind: "sourceTxConfirmationEvent";
+        /**
+         * for general chains
+         *
+         * @generated from protobuf field: scalar.chains.v1beta1.SourceTxConfirmationEvent source_tx_confirmation_event = 11;
+         */
+        sourceTxConfirmationEvent: SourceTxConfirmationEvent;
     } | {
         oneofKind: undefined;
     };
@@ -73,39 +404,6 @@ export declare enum Event_Status {
      * @generated from protobuf enum value: STATUS_FAILED = 3;
      */
     FAILED = 3
-}
-/**
- * @generated from protobuf message scalar.chains.v1beta1.ConfirmationEvent
- */
-export interface ConfirmationEvent {
-    /**
-     * @generated from protobuf field: string sender = 1;
-     */
-    sender: string;
-    /**
-     * @generated from protobuf field: string destination_chain = 2;
-     */
-    destinationChain: string;
-    /**
-     * @generated from protobuf field: uint64 amount = 3;
-     */
-    amount: string;
-    /**
-     * @generated from protobuf field: string asset = 4;
-     */
-    asset: string;
-    /**
-     * @generated from protobuf field: bytes payload_hash = 5;
-     */
-    payloadHash: Uint8Array;
-    /**
-     * @generated from protobuf field: bytes destination_contract_address = 8;
-     */
-    destinationContractAddress: Uint8Array;
-    /**
-     * @generated from protobuf field: bytes destination_recipient_address = 9;
-     */
-    destinationRecipientAddress: Uint8Array;
 }
 /**
  * @generated from protobuf message scalar.chains.v1beta1.NoEventsConfirmed
@@ -238,6 +536,172 @@ export interface DestCallFailed {
      */
     messageId: string;
 }
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.DestCallWithMintApproved
+ */
+export interface DestCallWithMintApproved {
+    /**
+     * @generated from protobuf field: string chain = 1;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: string event_id = 2;
+     */
+    eventId: string;
+    /**
+     * @generated from protobuf field: bytes command_id = 3;
+     */
+    commandId: Uint8Array;
+    /**
+     * @generated from protobuf field: string sender = 4;
+     */
+    sender: string;
+    /**
+     * @generated from protobuf field: string destination_chain = 5;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: string contract_address = 6;
+     */
+    contractAddress: string;
+    /**
+     * @generated from protobuf field: bytes payload_hash = 7;
+     */
+    payloadHash: Uint8Array;
+    /**
+     * @generated from protobuf field: cosmos.base.v1beta1.Coin asset = 8;
+     */
+    asset?: Coin;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.MintCommand
+ */
+export interface MintCommand {
+    /**
+     * @generated from protobuf field: string chain = 1;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: uint64 transfer_id = 2;
+     */
+    transferId: string;
+    /**
+     * @generated from protobuf field: bytes command_id = 3;
+     */
+    commandId: Uint8Array;
+    /**
+     * @generated from protobuf field: string destination_chain = 4;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: string destination_address = 5;
+     */
+    destinationAddress: string;
+    /**
+     * @generated from protobuf field: cosmos.base.v1beta1.Coin asset = 6;
+     */
+    asset?: Coin;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.BurnCommand
+ */
+export interface BurnCommand {
+    /**
+     * @generated from protobuf field: string chain = 1;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes command_id = 2;
+     */
+    commandId: Uint8Array;
+    /**
+     * @generated from protobuf field: string destination_chain = 3;
+     */
+    destinationChain: string;
+    /**
+     * @generated from protobuf field: string deposit_address = 4;
+     */
+    depositAddress: string;
+    /**
+     * @generated from protobuf field: string asset = 5;
+     */
+    asset: string;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.CommandBatchSigned
+ */
+export interface CommandBatchSigned {
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes command_batch_id = 3;
+     */
+    commandBatchId: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.CommandBatchAborted
+ */
+export interface CommandBatchAborted {
+    /**
+     * @generated from protobuf field: string chain = 2;
+     */
+    chain: string;
+    /**
+     * @generated from protobuf field: bytes command_batch_id = 3;
+     */
+    commandBatchId: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.chains.v1beta1.ChainAdded
+ */
+export interface ChainAdded {
+    /**
+     * @generated from protobuf field: string chain = 1;
+     */
+    chain: string;
+}
+declare class EventConfirmSourceTxsStarted$Type extends MessageType<EventConfirmSourceTxsStarted> {
+    constructor();
+    create(value?: PartialMessage<EventConfirmSourceTxsStarted>): EventConfirmSourceTxsStarted;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventConfirmSourceTxsStarted): EventConfirmSourceTxsStarted;
+    internalBinaryWrite(message: EventConfirmSourceTxsStarted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventConfirmSourceTxsStarted
+ */
+export declare const EventConfirmSourceTxsStarted: EventConfirmSourceTxsStarted$Type;
+declare class ConfirmDepositStarted$Type extends MessageType<ConfirmDepositStarted> {
+    constructor();
+    create(value?: PartialMessage<ConfirmDepositStarted>): ConfirmDepositStarted;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ConfirmDepositStarted): ConfirmDepositStarted;
+    internalBinaryWrite(message: ConfirmDepositStarted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.ConfirmDepositStarted
+ */
+export declare const ConfirmDepositStarted: ConfirmDepositStarted$Type;
+declare class ConfirmTokenStarted$Type extends MessageType<ConfirmTokenStarted> {
+    constructor();
+    create(value?: PartialMessage<ConfirmTokenStarted>): ConfirmTokenStarted;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ConfirmTokenStarted): ConfirmTokenStarted;
+    internalBinaryWrite(message: ConfirmTokenStarted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.ConfirmTokenStarted
+ */
+export declare const ConfirmTokenStarted: ConfirmTokenStarted$Type;
+declare class ConfirmKeyTransferStarted$Type extends MessageType<ConfirmKeyTransferStarted> {
+    constructor();
+    create(value?: PartialMessage<ConfirmKeyTransferStarted>): ConfirmKeyTransferStarted;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ConfirmKeyTransferStarted): ConfirmKeyTransferStarted;
+    internalBinaryWrite(message: ConfirmKeyTransferStarted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.ConfirmKeyTransferStarted
+ */
+export declare const ConfirmKeyTransferStarted: ConfirmKeyTransferStarted$Type;
 declare class VoteEvents$Type extends MessageType<VoteEvents> {
     constructor();
     create(value?: PartialMessage<VoteEvents>): VoteEvents;
@@ -248,6 +712,87 @@ declare class VoteEvents$Type extends MessageType<VoteEvents> {
  * @generated MessageType for protobuf message scalar.chains.v1beta1.VoteEvents
  */
 export declare const VoteEvents: VoteEvents$Type;
+declare class SourceTxConfirmationEvent$Type extends MessageType<SourceTxConfirmationEvent> {
+    constructor();
+    create(value?: PartialMessage<SourceTxConfirmationEvent>): SourceTxConfirmationEvent;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SourceTxConfirmationEvent): SourceTxConfirmationEvent;
+    internalBinaryWrite(message: SourceTxConfirmationEvent, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.SourceTxConfirmationEvent
+ */
+export declare const SourceTxConfirmationEvent: SourceTxConfirmationEvent$Type;
+declare class EventTokenSent$Type extends MessageType<EventTokenSent> {
+    constructor();
+    create(value?: PartialMessage<EventTokenSent>): EventTokenSent;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventTokenSent): EventTokenSent;
+    internalBinaryWrite(message: EventTokenSent, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventTokenSent
+ */
+export declare const EventTokenSent: EventTokenSent$Type;
+declare class EventContractCall$Type extends MessageType<EventContractCall> {
+    constructor();
+    create(value?: PartialMessage<EventContractCall>): EventContractCall;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventContractCall): EventContractCall;
+    internalBinaryWrite(message: EventContractCall, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventContractCall
+ */
+export declare const EventContractCall: EventContractCall$Type;
+declare class EventContractCallWithToken$Type extends MessageType<EventContractCallWithToken> {
+    constructor();
+    create(value?: PartialMessage<EventContractCallWithToken>): EventContractCallWithToken;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventContractCallWithToken): EventContractCallWithToken;
+    internalBinaryWrite(message: EventContractCallWithToken, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventContractCallWithToken
+ */
+export declare const EventContractCallWithToken: EventContractCallWithToken$Type;
+declare class EventTransfer$Type extends MessageType<EventTransfer> {
+    constructor();
+    create(value?: PartialMessage<EventTransfer>): EventTransfer;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventTransfer): EventTransfer;
+    internalBinaryWrite(message: EventTransfer, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventTransfer
+ */
+export declare const EventTransfer: EventTransfer$Type;
+declare class EventTokenDeployed$Type extends MessageType<EventTokenDeployed> {
+    constructor();
+    create(value?: PartialMessage<EventTokenDeployed>): EventTokenDeployed;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventTokenDeployed): EventTokenDeployed;
+    internalBinaryWrite(message: EventTokenDeployed, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventTokenDeployed
+ */
+export declare const EventTokenDeployed: EventTokenDeployed$Type;
+declare class EventMultisigOwnershipTransferred$Type extends MessageType<EventMultisigOwnershipTransferred> {
+    constructor();
+    create(value?: PartialMessage<EventMultisigOwnershipTransferred>): EventMultisigOwnershipTransferred;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventMultisigOwnershipTransferred): EventMultisigOwnershipTransferred;
+    internalBinaryWrite(message: EventMultisigOwnershipTransferred, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @deprecated
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventMultisigOwnershipTransferred
+ */
+export declare const EventMultisigOwnershipTransferred: EventMultisigOwnershipTransferred$Type;
+declare class EventMultisigOperatorshipTransferred$Type extends MessageType<EventMultisigOperatorshipTransferred> {
+    constructor();
+    create(value?: PartialMessage<EventMultisigOperatorshipTransferred>): EventMultisigOperatorshipTransferred;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EventMultisigOperatorshipTransferred): EventMultisigOperatorshipTransferred;
+    internalBinaryWrite(message: EventMultisigOperatorshipTransferred, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.EventMultisigOperatorshipTransferred
+ */
+export declare const EventMultisigOperatorshipTransferred: EventMultisigOperatorshipTransferred$Type;
 declare class Event$Type extends MessageType<Event> {
     constructor();
     create(value?: PartialMessage<Event>): Event;
@@ -258,16 +803,6 @@ declare class Event$Type extends MessageType<Event> {
  * @generated MessageType for protobuf message scalar.chains.v1beta1.Event
  */
 export declare const Event: Event$Type;
-declare class ConfirmationEvent$Type extends MessageType<ConfirmationEvent> {
-    constructor();
-    create(value?: PartialMessage<ConfirmationEvent>): ConfirmationEvent;
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ConfirmationEvent): ConfirmationEvent;
-    internalBinaryWrite(message: ConfirmationEvent, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
-}
-/**
- * @generated MessageType for protobuf message scalar.chains.v1beta1.ConfirmationEvent
- */
-export declare const ConfirmationEvent: ConfirmationEvent$Type;
 declare class NoEventsConfirmed$Type extends MessageType<NoEventsConfirmed> {
     constructor();
     create(value?: PartialMessage<NoEventsConfirmed>): NoEventsConfirmed;
@@ -338,4 +873,64 @@ declare class DestCallFailed$Type extends MessageType<DestCallFailed> {
  * @generated MessageType for protobuf message scalar.chains.v1beta1.DestCallFailed
  */
 export declare const DestCallFailed: DestCallFailed$Type;
+declare class DestCallWithMintApproved$Type extends MessageType<DestCallWithMintApproved> {
+    constructor();
+    create(value?: PartialMessage<DestCallWithMintApproved>): DestCallWithMintApproved;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DestCallWithMintApproved): DestCallWithMintApproved;
+    internalBinaryWrite(message: DestCallWithMintApproved, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.DestCallWithMintApproved
+ */
+export declare const DestCallWithMintApproved: DestCallWithMintApproved$Type;
+declare class MintCommand$Type extends MessageType<MintCommand> {
+    constructor();
+    create(value?: PartialMessage<MintCommand>): MintCommand;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: MintCommand): MintCommand;
+    internalBinaryWrite(message: MintCommand, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.MintCommand
+ */
+export declare const MintCommand: MintCommand$Type;
+declare class BurnCommand$Type extends MessageType<BurnCommand> {
+    constructor();
+    create(value?: PartialMessage<BurnCommand>): BurnCommand;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: BurnCommand): BurnCommand;
+    internalBinaryWrite(message: BurnCommand, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.BurnCommand
+ */
+export declare const BurnCommand: BurnCommand$Type;
+declare class CommandBatchSigned$Type extends MessageType<CommandBatchSigned> {
+    constructor();
+    create(value?: PartialMessage<CommandBatchSigned>): CommandBatchSigned;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CommandBatchSigned): CommandBatchSigned;
+    internalBinaryWrite(message: CommandBatchSigned, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.CommandBatchSigned
+ */
+export declare const CommandBatchSigned: CommandBatchSigned$Type;
+declare class CommandBatchAborted$Type extends MessageType<CommandBatchAborted> {
+    constructor();
+    create(value?: PartialMessage<CommandBatchAborted>): CommandBatchAborted;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CommandBatchAborted): CommandBatchAborted;
+    internalBinaryWrite(message: CommandBatchAborted, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.CommandBatchAborted
+ */
+export declare const CommandBatchAborted: CommandBatchAborted$Type;
+declare class ChainAdded$Type extends MessageType<ChainAdded> {
+    constructor();
+    create(value?: PartialMessage<ChainAdded>): ChainAdded;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ChainAdded): ChainAdded;
+    internalBinaryWrite(message: ChainAdded, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.ChainAdded
+ */
+export declare const ChainAdded: ChainAdded$Type;
 export {};

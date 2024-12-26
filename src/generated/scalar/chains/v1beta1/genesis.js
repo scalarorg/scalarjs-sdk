@@ -6,6 +6,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Event } from "./events";
+import { Gateway } from "./types";
 import { CommandBatchMetadata } from "./types";
 import { StakingTx } from "./types";
 import { QueueState } from "../../utils/v1beta1/queuer";
@@ -65,8 +66,9 @@ class GenesisState_Chain$Type extends MessageType {
             { no: 2, name: "command_queue", kind: "message", T: () => QueueState, options: { "gogoproto.nullable": false } },
             { no: 3, name: "confirmed_staking_txs", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => StakingTx, options: { "gogoproto.nullable": false } },
             { no: 4, name: "command_batches", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => CommandBatchMetadata, options: { "gogoproto.nullable": false } },
-            { no: 5, name: "events", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Event, options: { "gogoproto.nullable": false } },
-            { no: 6, name: "confirmed_event_queue", kind: "message", T: () => QueueState, options: { "gogoproto.nullable": false } }
+            { no: 5, name: "gateway", kind: "message", T: () => Gateway },
+            { no: 6, name: "events", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Event, options: { "gogoproto.nullable": false } },
+            { no: 7, name: "confirmed_event_queue", kind: "message", T: () => QueueState, options: { "gogoproto.nullable": false } }
         ]);
     }
     create(value) {
@@ -95,10 +97,13 @@ class GenesisState_Chain$Type extends MessageType {
                 case /* repeated scalar.chains.v1beta1.CommandBatchMetadata command_batches */ 4:
                     message.commandBatches.push(CommandBatchMetadata.internalBinaryRead(reader, reader.uint32(), options));
                     break;
-                case /* repeated scalar.chains.v1beta1.Event events */ 5:
+                case /* scalar.chains.v1beta1.Gateway gateway */ 5:
+                    message.gateway = Gateway.internalBinaryRead(reader, reader.uint32(), options, message.gateway);
+                    break;
+                case /* repeated scalar.chains.v1beta1.Event events */ 6:
                     message.events.push(Event.internalBinaryRead(reader, reader.uint32(), options));
                     break;
-                case /* scalar.utils.v1beta1.QueueState confirmed_event_queue */ 6:
+                case /* scalar.utils.v1beta1.QueueState confirmed_event_queue */ 7:
                     message.confirmedEventQueue = QueueState.internalBinaryRead(reader, reader.uint32(), options, message.confirmedEventQueue);
                     break;
                 default:
@@ -125,12 +130,15 @@ class GenesisState_Chain$Type extends MessageType {
         /* repeated scalar.chains.v1beta1.CommandBatchMetadata command_batches = 4; */
         for (let i = 0; i < message.commandBatches.length; i++)
             CommandBatchMetadata.internalBinaryWrite(message.commandBatches[i], writer.tag(4, WireType.LengthDelimited).fork(), options).join();
-        /* repeated scalar.chains.v1beta1.Event events = 5; */
+        /* scalar.chains.v1beta1.Gateway gateway = 5; */
+        if (message.gateway)
+            Gateway.internalBinaryWrite(message.gateway, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* repeated scalar.chains.v1beta1.Event events = 6; */
         for (let i = 0; i < message.events.length; i++)
-            Event.internalBinaryWrite(message.events[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
-        /* scalar.utils.v1beta1.QueueState confirmed_event_queue = 6; */
+            Event.internalBinaryWrite(message.events[i], writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* scalar.utils.v1beta1.QueueState confirmed_event_queue = 7; */
         if (message.confirmedEventQueue)
-            QueueState.internalBinaryWrite(message.confirmedEventQueue, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+            QueueState.internalBinaryWrite(message.confirmedEventQueue, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

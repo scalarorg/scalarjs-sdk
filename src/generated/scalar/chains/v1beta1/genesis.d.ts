@@ -8,6 +8,7 @@ import type { IBinaryReader } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Event } from "./events";
+import { Gateway } from "./types";
 import { CommandBatchMetadata } from "./types";
 import { StakingTx } from "./types";
 import { QueueState } from "../../utils/v1beta1/queuer";
@@ -42,11 +43,15 @@ export interface GenesisState_Chain {
      */
     commandBatches: CommandBatchMetadata[];
     /**
-     * @generated from protobuf field: repeated scalar.chains.v1beta1.Event events = 5;
+     * @generated from protobuf field: scalar.chains.v1beta1.Gateway gateway = 5;
+     */
+    gateway?: Gateway;
+    /**
+     * @generated from protobuf field: repeated scalar.chains.v1beta1.Event events = 6;
      */
     events: Event[];
     /**
-     * @generated from protobuf field: scalar.utils.v1beta1.QueueState confirmed_event_queue = 6;
+     * @generated from protobuf field: scalar.utils.v1beta1.QueueState confirmed_event_queue = 7;
      */
     confirmedEventQueue?: QueueState;
 }

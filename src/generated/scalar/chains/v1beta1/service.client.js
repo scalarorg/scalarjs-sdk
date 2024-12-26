@@ -7,7 +7,6 @@
 import { QueryService } from "./service";
 import { MsgService } from "./service";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
-// TODO: Refactor to ConfirmBridgeCall only
 /**
  * Msg defines the btc Msg service.
  *
@@ -28,10 +27,87 @@ export class MsgServiceClient {
         return stackIntercept("unary", this._transport, method, opt, input);
     }
     /**
-     * @generated from protobuf rpc: ConfirmDestTxs(scalar.chains.v1beta1.ConfirmDestTxsRequest) returns (scalar.chains.v1beta1.ConfirmDestTxsResponse);
+     * @generated from protobuf rpc: SetGateway(scalar.chains.v1beta1.SetGatewayRequest) returns (scalar.chains.v1beta1.SetGatewayResponse);
      */
-    confirmDestTxs(input, options) {
+    setGateway(input, options) {
         const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: Link(scalar.chains.v1beta1.LinkRequest) returns (scalar.chains.v1beta1.LinkResponse);
+     */
+    link(input, options) {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: ConfirmToken(scalar.chains.v1beta1.ConfirmTokenRequest) returns (scalar.chains.v1beta1.ConfirmTokenResponse);
+     */
+    confirmToken(input, options) {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: ConfirmDeposit(scalar.chains.v1beta1.ConfirmDepositRequest) returns (scalar.chains.v1beta1.ConfirmDepositResponse);
+     */
+    confirmDeposit(input, options) {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: ConfirmTransferKey(scalar.chains.v1beta1.ConfirmTransferKeyRequest) returns (scalar.chains.v1beta1.ConfirmTransferKeyResponse);
+     */
+    confirmTransferKey(input, options) {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: CreateDeployToken(scalar.chains.v1beta1.CreateDeployTokenRequest) returns (scalar.chains.v1beta1.CreateDeployTokenResponse);
+     */
+    createDeployToken(input, options) {
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: CreateBurnTokens(scalar.chains.v1beta1.CreateBurnTokensRequest) returns (scalar.chains.v1beta1.CreateBurnTokensResponse);
+     */
+    createBurnTokens(input, options) {
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: CreatePendingTransfers(scalar.chains.v1beta1.CreatePendingTransfersRequest) returns (scalar.chains.v1beta1.CreatePendingTransfersResponse);
+     */
+    createPendingTransfers(input, options) {
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: CreateTransferOperatorship(scalar.chains.v1beta1.CreateTransferOperatorshipRequest) returns (scalar.chains.v1beta1.CreateTransferOperatorshipResponse);
+     */
+    createTransferOperatorship(input, options) {
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: SignCommands(scalar.chains.v1beta1.SignCommandsRequest) returns (scalar.chains.v1beta1.SignCommandsResponse);
+     */
+    signCommands(input, options) {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: AddChain(scalar.chains.v1beta1.AddChainRequest) returns (scalar.chains.v1beta1.AddChainResponse);
+     */
+    addChain(input, options) {
+        const method = this.methods[11], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: RetryFailedEvent(scalar.chains.v1beta1.RetryFailedEventRequest) returns (scalar.chains.v1beta1.RetryFailedEventResponse);
+     */
+    retryFailedEvent(input, options) {
+        const method = this.methods[12], opt = this._transport.mergeOptions(options);
         return stackIntercept("unary", this._transport, method, opt, input);
     }
 }
@@ -56,6 +132,112 @@ export class QueryServiceClient {
      */
     batchedCommands(input, options) {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: BurnerInfo(scalar.chains.v1beta1.BurnerInfoRequest) returns (scalar.chains.v1beta1.BurnerInfoResponse);
+     */
+    burnerInfo(input, options) {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ConfirmationHeight queries the confirmation height for the specified chain
+     *
+     * @generated from protobuf rpc: ConfirmationHeight(scalar.chains.v1beta1.ConfirmationHeightRequest) returns (scalar.chains.v1beta1.ConfirmationHeightResponse);
+     */
+    confirmationHeight(input, options) {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * PendingCommands queries the pending commands for the specified chain
+     *
+     * @generated from protobuf rpc: PendingCommands(scalar.chains.v1beta1.PendingCommandsRequest) returns (scalar.chains.v1beta1.PendingCommandsResponse);
+     */
+    pendingCommands(input, options) {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * Chains queries the available chains
+     *
+     * @generated from protobuf rpc: Chains(scalar.chains.v1beta1.ChainsRequest) returns (scalar.chains.v1beta1.ChainsResponse);
+     */
+    chains(input, options) {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * Command queries the command of a chain provided the command id
+     *
+     * @generated from protobuf rpc: Command(scalar.chains.v1beta1.CommandRequest) returns (scalar.chains.v1beta1.CommandResponse);
+     */
+    command(input, options) {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * KeyAddress queries the address of key of a chain
+     *
+     * @generated from protobuf rpc: KeyAddress(scalar.chains.v1beta1.KeyAddressRequest) returns (scalar.chains.v1beta1.KeyAddressResponse);
+     */
+    keyAddress(input, options) {
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * GatewayAddress queries the address of scalar gateway at the specified
+     * chain
+     *
+     * @generated from protobuf rpc: GatewayAddress(scalar.chains.v1beta1.GatewayAddressRequest) returns (scalar.chains.v1beta1.GatewayAddressResponse);
+     */
+    gatewayAddress(input, options) {
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * Bytecode queries the bytecode of a specified gateway at the specified
+     * chain
+     *
+     * @generated from protobuf rpc: Bytecode(scalar.chains.v1beta1.BytecodeRequest) returns (scalar.chains.v1beta1.BytecodeResponse);
+     */
+    bytecode(input, options) {
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * Event queries an event at the specified chain
+     *
+     * @generated from protobuf rpc: Event(scalar.chains.v1beta1.EventRequest) returns (scalar.chains.v1beta1.EventResponse);
+     */
+    event(input, options) {
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ERC20Tokens queries the ERC20 tokens registered for a chain
+     *
+     * @generated from protobuf rpc: ERC20Tokens(scalar.chains.v1beta1.ERC20TokensRequest) returns (scalar.chains.v1beta1.ERC20TokensResponse);
+     */
+    eRC20Tokens(input, options) {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * TokenInfo queries the token info for a registered ERC20 Token
+     *
+     * @generated from protobuf rpc: TokenInfo(scalar.chains.v1beta1.TokenInfoRequest) returns (scalar.chains.v1beta1.TokenInfoResponse);
+     */
+    tokenInfo(input, options) {
+        const method = this.methods[11], opt = this._transport.mergeOptions(options);
+        return stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: Params(scalar.chains.v1beta1.ParamsRequest) returns (scalar.chains.v1beta1.ParamsResponse);
+     */
+    params(input, options) {
+        const method = this.methods[12], opt = this._transport.mergeOptions(options);
         return stackIntercept("unary", this._transport, method, opt, input);
     }
 }

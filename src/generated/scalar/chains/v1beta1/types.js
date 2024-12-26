@@ -65,86 +65,110 @@ export var StakingTxStatus;
     StakingTxStatus[StakingTxStatus["COMPLETED"] = 3] = "COMPLETED";
 })(StakingTxStatus || (StakingTxStatus = {}));
 /**
+ * @generated from protobuf enum scalar.chains.v1beta1.SigType
+ */
+export var SigType;
+(function (SigType) {
+    /**
+     * @generated from protobuf enum value: SIG_TYPE_UNSPECIFIED = 0;
+     */
+    SigType[SigType["UNSPECIFIED"] = 0] = "UNSPECIFIED";
+    /**
+     * @generated from protobuf enum value: SIG_TYPE_TX = 1;
+     */
+    SigType[SigType["TX"] = 1] = "TX";
+    /**
+     * @generated from protobuf enum value: SIG_TYPE_COMMAND = 2;
+     */
+    SigType[SigType["COMMAND"] = 2] = "COMMAND";
+})(SigType || (SigType = {}));
+/**
+ * @generated from protobuf enum scalar.chains.v1beta1.DepositStatus
+ */
+export var DepositStatus;
+(function (DepositStatus) {
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_UNSPECIFIED = 0;
+     */
+    DepositStatus[DepositStatus["UNSPECIFIED"] = 0] = "UNSPECIFIED";
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_PENDING = 1;
+     */
+    DepositStatus[DepositStatus["PENDING"] = 1] = "PENDING";
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_CONFIRMED = 2;
+     */
+    DepositStatus[DepositStatus["CONFIRMED"] = 2] = "CONFIRMED";
+    /**
+     * @generated from protobuf enum value: DEPOSIT_STATUS_BURNED = 3;
+     */
+    DepositStatus[DepositStatus["BURNED"] = 3] = "BURNED";
+})(DepositStatus || (DepositStatus = {}));
+/**
+ * @generated from protobuf enum scalar.chains.v1beta1.Status
+ */
+export var Status;
+(function (Status) {
+    /**
+     * these enum values are used for bitwise operations, therefore they need to
+     * be powers of 2
+     *
+     * @generated from protobuf enum value: STATUS_UNSPECIFIED = 0;
+     */
+    Status[Status["UNSPECIFIED"] = 0] = "UNSPECIFIED";
+    /**
+     * @generated from protobuf enum value: STATUS_INITIALIZED = 1;
+     */
+    Status[Status["INITIALIZED"] = 1] = "INITIALIZED";
+    /**
+     * @generated from protobuf enum value: STATUS_PENDING = 2;
+     */
+    Status[Status["PENDING"] = 2] = "PENDING";
+    /**
+     * @generated from protobuf enum value: STATUS_CONFIRMED = 4;
+     */
+    Status[Status["CONFIRMED"] = 4] = "CONFIRMED";
+})(Status || (Status = {}));
+/**
  * @generated from protobuf enum scalar.chains.v1beta1.CommandType
  */
 export var CommandType;
 (function (CommandType) {
     /**
-     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_BRIDGE_CALL = 0;
+     * @generated from protobuf enum value: COMMAND_TYPE_UNSPECIFIED = 0;
      */
-    CommandType[CommandType["APPROVE_BRIDGE_CALL"] = 0] = "APPROVE_BRIDGE_CALL";
+    CommandType[CommandType["UNSPECIFIED"] = 0] = "UNSPECIFIED";
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_MINT_TOKEN = 1;
+     */
+    CommandType[CommandType["MINT_TOKEN"] = 1] = "MINT_TOKEN";
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_DEPLOY_TOKEN = 2;
+     */
+    CommandType[CommandType["DEPLOY_TOKEN"] = 2] = "DEPLOY_TOKEN";
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_BURN_TOKEN = 3;
+     */
+    CommandType[CommandType["BURN_TOKEN"] = 3] = "BURN_TOKEN";
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_TRANSFER_OPERATORSHIP = 4;
+     */
+    CommandType[CommandType["TRANSFER_OPERATORSHIP"] = 4] = "TRANSFER_OPERATORSHIP";
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_CONTRACT_CALL_WITH_MINT = 5;
+     */
+    CommandType[CommandType["APPROVE_CONTRACT_CALL_WITH_MINT"] = 5] = "APPROVE_CONTRACT_CALL_WITH_MINT";
+    /**
+     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_CONTRACT_CALL = 6;
+     */
+    CommandType[CommandType["APPROVE_CONTRACT_CALL"] = 6] = "APPROVE_CONTRACT_CALL";
+    /**
+     * For chains
+     *
+     * @generated from protobuf enum value: COMMAND_TYPE_APPROVE_BRIDGE_CALL = 7;
+     */
+    CommandType[CommandType["APPROVE_BRIDGE_CALL"] = 7] = "APPROVE_BRIDGE_CALL";
 })(CommandType || (CommandType = {}));
-// @generated message type with reflection information, may provide speed optimized methods
-class Proof$Type extends MessageType {
-    constructor() {
-        super("scalar.chains.v1beta1.Proof", [
-            { no: 1, name: "addresses", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "weights", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "threshold", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "signatures", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value) {
-        const message = globalThis.Object.create((this.messagePrototype));
-        message.addresses = [];
-        message.weights = [];
-        message.threshold = "";
-        message.signatures = [];
-        if (value !== undefined)
-            reflectionMergePartial(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader, length, options, target) {
-        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* repeated string addresses */ 1:
-                    message.addresses.push(reader.string());
-                    break;
-                case /* repeated string weights */ 2:
-                    message.weights.push(reader.string());
-                    break;
-                case /* string threshold */ 3:
-                    message.threshold = reader.string();
-                    break;
-                case /* repeated string signatures */ 4:
-                    message.signatures.push(reader.string());
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message, writer, options) {
-        /* repeated string addresses = 1; */
-        for (let i = 0; i < message.addresses.length; i++)
-            writer.tag(1, WireType.LengthDelimited).string(message.addresses[i]);
-        /* repeated string weights = 2; */
-        for (let i = 0; i < message.weights.length; i++)
-            writer.tag(2, WireType.LengthDelimited).string(message.weights[i]);
-        /* string threshold = 3; */
-        if (message.threshold !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.threshold);
-        /* repeated string signatures = 4; */
-        for (let i = 0; i < message.signatures.length; i++)
-            writer.tag(4, WireType.LengthDelimited).string(message.signatures[i]);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message scalar.chains.v1beta1.Proof
- */
-export const Proof = new Proof$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class StakingTx$Type extends MessageType {
     constructor() {
@@ -153,7 +177,7 @@ class StakingTx$Type extends MessageType {
             { no: 2, name: "amount", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/cosmos/cosmos-sdk/types.Uint" } },
             { no: 3, name: "asset", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "destination_chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
-            { no: 5, name: "destination_recipient_address", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.customtype": "github.com/scalarorg/scalar-core/x/evm/types.Address" } },
+            { no: 5, name: "destination_recipient_address", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.customtype": "Address" } },
             { no: 6, name: "log_index", kind: "scalar", T: 4 /*ScalarType.UINT64*/ }
         ]);
     }
@@ -335,6 +359,77 @@ class CommandBatchMetadata$Type extends MessageType {
  */
 export const CommandBatchMetadata = new CommandBatchMetadata$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class Proof$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.Proof", [
+            { no: 1, name: "addresses", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "weights", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "threshold", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "signatures", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.addresses = [];
+        message.weights = [];
+        message.threshold = "";
+        message.signatures = [];
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated string addresses */ 1:
+                    message.addresses.push(reader.string());
+                    break;
+                case /* repeated string weights */ 2:
+                    message.weights.push(reader.string());
+                    break;
+                case /* string threshold */ 3:
+                    message.threshold = reader.string();
+                    break;
+                case /* repeated string signatures */ 4:
+                    message.signatures.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* repeated string addresses = 1; */
+        for (let i = 0; i < message.addresses.length; i++)
+            writer.tag(1, WireType.LengthDelimited).string(message.addresses[i]);
+        /* repeated string weights = 2; */
+        for (let i = 0; i < message.weights.length; i++)
+            writer.tag(2, WireType.LengthDelimited).string(message.weights[i]);
+        /* string threshold = 3; */
+        if (message.threshold !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.threshold);
+        /* repeated string signatures = 4; */
+        for (let i = 0; i < message.signatures.length; i++)
+            writer.tag(4, WireType.LengthDelimited).string(message.signatures[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.Proof
+ */
+export const Proof = new Proof$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class Command$Type extends MessageType {
     constructor() {
         super("scalar.chains.v1beta1.Command", [
@@ -413,3 +508,680 @@ class Command$Type extends MessageType {
  * @generated MessageType for protobuf message scalar.chains.v1beta1.Command
  */
 export const Command = new Command$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PollMapping$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.PollMapping", [
+            { no: 1, name: "tx_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Hash", "gogoproto.customname": "TxID" } },
+            { no: 2, name: "poll_id", kind: "scalar", T: 4 /*ScalarType.UINT64*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/scalarorg/scalar-core/x/vote/exported.PollID", "gogoproto.customname": "PollID" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.txId = new Uint8Array(0);
+        message.pollId = "0";
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes tx_id */ 1:
+                    message.txId = reader.bytes();
+                    break;
+                case /* uint64 poll_id */ 2:
+                    message.pollId = reader.uint64().toString();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes tx_id = 1; */
+        if (message.txId.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.txId);
+        /* uint64 poll_id = 2; */
+        if (message.pollId !== "0")
+            writer.tag(2, WireType.Varint).uint64(message.pollId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollMapping
+ */
+export const PollMapping = new PollMapping$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PollMetadata$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.PollMetadata", [
+            { no: 1, name: "chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 2, name: "tx_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Hash", "gogoproto.customname": "TxID" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.chain = "";
+        message.txId = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string chain */ 1:
+                    message.chain = reader.string();
+                    break;
+                case /* bytes tx_id */ 2:
+                    message.txId = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* string chain = 1; */
+        if (message.chain !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.chain);
+        /* bytes tx_id = 2; */
+        if (message.txId.length)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.txId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollMetadata
+ */
+export const PollMetadata = new PollMetadata$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PollFailed$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.PollFailed", [
+            { no: 1, name: "tx_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Hash", "gogoproto.customname": "TxID" } },
+            { no: 2, name: "chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 3, name: "poll_id", kind: "scalar", T: 4 /*ScalarType.UINT64*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/scalarorg/scalar-core/x/vote/exported.PollID", "gogoproto.customname": "PollID" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.txId = new Uint8Array(0);
+        message.chain = "";
+        message.pollId = "0";
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes tx_id */ 1:
+                    message.txId = reader.bytes();
+                    break;
+                case /* string chain */ 2:
+                    message.chain = reader.string();
+                    break;
+                case /* uint64 poll_id */ 3:
+                    message.pollId = reader.uint64().toString();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes tx_id = 1; */
+        if (message.txId.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.txId);
+        /* string chain = 2; */
+        if (message.chain !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.chain);
+        /* uint64 poll_id = 3; */
+        if (message.pollId !== "0")
+            writer.tag(3, WireType.Varint).uint64(message.pollId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollFailed
+ */
+export const PollFailed = new PollFailed$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PollExpired$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.PollExpired", [
+            { no: 1, name: "tx_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Hash", "gogoproto.customname": "TxID" } },
+            { no: 2, name: "chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 3, name: "poll_id", kind: "scalar", T: 4 /*ScalarType.UINT64*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/scalarorg/scalar-core/x/vote/exported.PollID", "gogoproto.customname": "PollID" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.txId = new Uint8Array(0);
+        message.chain = "";
+        message.pollId = "0";
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes tx_id */ 1:
+                    message.txId = reader.bytes();
+                    break;
+                case /* string chain */ 2:
+                    message.chain = reader.string();
+                    break;
+                case /* uint64 poll_id */ 3:
+                    message.pollId = reader.uint64().toString();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes tx_id = 1; */
+        if (message.txId.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.txId);
+        /* string chain = 2; */
+        if (message.chain !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.chain);
+        /* uint64 poll_id = 3; */
+        if (message.pollId !== "0")
+            writer.tag(3, WireType.Varint).uint64(message.pollId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollExpired
+ */
+export const PollExpired = new PollExpired$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PollCompleted$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.PollCompleted", [
+            { no: 1, name: "tx_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Hash", "gogoproto.customname": "TxID" } },
+            { no: 2, name: "chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 3, name: "poll_id", kind: "scalar", T: 4 /*ScalarType.UINT64*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/scalarorg/scalar-core/x/vote/exported.PollID", "gogoproto.customname": "PollID" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.txId = new Uint8Array(0);
+        message.chain = "";
+        message.pollId = "0";
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes tx_id */ 1:
+                    message.txId = reader.bytes();
+                    break;
+                case /* string chain */ 2:
+                    message.chain = reader.string();
+                    break;
+                case /* uint64 poll_id */ 3:
+                    message.pollId = reader.uint64().toString();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes tx_id = 1; */
+        if (message.txId.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.txId);
+        /* string chain = 2; */
+        if (message.chain !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.chain);
+        /* uint64 poll_id = 3; */
+        if (message.pollId !== "0")
+            writer.tag(3, WireType.Varint).uint64(message.pollId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.PollCompleted
+ */
+export const PollCompleted = new PollCompleted$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SigMetadata$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.SigMetadata", [
+            { no: 1, name: "type", kind: "enum", T: () => ["scalar.chains.v1beta1.SigType", SigType, "SIG_TYPE_"] },
+            { no: 2, name: "chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 3, name: "command_batch_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.customname": "CommandBatchID" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.type = 0;
+        message.chain = "";
+        message.commandBatchId = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* scalar.chains.v1beta1.SigType type */ 1:
+                    message.type = reader.int32();
+                    break;
+                case /* string chain */ 2:
+                    message.chain = reader.string();
+                    break;
+                case /* bytes command_batch_id */ 3:
+                    message.commandBatchId = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* scalar.chains.v1beta1.SigType type = 1; */
+        if (message.type !== 0)
+            writer.tag(1, WireType.Varint).int32(message.type);
+        /* string chain = 2; */
+        if (message.chain !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.chain);
+        /* bytes command_batch_id = 3; */
+        if (message.commandBatchId.length)
+            writer.tag(3, WireType.LengthDelimited).bytes(message.commandBatchId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.SigMetadata
+ */
+export const SigMetadata = new SigMetadata$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class TransferKey$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.TransferKey", [
+            { no: 1, name: "tx_id", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Hash", "gogoproto.customname": "TxID" } },
+            { no: 3, name: "next_key_id", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.customname": "NextKeyID", "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/multisig/exported.KeyID" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.txId = new Uint8Array(0);
+        message.nextKeyId = "";
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes tx_id */ 1:
+                    message.txId = reader.bytes();
+                    break;
+                case /* string next_key_id */ 3:
+                    message.nextKeyId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes tx_id = 1; */
+        if (message.txId.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.txId);
+        /* string next_key_id = 3; */
+        if (message.nextKeyId !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.nextKeyId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.TransferKey
+ */
+export const TransferKey = new TransferKey$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Asset$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.Asset", [
+            { no: 1, name: "chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.chain = "";
+        message.name = "";
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string chain */ 1:
+                    message.chain = reader.string();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* string chain = 1; */
+        if (message.chain !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.chain);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.Asset
+ */
+export const Asset = new Asset$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class TokenDetails$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.TokenDetails", [
+            { no: 1, name: "token_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "symbol", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "decimals", kind: "scalar", T: 13 /*ScalarType.UINT32*/, options: { "gogoproto.casttype": "uint8" } },
+            { no: 4, name: "capacity", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "github.com/cosmos/cosmos-sdk/types.Int" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.tokenName = "";
+        message.symbol = "";
+        message.decimals = 0;
+        message.capacity = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string token_name */ 1:
+                    message.tokenName = reader.string();
+                    break;
+                case /* string symbol */ 2:
+                    message.symbol = reader.string();
+                    break;
+                case /* uint32 decimals */ 3:
+                    message.decimals = reader.uint32();
+                    break;
+                case /* bytes capacity */ 4:
+                    message.capacity = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* string token_name = 1; */
+        if (message.tokenName !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.tokenName);
+        /* string symbol = 2; */
+        if (message.symbol !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.symbol);
+        /* uint32 decimals = 3; */
+        if (message.decimals !== 0)
+            writer.tag(3, WireType.Varint).uint32(message.decimals);
+        /* bytes capacity = 4; */
+        if (message.capacity.length)
+            writer.tag(4, WireType.LengthDelimited).bytes(message.capacity);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.TokenDetails
+ */
+export const TokenDetails = new TokenDetails$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Gateway$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.Gateway", [
+            { no: 1, name: "address", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Address" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.address = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes address */ 1:
+                    message.address = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes address = 1; */
+        if (message.address.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.address);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.Gateway
+ */
+export const Gateway = new Gateway$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class BurnerInfo$Type extends MessageType {
+    constructor() {
+        super("scalar.chains.v1beta1.BurnerInfo", [
+            { no: 1, name: "burner_address", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Address" } },
+            { no: 2, name: "token_address", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Address" } },
+            { no: 3, name: "destination_chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 4, name: "symbol", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "asset", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "salt", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.nullable": false, "gogoproto.customtype": "Hash" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.burnerAddress = new Uint8Array(0);
+        message.tokenAddress = new Uint8Array(0);
+        message.destinationChain = "";
+        message.symbol = "";
+        message.asset = "";
+        message.salt = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes burner_address */ 1:
+                    message.burnerAddress = reader.bytes();
+                    break;
+                case /* bytes token_address */ 2:
+                    message.tokenAddress = reader.bytes();
+                    break;
+                case /* string destination_chain */ 3:
+                    message.destinationChain = reader.string();
+                    break;
+                case /* string symbol */ 4:
+                    message.symbol = reader.string();
+                    break;
+                case /* string asset */ 5:
+                    message.asset = reader.string();
+                    break;
+                case /* bytes salt */ 6:
+                    message.salt = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes burner_address = 1; */
+        if (message.burnerAddress.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.burnerAddress);
+        /* bytes token_address = 2; */
+        if (message.tokenAddress.length)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.tokenAddress);
+        /* string destination_chain = 3; */
+        if (message.destinationChain !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.destinationChain);
+        /* string symbol = 4; */
+        if (message.symbol !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.symbol);
+        /* string asset = 5; */
+        if (message.asset !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.asset);
+        /* bytes salt = 6; */
+        if (message.salt.length)
+            writer.tag(6, WireType.LengthDelimited).bytes(message.salt);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.chains.v1beta1.BurnerInfo
+ */
+export const BurnerInfo = new BurnerInfo$Type();
