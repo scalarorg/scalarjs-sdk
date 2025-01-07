@@ -7,12 +7,29 @@ import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Threshold } from "../../utils/v1beta1/threshold";
 /**
  * Params represent the genesis parameters for the module
  *
  * @generated from protobuf message scalar.covenant.v1beta1.Params
  */
 export interface Params {
+    /**
+     * @generated from protobuf field: scalar.utils.v1beta1.Threshold signing_threshold = 1;
+     */
+    signingThreshold?: Threshold;
+    /**
+     * @generated from protobuf field: int64 signing_timeout = 2;
+     */
+    signingTimeout: string;
+    /**
+     * @generated from protobuf field: int64 signing_grace_period = 3;
+     */
+    signingGracePeriod: string;
+    /**
+     * @generated from protobuf field: uint64 active_epoch_count = 4;
+     */
+    activeEpochCount: string;
 }
 declare class Params$Type extends MessageType<Params> {
     constructor();

@@ -7,16 +7,21 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { CustodianGroup } from "./types";
 import { Custodian } from "./types";
+import { SigningSession } from "./types";
+import { Params } from "./params";
 // @generated message type with reflection information, may provide speed optimized methods
 class GenesisState$Type extends MessageType {
     constructor() {
         super("scalar.covenant.v1beta1.GenesisState", [
-            { no: 1, name: "custodians", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Custodian },
-            { no: 2, name: "groups", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => CustodianGroup }
+            { no: 1, name: "params", kind: "message", T: () => Params, options: { "gogoproto.nullable": false } },
+            { no: 2, name: "signing_sessions", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => SigningSession, options: { "gogoproto.nullable": false } },
+            { no: 3, name: "custodians", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Custodian },
+            { no: 4, name: "groups", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => CustodianGroup }
         ], { "gogoproto.stable_marshaler": true });
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));
+        message.signingSessions = [];
         message.custodians = [];
         message.groups = [];
         if (value !== undefined)
@@ -28,10 +33,16 @@ class GenesisState$Type extends MessageType {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* repeated scalar.covenant.v1beta1.Custodian custodians */ 1:
+                case /* scalar.covenant.v1beta1.Params params */ 1:
+                    message.params = Params.internalBinaryRead(reader, reader.uint32(), options, message.params);
+                    break;
+                case /* repeated scalar.covenant.v1beta1.SigningSession signing_sessions */ 2:
+                    message.signingSessions.push(SigningSession.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated scalar.covenant.v1beta1.Custodian custodians */ 3:
                     message.custodians.push(Custodian.internalBinaryRead(reader, reader.uint32(), options));
                     break;
-                case /* repeated scalar.covenant.v1beta1.CustodianGroup groups */ 2:
+                case /* repeated scalar.covenant.v1beta1.CustodianGroup groups */ 4:
                     message.groups.push(CustodianGroup.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
@@ -46,12 +57,18 @@ class GenesisState$Type extends MessageType {
         return message;
     }
     internalBinaryWrite(message, writer, options) {
-        /* repeated scalar.covenant.v1beta1.Custodian custodians = 1; */
+        /* scalar.covenant.v1beta1.Params params = 1; */
+        if (message.params)
+            Params.internalBinaryWrite(message.params, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* repeated scalar.covenant.v1beta1.SigningSession signing_sessions = 2; */
+        for (let i = 0; i < message.signingSessions.length; i++)
+            SigningSession.internalBinaryWrite(message.signingSessions[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* repeated scalar.covenant.v1beta1.Custodian custodians = 3; */
         for (let i = 0; i < message.custodians.length; i++)
-            Custodian.internalBinaryWrite(message.custodians[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* repeated scalar.covenant.v1beta1.CustodianGroup groups = 2; */
+            Custodian.internalBinaryWrite(message.custodians[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* repeated scalar.covenant.v1beta1.CustodianGroup groups = 4; */
         for (let i = 0; i < message.groups.length; i++)
-            CustodianGroup.internalBinaryWrite(message.groups[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+            CustodianGroup.internalBinaryWrite(message.groups[i], writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -9,16 +9,26 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { CustodianGroup } from "./types";
 import { Custodian } from "./types";
+import { SigningSession } from "./types";
+import { Params } from "./params";
 /**
  * @generated from protobuf message scalar.covenant.v1beta1.GenesisState
  */
 export interface GenesisState {
     /**
-     * @generated from protobuf field: repeated scalar.covenant.v1beta1.Custodian custodians = 1;
+     * @generated from protobuf field: scalar.covenant.v1beta1.Params params = 1;
+     */
+    params?: Params;
+    /**
+     * @generated from protobuf field: repeated scalar.covenant.v1beta1.SigningSession signing_sessions = 2;
+     */
+    signingSessions: SigningSession[];
+    /**
+     * @generated from protobuf field: repeated scalar.covenant.v1beta1.Custodian custodians = 3;
      */
     custodians: Custodian[];
     /**
-     * @generated from protobuf field: repeated scalar.covenant.v1beta1.CustodianGroup groups = 2;
+     * @generated from protobuf field: repeated scalar.covenant.v1beta1.CustodianGroup groups = 4;
      */
     groups: CustodianGroup[];
 }

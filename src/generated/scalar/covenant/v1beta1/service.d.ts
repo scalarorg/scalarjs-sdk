@@ -2,10 +2,10 @@
 // @generated from protobuf file "scalar/covenant/v1beta1/service.proto" (package "scalar.covenant.v1beta1", syntax proto3)
 // tslint:disable
 /**
- * @generated ServiceType for protobuf service scalar.covenant.v1beta1.Msg
+ * @generated ServiceType for protobuf service scalar.covenant.v1beta1.MsgService
  */
-export declare const Msg: any;
+export declare const MsgService: any;
 /**
- * @generated ServiceType for protobuf service scalar.covenant.v1beta1.Query
+ * @generated ServiceType for protobuf service scalar.covenant.v1beta1.QueryService
  */
-export declare const Query: any;
+export declare const QueryService: any;

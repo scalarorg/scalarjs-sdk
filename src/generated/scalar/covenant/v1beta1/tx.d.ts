@@ -215,6 +215,28 @@ export interface CustodianToGroupResponse {
      */
     group?: CustodianGroup;
 }
+/**
+ * @generated from protobuf message scalar.covenant.v1beta1.SubmitTapScriptSigRequest
+ */
+export interface SubmitTapScriptSigRequest {
+    /**
+     * @generated from protobuf field: bytes sender = 1;
+     */
+    sender: Uint8Array;
+    /**
+     * @generated from protobuf field: uint64 sig_id = 2;
+     */
+    sigId: string;
+    /**
+     * @generated from protobuf field: bytes tap_script_sig = 3;
+     */
+    tapScriptSig: Uint8Array;
+}
+/**
+ * @generated from protobuf message scalar.covenant.v1beta1.SubmitTapScriptSigResponse
+ */
+export interface SubmitTapScriptSigResponse {
+}
 declare class CreateCustodianRequest$Type extends MessageType<CreateCustodianRequest> {
     constructor();
     create(value?: PartialMessage<CreateCustodianRequest>): CreateCustodianRequest;
@@ -325,4 +347,24 @@ declare class CustodianToGroupResponse$Type extends MessageType<CustodianToGroup
  * @generated MessageType for protobuf message scalar.covenant.v1beta1.CustodianToGroupResponse
  */
 export declare const CustodianToGroupResponse: CustodianToGroupResponse$Type;
+declare class SubmitTapScriptSigRequest$Type extends MessageType<SubmitTapScriptSigRequest> {
+    constructor();
+    create(value?: PartialMessage<SubmitTapScriptSigRequest>): SubmitTapScriptSigRequest;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SubmitTapScriptSigRequest): SubmitTapScriptSigRequest;
+    internalBinaryWrite(message: SubmitTapScriptSigRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.SubmitTapScriptSigRequest
+ */
+export declare const SubmitTapScriptSigRequest: SubmitTapScriptSigRequest$Type;
+declare class SubmitTapScriptSigResponse$Type extends MessageType<SubmitTapScriptSigResponse> {
+    constructor();
+    create(value?: PartialMessage<SubmitTapScriptSigResponse>): SubmitTapScriptSigResponse;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SubmitTapScriptSigResponse): SubmitTapScriptSigResponse;
+    internalBinaryWrite(message: SubmitTapScriptSigResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.SubmitTapScriptSigResponse
+ */
+export declare const SubmitTapScriptSigResponse: SubmitTapScriptSigResponse$Type;
 export {};

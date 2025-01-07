@@ -7,7 +7,7 @@ import "scalar/covenant/v1beta1/tx.proto";
 
 option go_package = "github.com/scalarorg/scalar-core/x/covenant/types";
 
-service Msg {
+service MsgService {
   // Create custodian
   rpc CreateCustodian(CreateCustodianRequest) returns (CreateCustodianResponse) {
     option (google.api.http) = {
@@ -54,11 +54,18 @@ service Msg {
       body: "*"
     };
   }
+
+  rpc SubmitTapScriptSig(SubmitTapScriptSigRequest) returns (SubmitTapScriptSigResponse) {
+    option (google.api.http) = {
+      post: "/scalar/covenant/v1beta1/submit_tap_script_sig"
+      body: "*"
+    };
+  }
 }
 
-service Query {
+service QueryService {
   // Get custodians
-  rpc GetCustodians(CustodiansRequest) returns (CustodiansResponse) {
+  rpc Custodians(CustodiansRequest) returns (CustodiansResponse) {
     option (google.api.http) = {get: "/scalar/convenant/v1beta1/custodians"};
   }
 
@@ -67,7 +74,13 @@ service Query {
     option (google.api.http) = {get: "/scalar/covenant/v1beta1/custodian_groups"};
   }
 
-  //   rpc GetAvailableCustodianGroupsByBtcNetworkName(GetAvailableCustodianGroupsByBtcNetworkNameRequest) returns (GetAvailableCustodianGroupsByBtcNetworkNameResponse) {
+  rpc Params(ParamsRequest) returns (ParamsResponse) {
+    option (google.api.http) = {get: "/scalar/covenant/v1beta1/params"};
+  }
+
+  //   rpc
+  //   GetAvailableCustodianGroupsByBtcNetworkName(GetAvailableCustodianGroupsByBtcNetworkNameRequest)
+  //   returns (GetAvailableCustodianGroupsByBtcNetworkNameResponse) {
   //     option (google.api.http) = {get:
   //         "/scalar/protocol/v1beta1/available_custodian_groups/btc_network/"
   //         "{btc_network_name}"

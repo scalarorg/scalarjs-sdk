@@ -7,6 +7,7 @@ import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Params } from "./params";
 import { CustodianGroup } from "./types";
 import { Custodian } from "./types";
 import { Status } from "./types";
@@ -70,6 +71,22 @@ export interface CustodianGroupsResponse {
      */
     groups: CustodianGroup[];
 }
+/**
+ * ParamsRequest represents a message that queries the params
+ *
+ * @generated from protobuf message scalar.covenant.v1beta1.ParamsRequest
+ */
+export interface ParamsRequest {
+}
+/**
+ * @generated from protobuf message scalar.covenant.v1beta1.ParamsResponse
+ */
+export interface ParamsResponse {
+    /**
+     * @generated from protobuf field: scalar.covenant.v1beta1.Params params = 1;
+     */
+    params?: Params;
+}
 declare class CustodiansRequest$Type extends MessageType<CustodiansRequest> {
     constructor();
     create(value?: PartialMessage<CustodiansRequest>): CustodiansRequest;
@@ -110,4 +127,24 @@ declare class CustodianGroupsResponse$Type extends MessageType<CustodianGroupsRe
  * @generated MessageType for protobuf message scalar.covenant.v1beta1.CustodianGroupsResponse
  */
 export declare const CustodianGroupsResponse: CustodianGroupsResponse$Type;
+declare class ParamsRequest$Type extends MessageType<ParamsRequest> {
+    constructor();
+    create(value?: PartialMessage<ParamsRequest>): ParamsRequest;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ParamsRequest): ParamsRequest;
+    internalBinaryWrite(message: ParamsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.ParamsRequest
+ */
+export declare const ParamsRequest: ParamsRequest$Type;
+declare class ParamsResponse$Type extends MessageType<ParamsResponse> {
+    constructor();
+    create(value?: PartialMessage<ParamsResponse>): ParamsResponse;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ParamsResponse): ParamsResponse;
+    internalBinaryWrite(message: ParamsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.ParamsResponse
+ */
+export declare const ParamsResponse: ParamsResponse$Type;
 export {};

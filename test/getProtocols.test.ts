@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import { GrpcTransport } from "@protobuf-ts/grpc-transport";
-import { ChannelCredentials } from "@grpc/grpc-js";
+import { ChannelCredentials, ClientOptions } from "@grpc/grpc-js";
 import { QueryClient } from "../src/generated/scalar/protocol/v1beta1/service.client";
 import {
   ProtocolsRequest,
@@ -10,17 +10,22 @@ import {
   Protocol,
   Status,
 } from "../src/generated/scalar/protocol/v1beta1/types";
+import { RpcInterceptor } from "@protobuf-ts/runtime-rpc";
 
 describe("getProtocols", () => {
   it("should be able to get the protocols", async () => {
     // variable
-    const grpcUrl = "localhost:9090";
-
+    let grpcUrl = "localhost:9090";
+    // grpcUrl = "18.141.172.185:9090"
     try {
       // Create a gRPC transport (replace URL with your actual Cosmos node URL)
+      const options: ClientOptions = {
+        'grpc.max_receive_message_length': 1024 * 1024 * 10, // 10 MB
+      };
       const transport = new GrpcTransport({
         host: grpcUrl,
         channelCredentials: ChannelCredentials.createInsecure(),
+        clientOptions: options
       });
       const client = new QueryClient(transport);
       const request = ProtocolsRequest.create({});

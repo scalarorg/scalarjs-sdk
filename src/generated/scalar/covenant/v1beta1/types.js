@@ -5,6 +5,10 @@ import { WireType } from "@protobuf-ts/runtime";
 import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Any } from "../../../google/protobuf/any";
+import { Key } from "../../multisig/v1beta1/types";
+import { PsbtState } from "../exported/v1beta1/types";
+import { TapScriptSig } from "../exported/v1beta1/types";
 /**
  * @generated from protobuf enum scalar.covenant.v1beta1.Status
  */
@@ -189,3 +193,194 @@ class CustodianGroup$Type extends MessageType {
  * @generated MessageType for protobuf message scalar.covenant.v1beta1.CustodianGroup
  */
 export const CustodianGroup = new CustodianGroup$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PsbtMultiSig$Type extends MessageType {
+    constructor() {
+        super("scalar.covenant.v1beta1.PsbtMultiSig", [
+            { no: 1, name: "key_id", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.customname": "KeyID", "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/multisig/exported.KeyID" } },
+            { no: 2, name: "psbt", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.casttype": "Psbt" } },
+            { no: 3, name: "tap_script_sigs", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => TapScriptSig } }
+        ], { "gogoproto.stable_marshaler": true });
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.keyId = "";
+        message.psbt = new Uint8Array(0);
+        message.tapScriptSigs = {};
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string key_id */ 1:
+                    message.keyId = reader.string();
+                    break;
+                case /* bytes psbt */ 2:
+                    message.psbt = reader.bytes();
+                    break;
+                case /* map<string, scalar.covenant.exported.v1beta1.TapScriptSig> tap_script_sigs */ 3:
+                    this.binaryReadMap3(message.tapScriptSigs, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    binaryReadMap3(map, reader, options) {
+        let len = reader.uint32(), end = reader.pos + len, key, val;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = TapScriptSig.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for field scalar.covenant.v1beta1.PsbtMultiSig.tap_script_sigs");
+            }
+        }
+        map[key !== null && key !== void 0 ? key : ""] = val !== null && val !== void 0 ? val : TapScriptSig.create();
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* string key_id = 1; */
+        if (message.keyId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.keyId);
+        /* bytes psbt = 2; */
+        if (message.psbt.length)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.psbt);
+        /* map<string, scalar.covenant.exported.v1beta1.TapScriptSig> tap_script_sigs = 3; */
+        for (let k of globalThis.Object.keys(message.tapScriptSigs)) {
+            writer.tag(3, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            TapScriptSig.internalBinaryWrite(message.tapScriptSigs[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.PsbtMultiSig
+ */
+export const PsbtMultiSig = new PsbtMultiSig$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SigningSession$Type extends MessageType {
+    constructor() {
+        super("scalar.covenant.v1beta1.SigningSession", [
+            { no: 1, name: "id", kind: "scalar", T: 4 /*ScalarType.UINT64*/, options: { "gogoproto.customname": "ID" } },
+            { no: 2, name: "psbt_multi_sig", kind: "message", T: () => PsbtMultiSig, options: { "gogoproto.nullable": false } },
+            { no: 3, name: "state", kind: "enum", T: () => ["scalar.covenant.exported.v1beta1.PsbtState", PsbtState, "PSBT_STATE_"] },
+            { no: 4, name: "key", kind: "message", T: () => Key, options: { "gogoproto.nullable": false } },
+            { no: 5, name: "expires_at", kind: "scalar", T: 3 /*ScalarType.INT64*/ },
+            { no: 6, name: "completed_at", kind: "scalar", T: 3 /*ScalarType.INT64*/ },
+            { no: 7, name: "grace_period", kind: "scalar", T: 3 /*ScalarType.INT64*/ },
+            { no: 8, name: "module", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "module_metadata", kind: "message", T: () => Any, options: { "cosmos_proto.accepts_interface": "github.com/cosmos/codec/ProtoMarshaler" } }
+        ], { "gogoproto.stable_marshaler": true });
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.id = "0";
+        message.state = 0;
+        message.expiresAt = "0";
+        message.completedAt = "0";
+        message.gracePeriod = "0";
+        message.module = "";
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* uint64 id */ 1:
+                    message.id = reader.uint64().toString();
+                    break;
+                case /* scalar.covenant.v1beta1.PsbtMultiSig psbt_multi_sig */ 2:
+                    message.psbtMultiSig = PsbtMultiSig.internalBinaryRead(reader, reader.uint32(), options, message.psbtMultiSig);
+                    break;
+                case /* scalar.covenant.exported.v1beta1.PsbtState state */ 3:
+                    message.state = reader.int32();
+                    break;
+                case /* scalar.multisig.v1beta1.Key key */ 4:
+                    message.key = Key.internalBinaryRead(reader, reader.uint32(), options, message.key);
+                    break;
+                case /* int64 expires_at */ 5:
+                    message.expiresAt = reader.int64().toString();
+                    break;
+                case /* int64 completed_at */ 6:
+                    message.completedAt = reader.int64().toString();
+                    break;
+                case /* int64 grace_period */ 7:
+                    message.gracePeriod = reader.int64().toString();
+                    break;
+                case /* string module */ 8:
+                    message.module = reader.string();
+                    break;
+                case /* google.protobuf.Any module_metadata */ 9:
+                    message.moduleMetadata = Any.internalBinaryRead(reader, reader.uint32(), options, message.moduleMetadata);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* uint64 id = 1; */
+        if (message.id !== "0")
+            writer.tag(1, WireType.Varint).uint64(message.id);
+        /* scalar.covenant.v1beta1.PsbtMultiSig psbt_multi_sig = 2; */
+        if (message.psbtMultiSig)
+            PsbtMultiSig.internalBinaryWrite(message.psbtMultiSig, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* scalar.covenant.exported.v1beta1.PsbtState state = 3; */
+        if (message.state !== 0)
+            writer.tag(3, WireType.Varint).int32(message.state);
+        /* scalar.multisig.v1beta1.Key key = 4; */
+        if (message.key)
+            Key.internalBinaryWrite(message.key, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* int64 expires_at = 5; */
+        if (message.expiresAt !== "0")
+            writer.tag(5, WireType.Varint).int64(message.expiresAt);
+        /* int64 completed_at = 6; */
+        if (message.completedAt !== "0")
+            writer.tag(6, WireType.Varint).int64(message.completedAt);
+        /* int64 grace_period = 7; */
+        if (message.gracePeriod !== "0")
+            writer.tag(7, WireType.Varint).int64(message.gracePeriod);
+        /* string module = 8; */
+        if (message.module !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.module);
+        /* google.protobuf.Any module_metadata = 9; */
+        if (message.moduleMetadata)
+            Any.internalBinaryWrite(message.moduleMetadata, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.SigningSession
+ */
+export const SigningSession = new SigningSession$Type();

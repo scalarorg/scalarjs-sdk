@@ -728,3 +728,91 @@ class CustodianToGroupResponse$Type extends MessageType {
  * @generated MessageType for protobuf message scalar.covenant.v1beta1.CustodianToGroupResponse
  */
 export const CustodianToGroupResponse = new CustodianToGroupResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SubmitTapScriptSigRequest$Type extends MessageType {
+    constructor() {
+        super("scalar.covenant.v1beta1.SubmitTapScriptSigRequest", [
+            { no: 1, name: "sender", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.casttype": "github.com/cosmos/cosmos-sdk/types.AccAddress" } },
+            { no: 2, name: "sig_id", kind: "scalar", T: 4 /*ScalarType.UINT64*/, options: { "gogoproto.customname": "SigID" } },
+            { no: 3, name: "tap_script_sig", kind: "scalar", T: 12 /*ScalarType.BYTES*/, options: { "gogoproto.customtype": "github.com/scalarorg/scalar-core/x/covenant/exported.TapScriptSig" } }
+        ]);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        message.sender = new Uint8Array(0);
+        message.sigId = "0";
+        message.tapScriptSig = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        let message = target !== null && target !== void 0 ? target : this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes sender */ 1:
+                    message.sender = reader.bytes();
+                    break;
+                case /* uint64 sig_id */ 2:
+                    message.sigId = reader.uint64().toString();
+                    break;
+                case /* bytes tap_script_sig */ 3:
+                    message.tapScriptSig = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message, writer, options) {
+        /* bytes sender = 1; */
+        if (message.sender.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.sender);
+        /* uint64 sig_id = 2; */
+        if (message.sigId !== "0")
+            writer.tag(2, WireType.Varint).uint64(message.sigId);
+        /* bytes tap_script_sig = 3; */
+        if (message.tapScriptSig.length)
+            writer.tag(3, WireType.LengthDelimited).bytes(message.tapScriptSig);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.SubmitTapScriptSigRequest
+ */
+export const SubmitTapScriptSigRequest = new SubmitTapScriptSigRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SubmitTapScriptSigResponse$Type extends MessageType {
+    constructor() {
+        super("scalar.covenant.v1beta1.SubmitTapScriptSigResponse", []);
+    }
+    create(value) {
+        const message = globalThis.Object.create((this.messagePrototype));
+        if (value !== undefined)
+            reflectionMergePartial(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader, length, options, target) {
+        return target !== null && target !== void 0 ? target : this.create();
+    }
+    internalBinaryWrite(message, writer, options) {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.SubmitTapScriptSigResponse
+ */
+export const SubmitTapScriptSigResponse = new SubmitTapScriptSigResponse$Type();

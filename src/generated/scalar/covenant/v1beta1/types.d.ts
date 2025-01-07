@@ -7,6 +7,10 @@ import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Any } from "../../../google/protobuf/any";
+import { Key } from "../../multisig/v1beta1/types";
+import { PsbtState } from "../exported/v1beta1/types";
+import { TapScriptSig } from "../exported/v1beta1/types";
 /**
  * Custodian represents an individual custodian configuration
  *
@@ -34,7 +38,8 @@ export interface Custodian {
 }
 /**
  * CustodianGroup represents a group of custodians with their configuration
- * uid is used as identity of the group, btc_pubkey is change by list of custodians
+ * uid is used as identity of the group, btc_pubkey is change by list of
+ * custodians
  *
  * @generated from protobuf message scalar.covenant.v1beta1.CustodianGroup
  */
@@ -69,6 +74,66 @@ export interface CustodianGroup {
      * @generated from protobuf field: repeated scalar.covenant.v1beta1.Custodian custodians = 7;
      */
     custodians: Custodian[];
+}
+/**
+ * @generated from protobuf message scalar.covenant.v1beta1.PsbtMultiSig
+ */
+export interface PsbtMultiSig {
+    /**
+     * @generated from protobuf field: string key_id = 1;
+     */
+    keyId: string;
+    /**
+     * @generated from protobuf field: bytes psbt = 2;
+     */
+    psbt: Uint8Array;
+    /**
+     * @generated from protobuf field: map<string, scalar.covenant.exported.v1beta1.TapScriptSig> tap_script_sigs = 3;
+     */
+    tapScriptSigs: {
+        [key: string]: TapScriptSig;
+    };
+}
+/**
+ * @generated from protobuf message scalar.covenant.v1beta1.SigningSession
+ */
+export interface SigningSession {
+    /**
+     * @generated from protobuf field: uint64 id = 1;
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: scalar.covenant.v1beta1.PsbtMultiSig psbt_multi_sig = 2;
+     */
+    psbtMultiSig?: PsbtMultiSig;
+    /**
+     * @generated from protobuf field: scalar.covenant.exported.v1beta1.PsbtState state = 3;
+     */
+    state: PsbtState;
+    /**
+     * @generated from protobuf field: scalar.multisig.v1beta1.Key key = 4;
+     */
+    key?: Key;
+    /**
+     * @generated from protobuf field: int64 expires_at = 5;
+     */
+    expiresAt: string;
+    /**
+     * @generated from protobuf field: int64 completed_at = 6;
+     */
+    completedAt: string;
+    /**
+     * @generated from protobuf field: int64 grace_period = 7;
+     */
+    gracePeriod: string;
+    /**
+     * @generated from protobuf field: string module = 8;
+     */
+    module: string;
+    /**
+     * @generated from protobuf field: google.protobuf.Any module_metadata = 9;
+     */
+    moduleMetadata?: Any;
 }
 /**
  * @generated from protobuf enum scalar.covenant.v1beta1.Status
@@ -107,4 +172,25 @@ declare class CustodianGroup$Type extends MessageType<CustodianGroup> {
  * @generated MessageType for protobuf message scalar.covenant.v1beta1.CustodianGroup
  */
 export declare const CustodianGroup: CustodianGroup$Type;
+declare class PsbtMultiSig$Type extends MessageType<PsbtMultiSig> {
+    constructor();
+    create(value?: PartialMessage<PsbtMultiSig>): PsbtMultiSig;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PsbtMultiSig): PsbtMultiSig;
+    private binaryReadMap3;
+    internalBinaryWrite(message: PsbtMultiSig, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.PsbtMultiSig
+ */
+export declare const PsbtMultiSig: PsbtMultiSig$Type;
+declare class SigningSession$Type extends MessageType<SigningSession> {
+    constructor();
+    create(value?: PartialMessage<SigningSession>): SigningSession;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SigningSession): SigningSession;
+    internalBinaryWrite(message: SigningSession, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message scalar.covenant.v1beta1.SigningSession
+ */
+export declare const SigningSession: SigningSession$Type;
 export {};

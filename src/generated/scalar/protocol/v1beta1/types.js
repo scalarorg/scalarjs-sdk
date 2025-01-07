@@ -5,10 +5,8 @@ import { WireType } from "@protobuf-ts/runtime";
 import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Asset } from "../../chains/v1beta1/types";
 import { CustodianGroup } from "../../covenant/v1beta1/types";
-import { BtcToken } from "../../chains/btc/v1beta1/types";
-import { ERC20TokenMetadata } from "../../chains/v1beta1/tokens";
-import { Params } from "../../chains/v1beta1/params";
 /**
  * @generated from protobuf enum scalar.protocol.v1beta1.LiquidityModel
  */
@@ -92,16 +90,14 @@ export const ProtocolAttribute = new ProtocolAttribute$Type();
 class SupportedChain$Type extends MessageType {
     constructor() {
         super("scalar.protocol.v1beta1.SupportedChain", [
-            { no: 1, name: "params", kind: "message", T: () => Params },
-            { no: 2, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "erc20", kind: "message", oneof: "token", T: () => ERC20TokenMetadata },
-            { no: 4, name: "btc", kind: "message", oneof: "token", T: () => BtcToken }
+            { no: 1, name: "chain", kind: "scalar", T: 9 /*ScalarType.STRING*/, options: { "gogoproto.casttype": "github.com/scalarorg/scalar-core/x/nexus/exported.ChainName" } },
+            { no: 2, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value) {
         const message = globalThis.Object.create((this.messagePrototype));
+        message.chain = "";
         message.address = "";
-        message.token = { oneofKind: undefined };
         if (value !== undefined)
             reflectionMergePartial(this, message, value);
         return message;
@@ -111,23 +107,11 @@ class SupportedChain$Type extends MessageType {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* scalar.chains.v1beta1.Params params */ 1:
-                    message.params = Params.internalBinaryRead(reader, reader.uint32(), options, message.params);
+                case /* string chain */ 1:
+                    message.chain = reader.string();
                     break;
                 case /* string address */ 2:
                     message.address = reader.string();
-                    break;
-                case /* scalar.chains.v1beta1.ERC20TokenMetadata erc20 */ 3:
-                    message.token = {
-                        oneofKind: "erc20",
-                        erc20: ERC20TokenMetadata.internalBinaryRead(reader, reader.uint32(), options, message.token.erc20)
-                    };
-                    break;
-                case /* scalar.chains.btc.v1beta1.BtcToken btc */ 4:
-                    message.token = {
-                        oneofKind: "btc",
-                        btc: BtcToken.internalBinaryRead(reader, reader.uint32(), options, message.token.btc)
-                    };
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -141,18 +125,12 @@ class SupportedChain$Type extends MessageType {
         return message;
     }
     internalBinaryWrite(message, writer, options) {
-        /* scalar.chains.v1beta1.Params params = 1; */
-        if (message.params)
-            Params.internalBinaryWrite(message.params, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* string chain = 1; */
+        if (message.chain !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.chain);
         /* string address = 2; */
         if (message.address !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.address);
-        /* scalar.chains.v1beta1.ERC20TokenMetadata erc20 = 3; */
-        if (message.token.oneofKind === "erc20")
-            ERC20TokenMetadata.internalBinaryWrite(message.token.erc20, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
-        /* scalar.chains.btc.v1beta1.BtcToken btc = 4; */
-        if (message.token.oneofKind === "btc")
-            BtcToken.internalBinaryWrite(message.token.btc, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -174,7 +152,8 @@ class Protocol$Type extends MessageType {
             { no: 5, name: "attribute", kind: "message", T: () => ProtocolAttribute },
             { no: 6, name: "status", kind: "enum", T: () => ["scalar.protocol.v1beta1.Status", Status, "STATUS_"] },
             { no: 7, name: "custodian_group", kind: "message", T: () => CustodianGroup },
-            { no: 8, name: "chains", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => SupportedChain }
+            { no: 8, name: "asset", kind: "message", T: () => Asset },
+            { no: 9, name: "chains", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => SupportedChain }
         ]);
     }
     create(value) {
@@ -215,7 +194,10 @@ class Protocol$Type extends MessageType {
                 case /* scalar.covenant.v1beta1.CustodianGroup custodian_group */ 7:
                     message.custodianGroup = CustodianGroup.internalBinaryRead(reader, reader.uint32(), options, message.custodianGroup);
                     break;
-                case /* repeated scalar.protocol.v1beta1.SupportedChain chains */ 8:
+                case /* scalar.chains.v1beta1.Asset asset */ 8:
+                    message.asset = Asset.internalBinaryRead(reader, reader.uint32(), options, message.asset);
+                    break;
+                case /* repeated scalar.protocol.v1beta1.SupportedChain chains */ 9:
                     message.chains.push(SupportedChain.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
@@ -251,9 +233,12 @@ class Protocol$Type extends MessageType {
         /* scalar.covenant.v1beta1.CustodianGroup custodian_group = 7; */
         if (message.custodianGroup)
             CustodianGroup.internalBinaryWrite(message.custodianGroup, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
-        /* repeated scalar.protocol.v1beta1.SupportedChain chains = 8; */
+        /* scalar.chains.v1beta1.Asset asset = 8; */
+        if (message.asset)
+            Asset.internalBinaryWrite(message.asset, writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* repeated scalar.protocol.v1beta1.SupportedChain chains = 9; */
         for (let i = 0; i < message.chains.length; i++)
-            SupportedChain.internalBinaryWrite(message.chains[i], writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+            SupportedChain.internalBinaryWrite(message.chains[i], writer.tag(9, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

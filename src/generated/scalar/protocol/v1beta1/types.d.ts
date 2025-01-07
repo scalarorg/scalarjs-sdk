@@ -7,10 +7,8 @@ import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Asset } from "../../chains/v1beta1/types";
 import { CustodianGroup } from "../../covenant/v1beta1/types";
-import { BtcToken } from "../../chains/btc/v1beta1/types";
-import { ERC20TokenMetadata } from "../../chains/v1beta1/tokens";
-import { Params } from "../../chains/v1beta1/params";
 /**
  * @generated from protobuf message scalar.protocol.v1beta1.ProtocolAttribute
  */
@@ -27,31 +25,13 @@ export interface ProtocolAttribute {
  */
 export interface SupportedChain {
     /**
-     * @generated from protobuf field: scalar.chains.v1beta1.Params params = 1;
+     * @generated from protobuf field: string chain = 1;
      */
-    params?: Params;
+    chain: string;
     /**
      * @generated from protobuf field: string address = 2;
      */
     address: string;
-    /**
-     * @generated from protobuf oneof: token
-     */
-    token: {
-        oneofKind: "erc20";
-        /**
-         * @generated from protobuf field: scalar.chains.v1beta1.ERC20TokenMetadata erc20 = 3;
-         */
-        erc20: ERC20TokenMetadata;
-    } | {
-        oneofKind: "btc";
-        /**
-         * @generated from protobuf field: scalar.chains.btc.v1beta1.BtcToken btc = 4;
-         */
-        btc: BtcToken;
-    } | {
-        oneofKind: undefined;
-    };
 }
 /**
  * @generated from protobuf message scalar.protocol.v1beta1.Protocol
@@ -86,7 +66,11 @@ export interface Protocol {
      */
     custodianGroup?: CustodianGroup;
     /**
-     * @generated from protobuf field: repeated scalar.protocol.v1beta1.SupportedChain chains = 8;
+     * @generated from protobuf field: scalar.chains.v1beta1.Asset asset = 8;
+     */
+    asset?: Asset;
+    /**
+     * @generated from protobuf field: repeated scalar.protocol.v1beta1.SupportedChain chains = 9;
      */
     chains: SupportedChain[];
 }
