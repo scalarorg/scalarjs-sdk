@@ -36,7 +36,7 @@
     "build": "./scripts/build.sh",
     "compile": "tsc --noEmit",
     "prepublish": "bun run build",
-    "format": "biome format --write \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "docgen": "typedoc",
     "deploy:docs": "gh-pages -d docs -e proto",
     "lint": "eslint src --ext .ts",
@@ -45,6 +45,9 @@
   "license": "LicenseRef-LICENSE",
   "dependencies": {
     "@cosmjs/proto-signing": "^0.33.0",
+    "@cosmjs/stargate": "^0.33.0",
+    "@cosmjs/tendermint-rpc": "^0.33.0",
+    "inflection": "^3.0.2",
     "long": "^5.3.1",
     "protobufjs": "^7.2.6"
   },

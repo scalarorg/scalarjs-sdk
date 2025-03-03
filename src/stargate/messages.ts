@@ -1,14 +1,18 @@
-import * as scalarnet from './scalar/scalarnet/v1beta1/tx';
-import * as evm from './scalar/evm/v1beta1/tx';
-import * as multisig from './scalar/multisig/v1beta1/tx';
-import * as nexus from './scalar/nexus/v1beta1/tx';
-import * as permission from './scalar/permission/v1beta1/tx';
-import * as reward from './scalar/reward/v1beta1/tx';
-import * as snapshot from './scalar/snapshot/v1beta1/tx';
-import * as tss from './scalar/tss/v1beta1/tx';
-import * as vote from './scalar/vote/v1beta1/tx';
+import * as scalarnet from "../proto/scalar/scalarnet/v1beta1/tx";
+import * as chains from "../proto/scalar/chains/v1beta1/tx";
+import * as multisig from "../proto/scalar/multisig/v1beta1/tx";
+import * as nexus from "../proto/scalar/nexus/v1beta1/tx";
+import * as permission from "../proto/scalar/permission/v1beta1/tx";
+import * as reward from "../proto/scalar/reward/v1beta1/tx";
+import * as snapshot from "../proto/scalar/snapshot/v1beta1/tx";
+import * as tss from "../proto/scalar/tss/v1beta1/tx";
+import * as vote from "../proto/scalar/vote/v1beta1/tx";
+import * as protocol from "../proto/scalar/protocol/v1beta1/tx";
+import * as covenant from "../proto/scalar/covenant/v1beta1/tx";
 
-import { EncodeObject, GeneratedType, isTsProtoGeneratedType } from '@cosmjs/proto-signing';
+import type { EncodeObject, GeneratedType } from "@cosmjs/proto-signing";
+
+import { isTsProtoGeneratedType } from "@cosmjs/proto-signing";
 
 import type {
   DeliverTxResponse,
@@ -22,18 +26,22 @@ import type {
   MsgWithdrawDelegatorRewardEncodeObject,
   SignerData,
   SigningStargateClient,
-  StdFee
-} from '@cosmjs/stargate';
-import type { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-import * as ibcFee from 'cosmjs-types/ibc/applications/fee/v1/tx';
-import * as ibcTransfer from 'cosmjs-types/ibc/applications/transfer/v1/tx';
-import { camelize } from 'inflection';
+  StdFee,
+} from "@cosmjs/stargate";
 
-import type { EncodedProtoPackage, KeepOnlySimplifiedRequestMethods } from './types';
+import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import * as ibcFee from "cosmjs-types/ibc/applications/fee/v1/tx";
+import * as ibcTransfer from "cosmjs-types/ibc/applications/transfer/v1/tx";
+import { camelize } from "inflection";
+
+import type {
+  EncodedProtoPackage,
+  KeepOnlySimplifiedRequestMethods,
+} from "./types";
 
 export const TRACKED_MODULES = {
-  axelarnet,
-  evm,
+  chains,
+  scalarnet,
   multisig,
   nexus,
   permission,
@@ -41,9 +49,11 @@ export const TRACKED_MODULES = {
   snapshot,
   tss,
   vote,
+  protocol,
+  covenant,
   // cosmos messages
   ibcFee,
-  ibcTransfer
+  ibcTransfer,
 };
 
 export type TrackedModules = typeof TRACKED_MODULES;
@@ -58,24 +68,24 @@ export type ModuleMethodApi<T> = T extends GeneratedType
         senderAddress: string,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        message: ReturnType<T['fromPartial']>,
-        fee: StdFee
+        message: ReturnType<T["fromPartial"]>,
+        fee: StdFee,
       ): Promise<DeliverTxResponse>;
       sign(
         signerAddress: string,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        message: ReturnType<T['fromPartial']>,
+        message: ReturnType<T["fromPartial"]>,
         fee: StdFee,
         memo: string,
-        explicitSignerData?: SignerData
+        explicitSignerData?: SignerData,
       ): Promise<TxRaw>;
       simulate(
         signerAddress: string,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        message: ReturnType<T['fromPartial']>,
-        memo?: string
+        message: ReturnType<T["fromPartial"]>,
+        memo?: string,
       ): Promise<number>;
     }
   : never;
@@ -84,17 +94,17 @@ export type EncodedModule<M extends ModuleNames> = {
   [P in keyof TrackedModules[M]]: ModuleMethodApi<TrackedModules[M][P]>;
 };
 
-export type AxelarMsgClient = {
+export type ScalarMsgClient = {
   [M in ModuleNames]: KeepOnlySimplifiedRequestMethods<EncodedModule<M>>;
 };
 
 const normalizeMethodName = (method: string) =>
-  camelize(method.replace(/Request$/, '').replace(/^Msg/, ''), true);
+  camelize(method.replace(/Request$/, "").replace(/^Msg/, ""), true);
 
 const createModuleMethodApi = (
   client: SigningStargateClient,
   module: { protobufPackage: string },
-  method: string
+  method: string,
 ) => ({
   /**
    * Sign and broadcast a message.
@@ -104,17 +114,21 @@ const createModuleMethodApi = (
    * @param fee
    * @returns broadcast response
    */
-  signAndBroadcast: (senderAddress: string, message: EncodeObject['value'], fee: StdFee) =>
+  signAndBroadcast: (
+    senderAddress: string,
+    message: EncodeObject["value"],
+    fee: StdFee,
+  ) =>
     client.signAndBroadcast(
       senderAddress,
       [
         {
           typeUrl: `/${module.protobufPackage}.${method}`,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          value: message
-        }
+          value: message,
+        },
       ],
-      fee
+      fee,
     ),
   /**
    * Sign a message.
@@ -129,10 +143,10 @@ const createModuleMethodApi = (
    */
   sign: (
     signerAddress: string,
-    message: EncodeObject['value'],
+    message: EncodeObject["value"],
     fee: StdFee,
     memo: string,
-    explicitSignerData?: SignerData
+    explicitSignerData?: SignerData,
   ) =>
     client.sign(
       signerAddress,
@@ -140,12 +154,12 @@ const createModuleMethodApi = (
         {
           typeUrl: `/${module.protobufPackage}.${method}`,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          value: message
-        }
+          value: message,
+        },
       ],
       fee,
       memo,
-      explicitSignerData
+      explicitSignerData,
     ),
   /**
    * Simulate a message.
@@ -154,54 +168,81 @@ const createModuleMethodApi = (
    * @param memo
    * @returns gas estimate
    */
-  simulate: (signerAddress: string, message: EncodeObject['value'], memo: string | undefined) =>
+  simulate: (
+    signerAddress: string,
+    message: EncodeObject["value"],
+    memo: string | undefined,
+  ) =>
     client.simulate(
       signerAddress,
       [
         {
           typeUrl: `/${module.protobufPackage}.${method}`,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          value: message
-        }
+          value: message,
+        },
       ],
-      memo
-    )
+      memo,
+    ),
 });
 
 const createMsgMethodClient =
   (client: SigningStargateClient, module: { protobufPackage: string }) =>
   <T extends Record<string, unknown>>(acc: T, [method]: [string, string]) => ({
     ...acc,
-    [normalizeMethodName(method)]: createModuleMethodApi(client, module, method)
+    [normalizeMethodName(method)]: createModuleMethodApi(
+      client,
+      module,
+      method,
+    ),
   });
 
 export const createMsgClient = (baseClient: SigningStargateClient) =>
-  Object.entries(TRACKED_MODULES).reduce(
-    (acc, [moduleName, module]) => ({
-      ...acc,
-      [moduleName]: Object.entries(module)
-        .filter(
-          ([method, value]) =>
-            isTsProtoGeneratedType(value as GeneratedType) &&
-            (method.endsWith('Request') ||
-              (method.startsWith('Msg') && !method.endsWith('Response') && !method.endsWith('Impl')))
-        )
-        .reduce(createMsgMethodClient(baseClient, module), {} as Record<string, unknown>)
-    }),
-    {} as AxelarMsgClient
-  );
+  Object.entries(TRACKED_MODULES).reduce((acc, [moduleName, module]) => {
+    const moduleNameKey = moduleName as keyof ScalarMsgClient;
 
-export type AxelarEncodeObjectRecord = EncodedProtoPackage<typeof axelarnet> &
-  EncodedProtoPackage<typeof evm> &
+    acc[moduleNameKey] = Object.entries(module)
+      .filter(
+        ([method, value]) =>
+          isTsProtoGeneratedType(value as GeneratedType) &&
+          (method.endsWith("Request") ||
+            (method.startsWith("Msg") &&
+              !method.endsWith("Response") &&
+              !method.endsWith("Impl"))),
+      )
+      .reduce(
+        createMsgMethodClient(baseClient, module),
+        {} as KeepOnlySimplifiedRequestMethods<EncodedModule<"chains">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"scalarnet">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"multisig">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"nexus">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"permission">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"reward">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"snapshot">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"tss">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"vote">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"protocol">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"covenant">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"ibcFee">> &
+          KeepOnlySimplifiedRequestMethods<EncodedModule<"ibcTransfer">>,
+      );
+    return acc;
+  }, {} as ScalarMsgClient);
+
+export type ScalarEncodeObjectRecord = EncodedProtoPackage<typeof scalarnet> &
+  EncodedProtoPackage<typeof chains> &
   EncodedProtoPackage<typeof multisig> &
   EncodedProtoPackage<typeof nexus> &
   EncodedProtoPackage<typeof permission> &
   EncodedProtoPackage<typeof reward> &
   EncodedProtoPackage<typeof snapshot> &
   EncodedProtoPackage<typeof tss> &
-  EncodedProtoPackage<typeof vote>;
+  EncodedProtoPackage<typeof vote> &
+  EncodedProtoPackage<typeof protocol> &
+  EncodedProtoPackage<typeof covenant>;
 
-export type AxelarEncodeObject = AxelarEncodeObjectRecord[keyof AxelarEncodeObjectRecord];
+export type ScalarEncodeObject =
+  ScalarEncodeObjectRecord[keyof ScalarEncodeObjectRecord];
 
 export type CosmosEncodeObject =
   | MsgDelegateEncodeObject
