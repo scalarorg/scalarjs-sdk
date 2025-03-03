@@ -1,0 +1,71 @@
+{
+  "name": "@scalarorg/scalarjs-sdk",
+  "version": "0.0.1",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "name": "@scalar-lab/scalarjs-sdk",
+    "access": "public"
+  },
+  "description": "Scalar Core supporting protobuf types",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scalarorg/scalarjs-sdk"
+  },
+  "files": ["build", "cosmos", "gogoproto", "google", "axelar", "tendermint"],
+  "exports": {
+    "./*": {
+      "import": "./build/module/*.js",
+      "require": "./build/commonjs/*.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["./build/module/*"]
+    }
+  },
+  "simple-git-hooks": {
+    "pre-commit": "bunx lint-staged"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,tsx,json,css,md}": ["biome format --write", "biome check", "bunx type-check"]
+  },
+  "scripts": {
+    "clean": "./scripts/clean.sh",
+    "sync": "./scripts/sync.sh",
+    "codegen": "./scripts/codegen.sh",
+    "build": "./scripts/build.sh",
+    "compile": "tsc --noEmit",
+    "prepublish": "bun run build",
+    "format": "biome format --write \"src/**/*.ts\"",
+    "docgen": "typedoc",
+    "deploy:docs": "gh-pages -d docs -e proto",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
+  },
+  "license": "LicenseRef-LICENSE",
+  "dependencies": {
+    "@cosmjs/proto-signing": "^0.33.0",
+    "long": "^5.3.1",
+    "protobufjs": "^7.2.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/bun": "^1.1.12",
+    "@types/node": "^20.11.30",
+    "barrelsby": "^2.8.1",
+    "degit": "^2.8.4",
+    "dts-bundle-generator": "^9.5.1",
+    "eslint": "8.50.0",
+    "gh-pages": "^6.1.1",
+    "glob": "^11.0.1",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "simple-git-hooks": "^2.11.1",
+    "ts-node": "^10.9.2",
+    "ts-proto": "^1.169.1",
+    "typedoc": "^0.25.12",
+    "typescript": "^5.6.3"
+  }
+}

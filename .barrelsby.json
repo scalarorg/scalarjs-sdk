@@ -1,0 +1,5 @@
+{
+  "directory": ["./src/**"],
+  "exclude": ["dist", ".test.ts", "dist", "test", "build.ts"],
+  "delete": true
+}

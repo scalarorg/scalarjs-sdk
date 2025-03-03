@@ -1,0 +1,1 @@
+bunx rimraf scalar build cosmos cosmos_proto gogoproto google proto docs src/proto/*
