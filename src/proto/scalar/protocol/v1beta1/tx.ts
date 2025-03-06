@@ -30,10 +30,14 @@ export interface CreateProtocolRequest {
   tag: string;
   attributes?: ProtocolAttributes | undefined;
   custodianGroupUid: string;
-  /** External asset */
-  asset?: Asset | undefined;
   /** Avatar of the protocol, base64 encoded */
   avatar: Uint8Array;
+  /** External asset */
+  asset?: Asset | undefined;
+  tokenName: string;
+  tokenDecimals: number;
+  tokenCapacity: string;
+  tokenDailyMintLimit: string;
 }
 
 export interface CreateProtocolResponse {
@@ -80,8 +84,12 @@ function createBaseCreateProtocolRequest(): CreateProtocolRequest {
     tag: "",
     attributes: undefined,
     custodianGroupUid: "",
-    asset: undefined,
     avatar: new Uint8Array(0),
+    asset: undefined,
+    tokenName: "",
+    tokenDecimals: 0,
+    tokenCapacity: "",
+    tokenDailyMintLimit: "",
   };
 }
 
@@ -111,11 +119,23 @@ export const CreateProtocolRequest = {
     if (message.custodianGroupUid !== "") {
       writer.uint32(50).string(message.custodianGroupUid);
     }
-    if (message.asset !== undefined) {
-      Asset.encode(message.asset, writer.uint32(58).fork()).ldelim();
-    }
     if (message.avatar.length !== 0) {
-      writer.uint32(66).bytes(message.avatar);
+      writer.uint32(58).bytes(message.avatar);
+    }
+    if (message.asset !== undefined) {
+      Asset.encode(message.asset, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.tokenName !== "") {
+      writer.uint32(74).string(message.tokenName);
+    }
+    if (message.tokenDecimals !== 0) {
+      writer.uint32(80).uint32(message.tokenDecimals);
+    }
+    if (message.tokenCapacity !== "") {
+      writer.uint32(90).string(message.tokenCapacity);
+    }
+    if (message.tokenDailyMintLimit !== "") {
+      writer.uint32(98).string(message.tokenDailyMintLimit);
     }
     return writer;
   },
@@ -181,14 +201,42 @@ export const CreateProtocolRequest = {
             break;
           }
 
-          message.asset = Asset.decode(reader, reader.uint32());
+          message.avatar = reader.bytes();
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.avatar = reader.bytes();
+          message.asset = Asset.decode(reader, reader.uint32());
+          continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.tokenName = reader.string();
+          continue;
+        case 10:
+          if (tag !== 80) {
+            break;
+          }
+
+          message.tokenDecimals = reader.uint32();
+          continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.tokenCapacity = reader.string();
+          continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.tokenDailyMintLimit = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -215,10 +263,22 @@ export const CreateProtocolRequest = {
       custodianGroupUid: isSet(object.custodianGroupUid)
         ? globalThis.String(object.custodianGroupUid)
         : "",
-      asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
       avatar: isSet(object.avatar)
         ? bytesFromBase64(object.avatar)
         : new Uint8Array(0),
+      asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
+      tokenName: isSet(object.tokenName)
+        ? globalThis.String(object.tokenName)
+        : "",
+      tokenDecimals: isSet(object.tokenDecimals)
+        ? globalThis.Number(object.tokenDecimals)
+        : 0,
+      tokenCapacity: isSet(object.tokenCapacity)
+        ? globalThis.String(object.tokenCapacity)
+        : "",
+      tokenDailyMintLimit: isSet(object.tokenDailyMintLimit)
+        ? globalThis.String(object.tokenDailyMintLimit)
+        : "",
     };
   },
 
@@ -242,11 +302,23 @@ export const CreateProtocolRequest = {
     if (message.custodianGroupUid !== "") {
       obj.custodianGroupUid = message.custodianGroupUid;
     }
+    if (message.avatar.length !== 0) {
+      obj.avatar = base64FromBytes(message.avatar);
+    }
     if (message.asset !== undefined) {
       obj.asset = Asset.toJSON(message.asset);
     }
-    if (message.avatar.length !== 0) {
-      obj.avatar = base64FromBytes(message.avatar);
+    if (message.tokenName !== "") {
+      obj.tokenName = message.tokenName;
+    }
+    if (message.tokenDecimals !== 0) {
+      obj.tokenDecimals = Math.round(message.tokenDecimals);
+    }
+    if (message.tokenCapacity !== "") {
+      obj.tokenCapacity = message.tokenCapacity;
+    }
+    if (message.tokenDailyMintLimit !== "") {
+      obj.tokenDailyMintLimit = message.tokenDailyMintLimit;
     }
     return obj;
   },
@@ -269,11 +341,15 @@ export const CreateProtocolRequest = {
         ? ProtocolAttributes.fromPartial(object.attributes)
         : undefined;
     message.custodianGroupUid = object.custodianGroupUid ?? "";
+    message.avatar = object.avatar ?? new Uint8Array(0);
     message.asset =
       object.asset !== undefined && object.asset !== null
         ? Asset.fromPartial(object.asset)
         : undefined;
-    message.avatar = object.avatar ?? new Uint8Array(0);
+    message.tokenName = object.tokenName ?? "";
+    message.tokenDecimals = object.tokenDecimals ?? 0;
+    message.tokenCapacity = object.tokenCapacity ?? "";
+    message.tokenDailyMintLimit = object.tokenDailyMintLimit ?? "";
     return message;
   },
 };

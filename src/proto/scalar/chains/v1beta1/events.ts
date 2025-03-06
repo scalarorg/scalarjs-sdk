@@ -8,8 +8,9 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { TokenDetails } from "../../nexus/exported/v1beta1/types";
 import { PollParticipants } from "../../vote/exported/v1beta1/types";
-import { PollMapping, TokenDetails } from "./types";
+import { PollMapping } from "./types";
 
 export const protobufPackage = "scalar.chains.v1beta1";
 

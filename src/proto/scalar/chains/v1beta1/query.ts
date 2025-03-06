@@ -7,6 +7,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { TokenDetails } from "../../nexus/exported/v1beta1/types";
 import { Event } from "./events";
 import { Params } from "./params";
 import {
@@ -18,7 +19,6 @@ import {
   depositStatusFromJSON,
   depositStatusToJSON,
   Proof,
-  TokenDetails,
 } from "./types";
 
 export const protobufPackage = "scalar.chains.v1beta1";

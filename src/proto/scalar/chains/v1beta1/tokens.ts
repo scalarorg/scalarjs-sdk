@@ -7,7 +7,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Status, statusFromJSON, statusToJSON, TokenDetails } from "./types";
+import { TokenDetails } from "../../nexus/exported/v1beta1/types";
+import { Status, statusFromJSON, statusToJSON } from "./types";
 
 export const protobufPackage = "scalar.chains.v1beta1";
 

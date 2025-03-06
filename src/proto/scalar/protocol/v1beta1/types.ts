@@ -9,6 +9,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Asset } from "../../chains/v1beta1/types";
 import { CustodianGroup } from "../../covenant/v1beta1/types";
+import { TokenDetails } from "../../nexus/exported/v1beta1/types";
 import {
   ProtocolAttributes,
   Status,
@@ -30,33 +31,35 @@ export interface Protocol {
   status: Status;
   /** scalar.covenant.v1beta1.CustodianGroup custodian_group = 8; */
   custodianGroupUid: string;
-  /** External asset */
-  asset?: Asset | undefined;
   /** Other chains with internal asset */
   chains: SupportedChain[];
   /** Avatar of the protocol, base64 encoded */
   avatar: Uint8Array;
+  /** External asset */
+  asset?: Asset | undefined;
+  tokenDetails?: TokenDetails | undefined;
+  tokenDailyMintLimit: Uint8Array;
 }
 
 export interface ProtocolDetails {
-  /** BTC's pubkey */
-  bitcoinPubkey: Uint8Array;
-  /** Scalar's pubkey */
-  scalarPubkey: Uint8Array;
   /** Scalar's address */
   scalarAddress: Uint8Array;
+  /** BTC's pubkey */
+  bitcoinPubkey: Uint8Array;
   name: string;
   tag: Uint8Array;
   attributes?: ProtocolAttributes | undefined;
   status: Status;
   custodianGroupUid: string;
-  /** External asset */
-  asset?: Asset | undefined;
   /** Other chains with internal asset */
   chains: SupportedChain[];
   /** Avatar of the protocol, base64 encoded */
   avatar: Uint8Array;
   custodianGroup?: CustodianGroup | undefined;
+  /** External asset */
+  asset?: Asset | undefined;
+  tokenDetails?: TokenDetails | undefined;
+  tokenDailyMintLimit: Uint8Array;
 }
 
 function createBaseProtocol(): Protocol {
@@ -68,9 +71,11 @@ function createBaseProtocol(): Protocol {
     attributes: undefined,
     status: 0,
     custodianGroupUid: "",
-    asset: undefined,
     chains: [],
     avatar: new Uint8Array(0),
+    asset: undefined,
+    tokenDetails: undefined,
+    tokenDailyMintLimit: new Uint8Array(0),
   };
 }
 
@@ -103,14 +108,23 @@ export const Protocol = {
     if (message.custodianGroupUid !== "") {
       writer.uint32(58).string(message.custodianGroupUid);
     }
-    if (message.asset !== undefined) {
-      Asset.encode(message.asset, writer.uint32(66).fork()).ldelim();
-    }
     for (const v of message.chains) {
-      SupportedChain.encode(v!, writer.uint32(74).fork()).ldelim();
+      SupportedChain.encode(v!, writer.uint32(66).fork()).ldelim();
     }
     if (message.avatar.length !== 0) {
-      writer.uint32(82).bytes(message.avatar);
+      writer.uint32(74).bytes(message.avatar);
+    }
+    if (message.asset !== undefined) {
+      Asset.encode(message.asset, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.tokenDetails !== undefined) {
+      TokenDetails.encode(
+        message.tokenDetails,
+        writer.uint32(90).fork(),
+      ).ldelim();
+    }
+    if (message.tokenDailyMintLimit.length !== 0) {
+      writer.uint32(98).bytes(message.tokenDailyMintLimit);
     }
     return writer;
   },
@@ -180,21 +194,35 @@ export const Protocol = {
             break;
           }
 
-          message.asset = Asset.decode(reader, reader.uint32());
+          message.chains.push(SupportedChain.decode(reader, reader.uint32()));
           continue;
         case 9:
           if (tag !== 74) {
             break;
           }
 
-          message.chains.push(SupportedChain.decode(reader, reader.uint32()));
+          message.avatar = reader.bytes();
           continue;
         case 10:
           if (tag !== 82) {
             break;
           }
 
-          message.avatar = reader.bytes();
+          message.asset = Asset.decode(reader, reader.uint32());
+          continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.tokenDetails = TokenDetails.decode(reader, reader.uint32());
+          continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.tokenDailyMintLimit = reader.bytes();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -222,12 +250,18 @@ export const Protocol = {
       custodianGroupUid: isSet(object.custodianGroupUid)
         ? globalThis.String(object.custodianGroupUid)
         : "",
-      asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
       chains: globalThis.Array.isArray(object?.chains)
         ? object.chains.map((e: any) => SupportedChain.fromJSON(e))
         : [],
       avatar: isSet(object.avatar)
         ? bytesFromBase64(object.avatar)
+        : new Uint8Array(0),
+      asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
+      tokenDetails: isSet(object.tokenDetails)
+        ? TokenDetails.fromJSON(object.tokenDetails)
+        : undefined,
+      tokenDailyMintLimit: isSet(object.tokenDailyMintLimit)
+        ? bytesFromBase64(object.tokenDailyMintLimit)
         : new Uint8Array(0),
     };
   },
@@ -255,14 +289,20 @@ export const Protocol = {
     if (message.custodianGroupUid !== "") {
       obj.custodianGroupUid = message.custodianGroupUid;
     }
-    if (message.asset !== undefined) {
-      obj.asset = Asset.toJSON(message.asset);
-    }
     if (message.chains?.length) {
       obj.chains = message.chains.map((e) => SupportedChain.toJSON(e));
     }
     if (message.avatar.length !== 0) {
       obj.avatar = base64FromBytes(message.avatar);
+    }
+    if (message.asset !== undefined) {
+      obj.asset = Asset.toJSON(message.asset);
+    }
+    if (message.tokenDetails !== undefined) {
+      obj.tokenDetails = TokenDetails.toJSON(message.tokenDetails);
+    }
+    if (message.tokenDailyMintLimit.length !== 0) {
+      obj.tokenDailyMintLimit = base64FromBytes(message.tokenDailyMintLimit);
     }
     return obj;
   },
@@ -282,31 +322,38 @@ export const Protocol = {
         : undefined;
     message.status = object.status ?? 0;
     message.custodianGroupUid = object.custodianGroupUid ?? "";
+    message.chains =
+      object.chains?.map((e) => SupportedChain.fromPartial(e)) || [];
+    message.avatar = object.avatar ?? new Uint8Array(0);
     message.asset =
       object.asset !== undefined && object.asset !== null
         ? Asset.fromPartial(object.asset)
         : undefined;
-    message.chains =
-      object.chains?.map((e) => SupportedChain.fromPartial(e)) || [];
-    message.avatar = object.avatar ?? new Uint8Array(0);
+    message.tokenDetails =
+      object.tokenDetails !== undefined && object.tokenDetails !== null
+        ? TokenDetails.fromPartial(object.tokenDetails)
+        : undefined;
+    message.tokenDailyMintLimit =
+      object.tokenDailyMintLimit ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseProtocolDetails(): ProtocolDetails {
   return {
-    bitcoinPubkey: new Uint8Array(0),
-    scalarPubkey: new Uint8Array(0),
     scalarAddress: new Uint8Array(0),
+    bitcoinPubkey: new Uint8Array(0),
     name: "",
     tag: new Uint8Array(0),
     attributes: undefined,
     status: 0,
     custodianGroupUid: "",
-    asset: undefined,
     chains: [],
     avatar: new Uint8Array(0),
     custodianGroup: undefined,
+    asset: undefined,
+    tokenDetails: undefined,
+    tokenDailyMintLimit: new Uint8Array(0),
   };
 }
 
@@ -315,47 +362,53 @@ export const ProtocolDetails = {
     message: ProtocolDetails,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.bitcoinPubkey.length !== 0) {
-      writer.uint32(10).bytes(message.bitcoinPubkey);
-    }
-    if (message.scalarPubkey.length !== 0) {
-      writer.uint32(18).bytes(message.scalarPubkey);
-    }
     if (message.scalarAddress.length !== 0) {
-      writer.uint32(26).bytes(message.scalarAddress);
+      writer.uint32(10).bytes(message.scalarAddress);
+    }
+    if (message.bitcoinPubkey.length !== 0) {
+      writer.uint32(18).bytes(message.bitcoinPubkey);
     }
     if (message.name !== "") {
-      writer.uint32(34).string(message.name);
+      writer.uint32(26).string(message.name);
     }
     if (message.tag.length !== 0) {
-      writer.uint32(42).bytes(message.tag);
+      writer.uint32(34).bytes(message.tag);
     }
     if (message.attributes !== undefined) {
       ProtocolAttributes.encode(
         message.attributes,
-        writer.uint32(50).fork(),
+        writer.uint32(42).fork(),
       ).ldelim();
     }
     if (message.status !== 0) {
-      writer.uint32(56).int32(message.status);
+      writer.uint32(48).int32(message.status);
     }
     if (message.custodianGroupUid !== "") {
-      writer.uint32(66).string(message.custodianGroupUid);
-    }
-    if (message.asset !== undefined) {
-      Asset.encode(message.asset, writer.uint32(74).fork()).ldelim();
+      writer.uint32(58).string(message.custodianGroupUid);
     }
     for (const v of message.chains) {
-      SupportedChain.encode(v!, writer.uint32(82).fork()).ldelim();
+      SupportedChain.encode(v!, writer.uint32(66).fork()).ldelim();
     }
     if (message.avatar.length !== 0) {
-      writer.uint32(90).bytes(message.avatar);
+      writer.uint32(74).bytes(message.avatar);
     }
     if (message.custodianGroup !== undefined) {
       CustodianGroup.encode(
         message.custodianGroup,
+        writer.uint32(82).fork(),
+      ).ldelim();
+    }
+    if (message.asset !== undefined) {
+      Asset.encode(message.asset, writer.uint32(90).fork()).ldelim();
+    }
+    if (message.tokenDetails !== undefined) {
+      TokenDetails.encode(
+        message.tokenDetails,
         writer.uint32(98).fork(),
       ).ldelim();
+    }
+    if (message.tokenDailyMintLimit.length !== 0) {
+      writer.uint32(106).bytes(message.tokenDailyMintLimit);
     }
     return writer;
   },
@@ -373,38 +426,31 @@ export const ProtocolDetails = {
             break;
           }
 
-          message.bitcoinPubkey = reader.bytes();
+          message.scalarAddress = reader.bytes();
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.scalarPubkey = reader.bytes();
+          message.bitcoinPubkey = reader.bytes();
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.scalarAddress = reader.bytes();
+          message.name = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.name = reader.string();
+          message.tag = reader.bytes();
           continue;
         case 5:
           if (tag !== 42) {
-            break;
-          }
-
-          message.tag = reader.bytes();
-          continue;
-        case 6:
-          if (tag !== 50) {
             break;
           }
 
@@ -413,43 +459,36 @@ export const ProtocolDetails = {
             reader.uint32(),
           );
           continue;
-        case 7:
-          if (tag !== 56) {
+        case 6:
+          if (tag !== 48) {
             break;
           }
 
           message.status = reader.int32() as any;
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.string();
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.custodianGroupUid = reader.string();
+          message.chains.push(SupportedChain.decode(reader, reader.uint32()));
           continue;
         case 9:
           if (tag !== 74) {
             break;
           }
 
-          message.asset = Asset.decode(reader, reader.uint32());
+          message.avatar = reader.bytes();
           continue;
         case 10:
           if (tag !== 82) {
-            break;
-          }
-
-          message.chains.push(SupportedChain.decode(reader, reader.uint32()));
-          continue;
-        case 11:
-          if (tag !== 90) {
-            break;
-          }
-
-          message.avatar = reader.bytes();
-          continue;
-        case 12:
-          if (tag !== 98) {
             break;
           }
 
@@ -457,6 +496,27 @@ export const ProtocolDetails = {
             reader,
             reader.uint32(),
           );
+          continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.asset = Asset.decode(reader, reader.uint32());
+          continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.tokenDetails = TokenDetails.decode(reader, reader.uint32());
+          continue;
+        case 13:
+          if (tag !== 106) {
+            break;
+          }
+
+          message.tokenDailyMintLimit = reader.bytes();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -469,14 +529,11 @@ export const ProtocolDetails = {
 
   fromJSON(object: any): ProtocolDetails {
     return {
-      bitcoinPubkey: isSet(object.bitcoinPubkey)
-        ? bytesFromBase64(object.bitcoinPubkey)
-        : new Uint8Array(0),
-      scalarPubkey: isSet(object.scalarPubkey)
-        ? bytesFromBase64(object.scalarPubkey)
-        : new Uint8Array(0),
       scalarAddress: isSet(object.scalarAddress)
         ? bytesFromBase64(object.scalarAddress)
+        : new Uint8Array(0),
+      bitcoinPubkey: isSet(object.bitcoinPubkey)
+        ? bytesFromBase64(object.bitcoinPubkey)
         : new Uint8Array(0),
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       tag: isSet(object.tag) ? bytesFromBase64(object.tag) : new Uint8Array(0),
@@ -487,7 +544,6 @@ export const ProtocolDetails = {
       custodianGroupUid: isSet(object.custodianGroupUid)
         ? globalThis.String(object.custodianGroupUid)
         : "",
-      asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
       chains: globalThis.Array.isArray(object?.chains)
         ? object.chains.map((e: any) => SupportedChain.fromJSON(e))
         : [],
@@ -497,19 +553,23 @@ export const ProtocolDetails = {
       custodianGroup: isSet(object.custodianGroup)
         ? CustodianGroup.fromJSON(object.custodianGroup)
         : undefined,
+      asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
+      tokenDetails: isSet(object.tokenDetails)
+        ? TokenDetails.fromJSON(object.tokenDetails)
+        : undefined,
+      tokenDailyMintLimit: isSet(object.tokenDailyMintLimit)
+        ? bytesFromBase64(object.tokenDailyMintLimit)
+        : new Uint8Array(0),
     };
   },
 
   toJSON(message: ProtocolDetails): unknown {
     const obj: any = {};
-    if (message.bitcoinPubkey.length !== 0) {
-      obj.bitcoinPubkey = base64FromBytes(message.bitcoinPubkey);
-    }
-    if (message.scalarPubkey.length !== 0) {
-      obj.scalarPubkey = base64FromBytes(message.scalarPubkey);
-    }
     if (message.scalarAddress.length !== 0) {
       obj.scalarAddress = base64FromBytes(message.scalarAddress);
+    }
+    if (message.bitcoinPubkey.length !== 0) {
+      obj.bitcoinPubkey = base64FromBytes(message.bitcoinPubkey);
     }
     if (message.name !== "") {
       obj.name = message.name;
@@ -526,9 +586,6 @@ export const ProtocolDetails = {
     if (message.custodianGroupUid !== "") {
       obj.custodianGroupUid = message.custodianGroupUid;
     }
-    if (message.asset !== undefined) {
-      obj.asset = Asset.toJSON(message.asset);
-    }
     if (message.chains?.length) {
       obj.chains = message.chains.map((e) => SupportedChain.toJSON(e));
     }
@@ -537,6 +594,15 @@ export const ProtocolDetails = {
     }
     if (message.custodianGroup !== undefined) {
       obj.custodianGroup = CustodianGroup.toJSON(message.custodianGroup);
+    }
+    if (message.asset !== undefined) {
+      obj.asset = Asset.toJSON(message.asset);
+    }
+    if (message.tokenDetails !== undefined) {
+      obj.tokenDetails = TokenDetails.toJSON(message.tokenDetails);
+    }
+    if (message.tokenDailyMintLimit.length !== 0) {
+      obj.tokenDailyMintLimit = base64FromBytes(message.tokenDailyMintLimit);
     }
     return obj;
   },
@@ -550,9 +616,8 @@ export const ProtocolDetails = {
     object: I,
   ): ProtocolDetails {
     const message = createBaseProtocolDetails();
-    message.bitcoinPubkey = object.bitcoinPubkey ?? new Uint8Array(0);
-    message.scalarPubkey = object.scalarPubkey ?? new Uint8Array(0);
     message.scalarAddress = object.scalarAddress ?? new Uint8Array(0);
+    message.bitcoinPubkey = object.bitcoinPubkey ?? new Uint8Array(0);
     message.name = object.name ?? "";
     message.tag = object.tag ?? new Uint8Array(0);
     message.attributes =
@@ -561,10 +626,6 @@ export const ProtocolDetails = {
         : undefined;
     message.status = object.status ?? 0;
     message.custodianGroupUid = object.custodianGroupUid ?? "";
-    message.asset =
-      object.asset !== undefined && object.asset !== null
-        ? Asset.fromPartial(object.asset)
-        : undefined;
     message.chains =
       object.chains?.map((e) => SupportedChain.fromPartial(e)) || [];
     message.avatar = object.avatar ?? new Uint8Array(0);
@@ -572,6 +633,16 @@ export const ProtocolDetails = {
       object.custodianGroup !== undefined && object.custodianGroup !== null
         ? CustodianGroup.fromPartial(object.custodianGroup)
         : undefined;
+    message.asset =
+      object.asset !== undefined && object.asset !== null
+        ? Asset.fromPartial(object.asset)
+        : undefined;
+    message.tokenDetails =
+      object.tokenDetails !== undefined && object.tokenDetails !== null
+        ? TokenDetails.fromPartial(object.tokenDetails)
+        : undefined;
+    message.tokenDailyMintLimit =
+      object.tokenDailyMintLimit ?? new Uint8Array(0);
     return message;
   },
 };

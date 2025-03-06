@@ -33,6 +33,7 @@ export interface ProtocolRequest {
   minorChain: string;
   symbol: string;
   address: string;
+  sender: Uint8Array;
 }
 
 export interface ProtocolResponse {
@@ -242,7 +243,13 @@ export const ProtocolsResponse = {
 };
 
 function createBaseProtocolRequest(): ProtocolRequest {
-  return { originChain: "", minorChain: "", symbol: "", address: "" };
+  return {
+    originChain: "",
+    minorChain: "",
+    symbol: "",
+    address: "",
+    sender: new Uint8Array(0),
+  };
 }
 
 export const ProtocolRequest = {
@@ -261,6 +268,9 @@ export const ProtocolRequest = {
     }
     if (message.address !== "") {
       writer.uint32(34).string(message.address);
+    }
+    if (message.sender.length !== 0) {
+      writer.uint32(42).bytes(message.sender);
     }
     return writer;
   },
@@ -301,6 +311,13 @@ export const ProtocolRequest = {
 
           message.address = reader.string();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -320,6 +337,9 @@ export const ProtocolRequest = {
         : "",
       symbol: isSet(object.symbol) ? globalThis.String(object.symbol) : "",
       address: isSet(object.address) ? globalThis.String(object.address) : "",
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
     };
   },
 
@@ -337,6 +357,9 @@ export const ProtocolRequest = {
     if (message.address !== "") {
       obj.address = message.address;
     }
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
     return obj;
   },
 
@@ -353,6 +376,7 @@ export const ProtocolRequest = {
     message.minorChain = object.minorChain ?? "";
     message.symbol = object.symbol ?? "";
     message.address = object.address ?? "";
+    message.sender = object.sender ?? new Uint8Array(0);
     return message;
   },
 };
@@ -431,6 +455,31 @@ export const ProtocolResponse = {
     return message;
   },
 };
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if ((globalThis as any).Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if ((globalThis as any).Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin =
   | Date

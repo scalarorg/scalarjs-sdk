@@ -7,6 +7,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { TokenDetails } from "../../../nexus/exported/v1beta1/types";
 
 export const protobufPackage = "scalar.protocol.exported.v1beta1";
 
@@ -125,6 +126,9 @@ export interface ProtocolInfo {
   symbol: string;
   originChain: string;
   minorAddresses: MinorAddress[];
+  tokenDailyMintLimit: Uint8Array;
+  tokenDetails?: TokenDetails | undefined;
+  scalarAddress: Uint8Array;
 }
 
 function createBaseProtocolAttributes(): ProtocolAttributes {
@@ -382,6 +386,9 @@ function createBaseProtocolInfo(): ProtocolInfo {
     symbol: "",
     originChain: "",
     minorAddresses: [],
+    tokenDailyMintLimit: new Uint8Array(0),
+    tokenDetails: undefined,
+    scalarAddress: new Uint8Array(0),
   };
 }
 
@@ -404,6 +411,18 @@ export const ProtocolInfo = {
     }
     for (const v of message.minorAddresses) {
       MinorAddress.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.tokenDailyMintLimit.length !== 0) {
+      writer.uint32(58).bytes(message.tokenDailyMintLimit);
+    }
+    if (message.tokenDetails !== undefined) {
+      TokenDetails.encode(
+        message.tokenDetails,
+        writer.uint32(66).fork(),
+      ).ldelim();
+    }
+    if (message.scalarAddress.length !== 0) {
+      writer.uint32(74).bytes(message.scalarAddress);
     }
     return writer;
   },
@@ -453,6 +472,27 @@ export const ProtocolInfo = {
             MinorAddress.decode(reader, reader.uint32()),
           );
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.tokenDailyMintLimit = reader.bytes();
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.tokenDetails = TokenDetails.decode(reader, reader.uint32());
+          continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.scalarAddress = reader.bytes();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -477,6 +517,15 @@ export const ProtocolInfo = {
       minorAddresses: globalThis.Array.isArray(object?.minorAddresses)
         ? object.minorAddresses.map((e: any) => MinorAddress.fromJSON(e))
         : [],
+      tokenDailyMintLimit: isSet(object.tokenDailyMintLimit)
+        ? bytesFromBase64(object.tokenDailyMintLimit)
+        : new Uint8Array(0),
+      tokenDetails: isSet(object.tokenDetails)
+        ? TokenDetails.fromJSON(object.tokenDetails)
+        : undefined,
+      scalarAddress: isSet(object.scalarAddress)
+        ? bytesFromBase64(object.scalarAddress)
+        : new Uint8Array(0),
     };
   },
 
@@ -499,6 +548,15 @@ export const ProtocolInfo = {
         MinorAddress.toJSON(e),
       );
     }
+    if (message.tokenDailyMintLimit.length !== 0) {
+      obj.tokenDailyMintLimit = base64FromBytes(message.tokenDailyMintLimit);
+    }
+    if (message.tokenDetails !== undefined) {
+      obj.tokenDetails = TokenDetails.toJSON(message.tokenDetails);
+    }
+    if (message.scalarAddress.length !== 0) {
+      obj.scalarAddress = base64FromBytes(message.scalarAddress);
+    }
     return obj;
   },
 
@@ -517,9 +575,41 @@ export const ProtocolInfo = {
     message.originChain = object.originChain ?? "";
     message.minorAddresses =
       object.minorAddresses?.map((e) => MinorAddress.fromPartial(e)) || [];
+    message.tokenDailyMintLimit =
+      object.tokenDailyMintLimit ?? new Uint8Array(0);
+    message.tokenDetails =
+      object.tokenDetails !== undefined && object.tokenDetails !== null
+        ? TokenDetails.fromPartial(object.tokenDetails)
+        : undefined;
+    message.scalarAddress = object.scalarAddress ?? new Uint8Array(0);
     return message;
   },
 };
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if ((globalThis as any).Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if ((globalThis as any).Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin =
   | Date

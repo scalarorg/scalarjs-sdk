@@ -7,7 +7,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Asset, TokenDetails } from "./types";
+import { Asset } from "./types";
 
 export const protobufPackage = "scalar.chains.v1beta1";
 
@@ -91,10 +91,9 @@ export interface CreateBurnTokensResponse {}
 export interface CreateDeployTokenRequest {
   sender: Uint8Array;
   chain: string;
-  asset?: Asset | undefined;
-  tokenDetails?: TokenDetails | undefined;
+  tokenSymbol: string;
+  aliasedTokenName: string;
   address: Uint8Array;
-  dailyMintLimit: string;
 }
 
 export interface CreateDeployTokenResponse {}
@@ -1365,10 +1364,9 @@ function createBaseCreateDeployTokenRequest(): CreateDeployTokenRequest {
   return {
     sender: new Uint8Array(0),
     chain: "",
-    asset: undefined,
-    tokenDetails: undefined,
+    tokenSymbol: "",
+    aliasedTokenName: "",
     address: new Uint8Array(0),
-    dailyMintLimit: "",
   };
 }
 
@@ -1383,20 +1381,14 @@ export const CreateDeployTokenRequest = {
     if (message.chain !== "") {
       writer.uint32(18).string(message.chain);
     }
-    if (message.asset !== undefined) {
-      Asset.encode(message.asset, writer.uint32(26).fork()).ldelim();
+    if (message.tokenSymbol !== "") {
+      writer.uint32(26).string(message.tokenSymbol);
     }
-    if (message.tokenDetails !== undefined) {
-      TokenDetails.encode(
-        message.tokenDetails,
-        writer.uint32(34).fork(),
-      ).ldelim();
+    if (message.aliasedTokenName !== "") {
+      writer.uint32(34).string(message.aliasedTokenName);
     }
     if (message.address.length !== 0) {
-      writer.uint32(50).bytes(message.address);
-    }
-    if (message.dailyMintLimit !== "") {
-      writer.uint32(58).string(message.dailyMintLimit);
+      writer.uint32(42).bytes(message.address);
     }
     return writer;
   },
@@ -1431,28 +1423,21 @@ export const CreateDeployTokenRequest = {
             break;
           }
 
-          message.asset = Asset.decode(reader, reader.uint32());
+          message.tokenSymbol = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.tokenDetails = TokenDetails.decode(reader, reader.uint32());
+          message.aliasedTokenName = reader.string();
           continue;
-        case 6:
-          if (tag !== 50) {
+        case 5:
+          if (tag !== 42) {
             break;
           }
 
           message.address = reader.bytes();
-          continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.dailyMintLimit = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1469,16 +1454,15 @@ export const CreateDeployTokenRequest = {
         ? bytesFromBase64(object.sender)
         : new Uint8Array(0),
       chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
-      asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
-      tokenDetails: isSet(object.tokenDetails)
-        ? TokenDetails.fromJSON(object.tokenDetails)
-        : undefined,
+      tokenSymbol: isSet(object.tokenSymbol)
+        ? globalThis.String(object.tokenSymbol)
+        : "",
+      aliasedTokenName: isSet(object.aliasedTokenName)
+        ? globalThis.String(object.aliasedTokenName)
+        : "",
       address: isSet(object.address)
         ? bytesFromBase64(object.address)
         : new Uint8Array(0),
-      dailyMintLimit: isSet(object.dailyMintLimit)
-        ? globalThis.String(object.dailyMintLimit)
-        : "",
     };
   },
 
@@ -1490,17 +1474,14 @@ export const CreateDeployTokenRequest = {
     if (message.chain !== "") {
       obj.chain = message.chain;
     }
-    if (message.asset !== undefined) {
-      obj.asset = Asset.toJSON(message.asset);
+    if (message.tokenSymbol !== "") {
+      obj.tokenSymbol = message.tokenSymbol;
     }
-    if (message.tokenDetails !== undefined) {
-      obj.tokenDetails = TokenDetails.toJSON(message.tokenDetails);
+    if (message.aliasedTokenName !== "") {
+      obj.aliasedTokenName = message.aliasedTokenName;
     }
     if (message.address.length !== 0) {
       obj.address = base64FromBytes(message.address);
-    }
-    if (message.dailyMintLimit !== "") {
-      obj.dailyMintLimit = message.dailyMintLimit;
     }
     return obj;
   },
@@ -1516,16 +1497,9 @@ export const CreateDeployTokenRequest = {
     const message = createBaseCreateDeployTokenRequest();
     message.sender = object.sender ?? new Uint8Array(0);
     message.chain = object.chain ?? "";
-    message.asset =
-      object.asset !== undefined && object.asset !== null
-        ? Asset.fromPartial(object.asset)
-        : undefined;
-    message.tokenDetails =
-      object.tokenDetails !== undefined && object.tokenDetails !== null
-        ? TokenDetails.fromPartial(object.tokenDetails)
-        : undefined;
+    message.tokenSymbol = object.tokenSymbol ?? "";
+    message.aliasedTokenName = object.aliasedTokenName ?? "";
     message.address = object.address ?? new Uint8Array(0);
-    message.dailyMintLimit = object.dailyMintLimit ?? "";
     return message;
   },
 };

@@ -390,14 +390,7 @@ export interface TransferKey {
 
 export interface Asset {
   chain: string;
-  name: string;
-}
-
-export interface TokenDetails {
-  tokenName: string;
   symbol: string;
-  decimals: number;
-  capacity: Uint8Array;
 }
 
 export interface Gateway {
@@ -1711,7 +1704,7 @@ export const TransferKey = {
 };
 
 function createBaseAsset(): Asset {
-  return { chain: "", name: "" };
+  return { chain: "", symbol: "" };
 }
 
 export const Asset = {
@@ -1719,8 +1712,8 @@ export const Asset = {
     if (message.chain !== "") {
       writer.uint32(10).string(message.chain);
     }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+    if (message.symbol !== "") {
+      writer.uint32(18).string(message.symbol);
     }
     return writer;
   },
@@ -1745,7 +1738,7 @@ export const Asset = {
             break;
           }
 
-          message.name = reader.string();
+          message.symbol = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1759,7 +1752,7 @@ export const Asset = {
   fromJSON(object: any): Asset {
     return {
       chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      symbol: isSet(object.symbol) ? globalThis.String(object.symbol) : "",
     };
   },
 
@@ -1768,8 +1761,8 @@ export const Asset = {
     if (message.chain !== "") {
       obj.chain = message.chain;
     }
-    if (message.name !== "") {
-      obj.name = message.name;
+    if (message.symbol !== "") {
+      obj.symbol = message.symbol;
     }
     return obj;
   },
@@ -1780,128 +1773,7 @@ export const Asset = {
   fromPartial<I extends Exact<DeepPartial<Asset>, I>>(object: I): Asset {
     const message = createBaseAsset();
     message.chain = object.chain ?? "";
-    message.name = object.name ?? "";
-    return message;
-  },
-};
-
-function createBaseTokenDetails(): TokenDetails {
-  return {
-    tokenName: "",
-    symbol: "",
-    decimals: 0,
-    capacity: new Uint8Array(0),
-  };
-}
-
-export const TokenDetails = {
-  encode(
-    message: TokenDetails,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.tokenName !== "") {
-      writer.uint32(10).string(message.tokenName);
-    }
-    if (message.symbol !== "") {
-      writer.uint32(18).string(message.symbol);
-    }
-    if (message.decimals !== 0) {
-      writer.uint32(24).uint32(message.decimals);
-    }
-    if (message.capacity.length !== 0) {
-      writer.uint32(34).bytes(message.capacity);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): TokenDetails {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTokenDetails();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.tokenName = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.symbol = reader.string();
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.decimals = reader.uint32();
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.capacity = reader.bytes();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): TokenDetails {
-    return {
-      tokenName: isSet(object.tokenName)
-        ? globalThis.String(object.tokenName)
-        : "",
-      symbol: isSet(object.symbol) ? globalThis.String(object.symbol) : "",
-      decimals: isSet(object.decimals) ? globalThis.Number(object.decimals) : 0,
-      capacity: isSet(object.capacity)
-        ? bytesFromBase64(object.capacity)
-        : new Uint8Array(0),
-    };
-  },
-
-  toJSON(message: TokenDetails): unknown {
-    const obj: any = {};
-    if (message.tokenName !== "") {
-      obj.tokenName = message.tokenName;
-    }
-    if (message.symbol !== "") {
-      obj.symbol = message.symbol;
-    }
-    if (message.decimals !== 0) {
-      obj.decimals = Math.round(message.decimals);
-    }
-    if (message.capacity.length !== 0) {
-      obj.capacity = base64FromBytes(message.capacity);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<TokenDetails>, I>>(
-    base?: I,
-  ): TokenDetails {
-    return TokenDetails.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<TokenDetails>, I>>(
-    object: I,
-  ): TokenDetails {
-    const message = createBaseTokenDetails();
-    message.tokenName = object.tokenName ?? "";
     message.symbol = object.symbol ?? "";
-    message.decimals = object.decimals ?? 0;
-    message.capacity = object.capacity ?? new Uint8Array(0);
     return message;
   },
 };
