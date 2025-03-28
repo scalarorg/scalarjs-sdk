@@ -14,14 +14,15 @@ import {
   keyStateToJSON,
 } from "../../multisig/exported/v1beta1/types";
 import { KeygenParticipant } from "../../multisig/v1beta1/query";
-import { Params } from "./params";
 import {
   Custodian,
   CustodianGroup,
   Status,
   statusFromJSON,
   statusToJSON,
-} from "./types";
+} from "../exported/v1beta1/custodian";
+import { Params } from "./params";
+import { RedeemSession } from "./redeem";
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 
@@ -36,7 +37,7 @@ export interface CustodiansResponse {
 }
 
 export interface GroupsRequest {
-  uid: string;
+  uid: Uint8Array;
 }
 
 export interface GroupsResponse {
@@ -64,6 +65,14 @@ export interface KeyResponse {
   bondedWeight: Uint8Array;
   /** Keygen participants in descending order by weight */
   participants: KeygenParticipant[];
+}
+
+export interface RedeemSessionRequest {
+  uid: Uint8Array;
+}
+
+export interface RedeemSessionResponse {
+  session?: RedeemSession | undefined;
 }
 
 function createBaseCustodiansRequest(): CustodiansRequest {
@@ -236,7 +245,7 @@ export const CustodiansResponse = {
 };
 
 function createBaseGroupsRequest(): GroupsRequest {
-  return { uid: "" };
+  return { uid: new Uint8Array(0) };
 }
 
 export const GroupsRequest = {
@@ -244,8 +253,8 @@ export const GroupsRequest = {
     message: GroupsRequest,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.uid !== "") {
-      writer.uint32(10).string(message.uid);
+    if (message.uid.length !== 0) {
+      writer.uint32(10).bytes(message.uid);
     }
     return writer;
   },
@@ -263,7 +272,7 @@ export const GroupsRequest = {
             break;
           }
 
-          message.uid = reader.string();
+          message.uid = reader.bytes();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -275,13 +284,15 @@ export const GroupsRequest = {
   },
 
   fromJSON(object: any): GroupsRequest {
-    return { uid: isSet(object.uid) ? globalThis.String(object.uid) : "" };
+    return {
+      uid: isSet(object.uid) ? bytesFromBase64(object.uid) : new Uint8Array(0),
+    };
   },
 
   toJSON(message: GroupsRequest): unknown {
     const obj: any = {};
-    if (message.uid !== "") {
-      obj.uid = message.uid;
+    if (message.uid.length !== 0) {
+      obj.uid = base64FromBytes(message.uid);
     }
     return obj;
   },
@@ -295,7 +306,7 @@ export const GroupsRequest = {
     object: I,
   ): GroupsRequest {
     const message = createBaseGroupsRequest();
-    message.uid = object.uid ?? "";
+    message.uid = object.uid ?? new Uint8Array(0);
     return message;
   },
 };
@@ -738,6 +749,151 @@ export const KeyResponse = {
     message.bondedWeight = object.bondedWeight ?? new Uint8Array(0);
     message.participants =
       object.participants?.map((e) => KeygenParticipant.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseRedeemSessionRequest(): RedeemSessionRequest {
+  return { uid: new Uint8Array(0) };
+}
+
+export const RedeemSessionRequest = {
+  encode(
+    message: RedeemSessionRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.uid.length !== 0) {
+      writer.uint32(10).bytes(message.uid);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): RedeemSessionRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRedeemSessionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RedeemSessionRequest {
+    return {
+      uid: isSet(object.uid) ? bytesFromBase64(object.uid) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: RedeemSessionRequest): unknown {
+    const obj: any = {};
+    if (message.uid.length !== 0) {
+      obj.uid = base64FromBytes(message.uid);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RedeemSessionRequest>, I>>(
+    base?: I,
+  ): RedeemSessionRequest {
+    return RedeemSessionRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RedeemSessionRequest>, I>>(
+    object: I,
+  ): RedeemSessionRequest {
+    const message = createBaseRedeemSessionRequest();
+    message.uid = object.uid ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseRedeemSessionResponse(): RedeemSessionResponse {
+  return { session: undefined };
+}
+
+export const RedeemSessionResponse = {
+  encode(
+    message: RedeemSessionResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.session !== undefined) {
+      RedeemSession.encode(message.session, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): RedeemSessionResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRedeemSessionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.session = RedeemSession.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RedeemSessionResponse {
+    return {
+      session: isSet(object.session)
+        ? RedeemSession.fromJSON(object.session)
+        : undefined,
+    };
+  },
+
+  toJSON(message: RedeemSessionResponse): unknown {
+    const obj: any = {};
+    if (message.session !== undefined) {
+      obj.session = RedeemSession.toJSON(message.session);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RedeemSessionResponse>, I>>(
+    base?: I,
+  ): RedeemSessionResponse {
+    return RedeemSessionResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RedeemSessionResponse>, I>>(
+    object: I,
+  ): RedeemSessionResponse {
+    const message = createBaseRedeemSessionResponse();
+    message.session =
+      object.session !== undefined && object.session !== null
+        ? RedeemSession.fromPartial(object.session)
+        : undefined;
     return message;
   },
 };

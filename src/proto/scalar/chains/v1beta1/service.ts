@@ -55,6 +55,8 @@ import {
   CreateTransferOperatorshipResponse,
   LinkRequest,
   LinkResponse,
+  RegisterCustodianGroupRequest,
+  RegisterCustodianGroupResponse,
   RetryFailedEventRequest,
   RetryFailedEventResponse,
   SetGatewayRequest,
@@ -62,8 +64,6 @@ import {
   SignBtcCommandsRequest,
   SignCommandsRequest,
   SignCommandsResponse,
-  SignPsbtCommandRequest,
-  SignPsbtCommandResponse,
 } from "./tx";
 
 export const protobufPackage = "scalar.chains.v1beta1";
@@ -98,13 +98,13 @@ export interface MsgService {
   SignBtcCommand(
     request: SignBtcCommandsRequest,
   ): Promise<SignCommandsResponse>;
-  SignPsbtCommand(
-    request: SignPsbtCommandRequest,
-  ): Promise<SignPsbtCommandResponse>;
   AddChain(request: AddChainRequest): Promise<AddChainResponse>;
   RetryFailedEvent(
     request: RetryFailedEventRequest,
   ): Promise<RetryFailedEventResponse>;
+  RegisterCustodianGroup(
+    request: RegisterCustodianGroupRequest,
+  ): Promise<RegisterCustodianGroupResponse>;
 }
 
 export const MsgServiceServiceName = "scalar.chains.v1beta1.MsgService";
@@ -127,9 +127,9 @@ export class MsgServiceClientImpl implements MsgService {
       this.CreateTransferOperatorship.bind(this);
     this.SignCommands = this.SignCommands.bind(this);
     this.SignBtcCommand = this.SignBtcCommand.bind(this);
-    this.SignPsbtCommand = this.SignPsbtCommand.bind(this);
     this.AddChain = this.AddChain.bind(this);
     this.RetryFailedEvent = this.RetryFailedEvent.bind(this);
+    this.RegisterCustodianGroup = this.RegisterCustodianGroup.bind(this);
   }
   ConfirmSourceTxs(
     request: ConfirmSourceTxsRequest,
@@ -249,16 +249,6 @@ export class MsgServiceClientImpl implements MsgService {
     );
   }
 
-  SignPsbtCommand(
-    request: SignPsbtCommandRequest,
-  ): Promise<SignPsbtCommandResponse> {
-    const data = SignPsbtCommandRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SignPsbtCommand", data);
-    return promise.then((data) =>
-      SignPsbtCommandResponse.decode(_m0.Reader.create(data)),
-    );
-  }
-
   AddChain(request: AddChainRequest): Promise<AddChainResponse> {
     const data = AddChainRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "AddChain", data);
@@ -274,6 +264,20 @@ export class MsgServiceClientImpl implements MsgService {
     const promise = this.rpc.request(this.service, "RetryFailedEvent", data);
     return promise.then((data) =>
       RetryFailedEventResponse.decode(_m0.Reader.create(data)),
+    );
+  }
+
+  RegisterCustodianGroup(
+    request: RegisterCustodianGroupRequest,
+  ): Promise<RegisterCustodianGroupResponse> {
+    const data = RegisterCustodianGroupRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      this.service,
+      "RegisterCustodianGroup",
+      data,
+    );
+    return promise.then((data) =>
+      RegisterCustodianGroupResponse.decode(_m0.Reader.create(data)),
     );
   }
 }

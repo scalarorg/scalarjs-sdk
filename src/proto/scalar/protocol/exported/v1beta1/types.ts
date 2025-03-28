@@ -112,16 +112,7 @@ export interface SupportedChain {
 }
 
 export interface ProtocolInfo {
-  /**
-   * string key_id = 1 [
-   *   (gogoproto.customname) = "KeyID",
-   *   (gogoproto.casttype) =
-   *       "github.com/scalarorg/scalar-core/x/multisig/exported.KeyID"
-   * ];
-   * bytes custodians_pubkey = 2 [ (gogoproto.customname) = "CustodiansPubkey"
-   * ];
-   */
-  custodiansGroupUid: string;
+  custodianGroupUid: Uint8Array;
   liquidityModel: LiquidityModel;
   symbol: string;
   originChain: string;
@@ -129,6 +120,7 @@ export interface ProtocolInfo {
   tokenDailyMintLimit: Uint8Array;
   tokenDetails?: TokenDetails | undefined;
   scalarAddress: Uint8Array;
+  status: Status;
 }
 
 function createBaseProtocolAttributes(): ProtocolAttributes {
@@ -381,7 +373,7 @@ export const SupportedChain = {
 
 function createBaseProtocolInfo(): ProtocolInfo {
   return {
-    custodiansGroupUid: "",
+    custodianGroupUid: new Uint8Array(0),
     liquidityModel: 0,
     symbol: "",
     originChain: "",
@@ -389,6 +381,7 @@ function createBaseProtocolInfo(): ProtocolInfo {
     tokenDailyMintLimit: new Uint8Array(0),
     tokenDetails: undefined,
     scalarAddress: new Uint8Array(0),
+    status: 0,
   };
 }
 
@@ -397,8 +390,8 @@ export const ProtocolInfo = {
     message: ProtocolInfo,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.custodiansGroupUid !== "") {
-      writer.uint32(10).string(message.custodiansGroupUid);
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(10).bytes(message.custodianGroupUid);
     }
     if (message.liquidityModel !== 0) {
       writer.uint32(16).int32(message.liquidityModel);
@@ -424,6 +417,9 @@ export const ProtocolInfo = {
     if (message.scalarAddress.length !== 0) {
       writer.uint32(74).bytes(message.scalarAddress);
     }
+    if (message.status !== 0) {
+      writer.uint32(48).int32(message.status);
+    }
     return writer;
   },
 
@@ -440,7 +436,7 @@ export const ProtocolInfo = {
             break;
           }
 
-          message.custodiansGroupUid = reader.string();
+          message.custodianGroupUid = reader.bytes();
           continue;
         case 2:
           if (tag !== 16) {
@@ -493,6 +489,13 @@ export const ProtocolInfo = {
 
           message.scalarAddress = reader.bytes();
           continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -504,9 +507,9 @@ export const ProtocolInfo = {
 
   fromJSON(object: any): ProtocolInfo {
     return {
-      custodiansGroupUid: isSet(object.custodiansGroupUid)
-        ? globalThis.String(object.custodiansGroupUid)
-        : "",
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
       liquidityModel: isSet(object.liquidityModel)
         ? liquidityModelFromJSON(object.liquidityModel)
         : 0,
@@ -526,13 +529,14 @@ export const ProtocolInfo = {
       scalarAddress: isSet(object.scalarAddress)
         ? bytesFromBase64(object.scalarAddress)
         : new Uint8Array(0),
+      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
     };
   },
 
   toJSON(message: ProtocolInfo): unknown {
     const obj: any = {};
-    if (message.custodiansGroupUid !== "") {
-      obj.custodiansGroupUid = message.custodiansGroupUid;
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
     }
     if (message.liquidityModel !== 0) {
       obj.liquidityModel = liquidityModelToJSON(message.liquidityModel);
@@ -557,6 +561,9 @@ export const ProtocolInfo = {
     if (message.scalarAddress.length !== 0) {
       obj.scalarAddress = base64FromBytes(message.scalarAddress);
     }
+    if (message.status !== 0) {
+      obj.status = statusToJSON(message.status);
+    }
     return obj;
   },
 
@@ -569,7 +576,7 @@ export const ProtocolInfo = {
     object: I,
   ): ProtocolInfo {
     const message = createBaseProtocolInfo();
-    message.custodiansGroupUid = object.custodiansGroupUid ?? "";
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
     message.liquidityModel = object.liquidityModel ?? 0;
     message.symbol = object.symbol ?? "";
     message.originChain = object.originChain ?? "";
@@ -582,6 +589,7 @@ export const ProtocolInfo = {
         ? TokenDetails.fromPartial(object.tokenDetails)
         : undefined;
     message.scalarAddress = object.scalarAddress ?? new Uint8Array(0);
+    message.status = object.status ?? 0;
     return message;
   },
 };

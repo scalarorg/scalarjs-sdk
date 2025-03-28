@@ -8,6 +8,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { TapScriptSigsMap } from "../exported/v1beta1/types";
+import { Phase, phaseFromJSON, phaseToJSON, UTXOSnapshot } from "./redeem";
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 
@@ -47,6 +48,116 @@ export interface KeyRotated {
   module: string;
   chain: string;
   keyId: string;
+}
+
+export interface SwitchPhaseStarted {
+  module: string;
+  chain: string;
+  symbol: string;
+  sequence: Long;
+  /** Current phase */
+  phase: Phase;
+  /** Next sequence and phase encoded in the payload */
+  executeData: string;
+}
+
+export interface SwitchPhaseCompleted {
+  module: string;
+  sequence: Long;
+  phase: Phase;
+}
+
+/** For Validation process */
+export interface ConfirmSwitchedPhaseStarted {
+  pollId: Long;
+  txId: Uint8Array;
+  chain: string;
+  confirmationHeight: Long;
+  participants: Uint8Array[];
+  custodianGroupUid: Uint8Array;
+}
+
+export interface ConfirmRedeemTxStarted {
+  pollId: Long;
+  txIds: Uint8Array[];
+  chain: string;
+  confirmationHeight: Long;
+  participants: Uint8Array[];
+  custodianGroupUid: Uint8Array;
+  scriptPubkey: Uint8Array;
+  networkParams: string;
+}
+
+export interface Event {
+  chain: string;
+  hash: Uint8Array;
+  status: Event_Status;
+  index: Long;
+  redeemTxsConfirmed?: RedeemTxsConfirmed | undefined;
+  switchedPhaseConfirmed?: SwitchedPhaseConfirmed | undefined;
+}
+
+export enum Event_Status {
+  STATUS_UNSPECIFIED = 0,
+  STATUS_CONFIRMED = 1,
+  STATUS_COMPLETED = 2,
+  STATUS_FAILED = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function event_StatusFromJSON(object: any): Event_Status {
+  switch (object) {
+    case 0:
+    case "STATUS_UNSPECIFIED":
+      return Event_Status.STATUS_UNSPECIFIED;
+    case 1:
+    case "STATUS_CONFIRMED":
+      return Event_Status.STATUS_CONFIRMED;
+    case 2:
+    case "STATUS_COMPLETED":
+      return Event_Status.STATUS_COMPLETED;
+    case 3:
+    case "STATUS_FAILED":
+      return Event_Status.STATUS_FAILED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Event_Status.UNRECOGNIZED;
+  }
+}
+
+export function event_StatusToJSON(object: Event_Status): string {
+  switch (object) {
+    case Event_Status.STATUS_UNSPECIFIED:
+      return "STATUS_UNSPECIFIED";
+    case Event_Status.STATUS_CONFIRMED:
+      return "STATUS_CONFIRMED";
+    case Event_Status.STATUS_COMPLETED:
+      return "STATUS_COMPLETED";
+    case Event_Status.STATUS_FAILED:
+      return "STATUS_FAILED";
+    case Event_Status.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export interface VoteEvents {
+  chain: string;
+  events: Event[];
+}
+
+export interface RedeemTxsConfirmed {
+  eventIds: string[];
+  utxoSnapshot?: UTXOSnapshot | undefined;
+}
+
+export interface SwitchedPhaseConfirmed {
+  eventId: string;
+  custodianGroupUid: Uint8Array;
+  sequence: Long;
+  fromPhase: Long;
+  toPhase: Long;
 }
 
 function createBaseSigningPsbtStarted(): SigningPsbtStarted {
@@ -740,6 +851,1143 @@ export const KeyRotated = {
     message.module = object.module ?? "";
     message.chain = object.chain ?? "";
     message.keyId = object.keyId ?? "";
+    return message;
+  },
+};
+
+function createBaseSwitchPhaseStarted(): SwitchPhaseStarted {
+  return {
+    module: "",
+    chain: "",
+    symbol: "",
+    sequence: Long.UZERO,
+    phase: 0,
+    executeData: "",
+  };
+}
+
+export const SwitchPhaseStarted = {
+  encode(
+    message: SwitchPhaseStarted,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.module !== "") {
+      writer.uint32(10).string(message.module);
+    }
+    if (message.chain !== "") {
+      writer.uint32(18).string(message.chain);
+    }
+    if (message.symbol !== "") {
+      writer.uint32(26).string(message.symbol);
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      writer.uint32(32).uint64(message.sequence);
+    }
+    if (message.phase !== 0) {
+      writer.uint32(40).int32(message.phase);
+    }
+    if (message.executeData !== "") {
+      writer.uint32(50).string(message.executeData);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SwitchPhaseStarted {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSwitchPhaseStarted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.module = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.symbol = reader.string();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.sequence = reader.uint64() as Long;
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.phase = reader.int32() as any;
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.executeData = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SwitchPhaseStarted {
+    return {
+      module: isSet(object.module) ? globalThis.String(object.module) : "",
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      symbol: isSet(object.symbol) ? globalThis.String(object.symbol) : "",
+      sequence: isSet(object.sequence)
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO,
+      phase: isSet(object.phase) ? phaseFromJSON(object.phase) : 0,
+      executeData: isSet(object.executeData)
+        ? globalThis.String(object.executeData)
+        : "",
+    };
+  },
+
+  toJSON(message: SwitchPhaseStarted): unknown {
+    const obj: any = {};
+    if (message.module !== "") {
+      obj.module = message.module;
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.symbol !== "") {
+      obj.symbol = message.symbol;
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      obj.sequence = (message.sequence || Long.UZERO).toString();
+    }
+    if (message.phase !== 0) {
+      obj.phase = phaseToJSON(message.phase);
+    }
+    if (message.executeData !== "") {
+      obj.executeData = message.executeData;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SwitchPhaseStarted>, I>>(
+    base?: I,
+  ): SwitchPhaseStarted {
+    return SwitchPhaseStarted.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SwitchPhaseStarted>, I>>(
+    object: I,
+  ): SwitchPhaseStarted {
+    const message = createBaseSwitchPhaseStarted();
+    message.module = object.module ?? "";
+    message.chain = object.chain ?? "";
+    message.symbol = object.symbol ?? "";
+    message.sequence =
+      object.sequence !== undefined && object.sequence !== null
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO;
+    message.phase = object.phase ?? 0;
+    message.executeData = object.executeData ?? "";
+    return message;
+  },
+};
+
+function createBaseSwitchPhaseCompleted(): SwitchPhaseCompleted {
+  return { module: "", sequence: Long.UZERO, phase: 0 };
+}
+
+export const SwitchPhaseCompleted = {
+  encode(
+    message: SwitchPhaseCompleted,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.module !== "") {
+      writer.uint32(10).string(message.module);
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      writer.uint32(16).uint64(message.sequence);
+    }
+    if (message.phase !== 0) {
+      writer.uint32(24).int32(message.phase);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): SwitchPhaseCompleted {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSwitchPhaseCompleted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.module = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.sequence = reader.uint64() as Long;
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.phase = reader.int32() as any;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SwitchPhaseCompleted {
+    return {
+      module: isSet(object.module) ? globalThis.String(object.module) : "",
+      sequence: isSet(object.sequence)
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO,
+      phase: isSet(object.phase) ? phaseFromJSON(object.phase) : 0,
+    };
+  },
+
+  toJSON(message: SwitchPhaseCompleted): unknown {
+    const obj: any = {};
+    if (message.module !== "") {
+      obj.module = message.module;
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      obj.sequence = (message.sequence || Long.UZERO).toString();
+    }
+    if (message.phase !== 0) {
+      obj.phase = phaseToJSON(message.phase);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SwitchPhaseCompleted>, I>>(
+    base?: I,
+  ): SwitchPhaseCompleted {
+    return SwitchPhaseCompleted.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SwitchPhaseCompleted>, I>>(
+    object: I,
+  ): SwitchPhaseCompleted {
+    const message = createBaseSwitchPhaseCompleted();
+    message.module = object.module ?? "";
+    message.sequence =
+      object.sequence !== undefined && object.sequence !== null
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO;
+    message.phase = object.phase ?? 0;
+    return message;
+  },
+};
+
+function createBaseConfirmSwitchedPhaseStarted(): ConfirmSwitchedPhaseStarted {
+  return {
+    pollId: Long.UZERO,
+    txId: new Uint8Array(0),
+    chain: "",
+    confirmationHeight: Long.UZERO,
+    participants: [],
+    custodianGroupUid: new Uint8Array(0),
+  };
+}
+
+export const ConfirmSwitchedPhaseStarted = {
+  encode(
+    message: ConfirmSwitchedPhaseStarted,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (!message.pollId.equals(Long.UZERO)) {
+      writer.uint32(8).uint64(message.pollId);
+    }
+    if (message.txId.length !== 0) {
+      writer.uint32(18).bytes(message.txId);
+    }
+    if (message.chain !== "") {
+      writer.uint32(26).string(message.chain);
+    }
+    if (!message.confirmationHeight.equals(Long.UZERO)) {
+      writer.uint32(32).uint64(message.confirmationHeight);
+    }
+    for (const v of message.participants) {
+      writer.uint32(42).bytes(v!);
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(50).bytes(message.custodianGroupUid);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmSwitchedPhaseStarted {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmSwitchedPhaseStarted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.pollId = reader.uint64() as Long;
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.txId = reader.bytes();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.confirmationHeight = reader.uint64() as Long;
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.participants.push(reader.bytes());
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConfirmSwitchedPhaseStarted {
+    return {
+      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      txId: isSet(object.txId)
+        ? bytesFromBase64(object.txId)
+        : new Uint8Array(0),
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      confirmationHeight: isSet(object.confirmationHeight)
+        ? Long.fromValue(object.confirmationHeight)
+        : Long.UZERO,
+      participants: globalThis.Array.isArray(object?.participants)
+        ? object.participants.map((e: any) => bytesFromBase64(e))
+        : [],
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: ConfirmSwitchedPhaseStarted): unknown {
+    const obj: any = {};
+    if (!message.pollId.equals(Long.UZERO)) {
+      obj.pollId = (message.pollId || Long.UZERO).toString();
+    }
+    if (message.txId.length !== 0) {
+      obj.txId = base64FromBytes(message.txId);
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (!message.confirmationHeight.equals(Long.UZERO)) {
+      obj.confirmationHeight = (
+        message.confirmationHeight || Long.UZERO
+      ).toString();
+    }
+    if (message.participants?.length) {
+      obj.participants = message.participants.map((e) => base64FromBytes(e));
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ConfirmSwitchedPhaseStarted>, I>>(
+    base?: I,
+  ): ConfirmSwitchedPhaseStarted {
+    return ConfirmSwitchedPhaseStarted.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ConfirmSwitchedPhaseStarted>, I>>(
+    object: I,
+  ): ConfirmSwitchedPhaseStarted {
+    const message = createBaseConfirmSwitchedPhaseStarted();
+    message.pollId =
+      object.pollId !== undefined && object.pollId !== null
+        ? Long.fromValue(object.pollId)
+        : Long.UZERO;
+    message.txId = object.txId ?? new Uint8Array(0);
+    message.chain = object.chain ?? "";
+    message.confirmationHeight =
+      object.confirmationHeight !== undefined &&
+      object.confirmationHeight !== null
+        ? Long.fromValue(object.confirmationHeight)
+        : Long.UZERO;
+    message.participants = object.participants?.map((e) => e) || [];
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseConfirmRedeemTxStarted(): ConfirmRedeemTxStarted {
+  return {
+    pollId: Long.UZERO,
+    txIds: [],
+    chain: "",
+    confirmationHeight: Long.UZERO,
+    participants: [],
+    custodianGroupUid: new Uint8Array(0),
+    scriptPubkey: new Uint8Array(0),
+    networkParams: "",
+  };
+}
+
+export const ConfirmRedeemTxStarted = {
+  encode(
+    message: ConfirmRedeemTxStarted,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (!message.pollId.equals(Long.UZERO)) {
+      writer.uint32(8).uint64(message.pollId);
+    }
+    for (const v of message.txIds) {
+      writer.uint32(18).bytes(v!);
+    }
+    if (message.chain !== "") {
+      writer.uint32(26).string(message.chain);
+    }
+    if (!message.confirmationHeight.equals(Long.UZERO)) {
+      writer.uint32(32).uint64(message.confirmationHeight);
+    }
+    for (const v of message.participants) {
+      writer.uint32(42).bytes(v!);
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(50).bytes(message.custodianGroupUid);
+    }
+    if (message.scriptPubkey.length !== 0) {
+      writer.uint32(58).bytes(message.scriptPubkey);
+    }
+    if (message.networkParams !== "") {
+      writer.uint32(66).string(message.networkParams);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmRedeemTxStarted {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmRedeemTxStarted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.pollId = reader.uint64() as Long;
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.txIds.push(reader.bytes());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.confirmationHeight = reader.uint64() as Long;
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.participants.push(reader.bytes());
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.bytes();
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.scriptPubkey = reader.bytes();
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.networkParams = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConfirmRedeemTxStarted {
+    return {
+      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      txIds: globalThis.Array.isArray(object?.txIds)
+        ? object.txIds.map((e: any) => bytesFromBase64(e))
+        : [],
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      confirmationHeight: isSet(object.confirmationHeight)
+        ? Long.fromValue(object.confirmationHeight)
+        : Long.UZERO,
+      participants: globalThis.Array.isArray(object?.participants)
+        ? object.participants.map((e: any) => bytesFromBase64(e))
+        : [],
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
+      scriptPubkey: isSet(object.scriptPubkey)
+        ? bytesFromBase64(object.scriptPubkey)
+        : new Uint8Array(0),
+      networkParams: isSet(object.networkParams)
+        ? globalThis.String(object.networkParams)
+        : "",
+    };
+  },
+
+  toJSON(message: ConfirmRedeemTxStarted): unknown {
+    const obj: any = {};
+    if (!message.pollId.equals(Long.UZERO)) {
+      obj.pollId = (message.pollId || Long.UZERO).toString();
+    }
+    if (message.txIds?.length) {
+      obj.txIds = message.txIds.map((e) => base64FromBytes(e));
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (!message.confirmationHeight.equals(Long.UZERO)) {
+      obj.confirmationHeight = (
+        message.confirmationHeight || Long.UZERO
+      ).toString();
+    }
+    if (message.participants?.length) {
+      obj.participants = message.participants.map((e) => base64FromBytes(e));
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
+    }
+    if (message.scriptPubkey.length !== 0) {
+      obj.scriptPubkey = base64FromBytes(message.scriptPubkey);
+    }
+    if (message.networkParams !== "") {
+      obj.networkParams = message.networkParams;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ConfirmRedeemTxStarted>, I>>(
+    base?: I,
+  ): ConfirmRedeemTxStarted {
+    return ConfirmRedeemTxStarted.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ConfirmRedeemTxStarted>, I>>(
+    object: I,
+  ): ConfirmRedeemTxStarted {
+    const message = createBaseConfirmRedeemTxStarted();
+    message.pollId =
+      object.pollId !== undefined && object.pollId !== null
+        ? Long.fromValue(object.pollId)
+        : Long.UZERO;
+    message.txIds = object.txIds?.map((e) => e) || [];
+    message.chain = object.chain ?? "";
+    message.confirmationHeight =
+      object.confirmationHeight !== undefined &&
+      object.confirmationHeight !== null
+        ? Long.fromValue(object.confirmationHeight)
+        : Long.UZERO;
+    message.participants = object.participants?.map((e) => e) || [];
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
+    message.scriptPubkey = object.scriptPubkey ?? new Uint8Array(0);
+    message.networkParams = object.networkParams ?? "";
+    return message;
+  },
+};
+
+function createBaseEvent(): Event {
+  return {
+    chain: "",
+    hash: new Uint8Array(0),
+    status: 0,
+    index: Long.UZERO,
+    redeemTxsConfirmed: undefined,
+    switchedPhaseConfirmed: undefined,
+  };
+}
+
+export const Event = {
+  encode(message: Event, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    if (message.hash.length !== 0) {
+      writer.uint32(18).bytes(message.hash);
+    }
+    if (message.status !== 0) {
+      writer.uint32(24).int32(message.status);
+    }
+    if (!message.index.equals(Long.UZERO)) {
+      writer.uint32(32).uint64(message.index);
+    }
+    if (message.redeemTxsConfirmed !== undefined) {
+      RedeemTxsConfirmed.encode(
+        message.redeemTxsConfirmed,
+        writer.uint32(42).fork(),
+      ).ldelim();
+    }
+    if (message.switchedPhaseConfirmed !== undefined) {
+      SwitchedPhaseConfirmed.encode(
+        message.switchedPhaseConfirmed,
+        writer.uint32(50).fork(),
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Event {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.hash = reader.bytes();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.index = reader.uint64() as Long;
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.redeemTxsConfirmed = RedeemTxsConfirmed.decode(
+            reader,
+            reader.uint32(),
+          );
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.switchedPhaseConfirmed = SwitchedPhaseConfirmed.decode(
+            reader,
+            reader.uint32(),
+          );
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Event {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      hash: isSet(object.hash)
+        ? bytesFromBase64(object.hash)
+        : new Uint8Array(0),
+      status: isSet(object.status) ? event_StatusFromJSON(object.status) : 0,
+      index: isSet(object.index) ? Long.fromValue(object.index) : Long.UZERO,
+      redeemTxsConfirmed: isSet(object.redeemTxsConfirmed)
+        ? RedeemTxsConfirmed.fromJSON(object.redeemTxsConfirmed)
+        : undefined,
+      switchedPhaseConfirmed: isSet(object.switchedPhaseConfirmed)
+        ? SwitchedPhaseConfirmed.fromJSON(object.switchedPhaseConfirmed)
+        : undefined,
+    };
+  },
+
+  toJSON(message: Event): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.hash.length !== 0) {
+      obj.hash = base64FromBytes(message.hash);
+    }
+    if (message.status !== 0) {
+      obj.status = event_StatusToJSON(message.status);
+    }
+    if (!message.index.equals(Long.UZERO)) {
+      obj.index = (message.index || Long.UZERO).toString();
+    }
+    if (message.redeemTxsConfirmed !== undefined) {
+      obj.redeemTxsConfirmed = RedeemTxsConfirmed.toJSON(
+        message.redeemTxsConfirmed,
+      );
+    }
+    if (message.switchedPhaseConfirmed !== undefined) {
+      obj.switchedPhaseConfirmed = SwitchedPhaseConfirmed.toJSON(
+        message.switchedPhaseConfirmed,
+      );
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Event>, I>>(base?: I): Event {
+    return Event.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Event>, I>>(object: I): Event {
+    const message = createBaseEvent();
+    message.chain = object.chain ?? "";
+    message.hash = object.hash ?? new Uint8Array(0);
+    message.status = object.status ?? 0;
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromValue(object.index)
+        : Long.UZERO;
+    message.redeemTxsConfirmed =
+      object.redeemTxsConfirmed !== undefined &&
+      object.redeemTxsConfirmed !== null
+        ? RedeemTxsConfirmed.fromPartial(object.redeemTxsConfirmed)
+        : undefined;
+    message.switchedPhaseConfirmed =
+      object.switchedPhaseConfirmed !== undefined &&
+      object.switchedPhaseConfirmed !== null
+        ? SwitchedPhaseConfirmed.fromPartial(object.switchedPhaseConfirmed)
+        : undefined;
+    return message;
+  },
+};
+
+function createBaseVoteEvents(): VoteEvents {
+  return { chain: "", events: [] };
+}
+
+export const VoteEvents = {
+  encode(
+    message: VoteEvents,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    for (const v of message.events) {
+      Event.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VoteEvents {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVoteEvents();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.events.push(Event.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VoteEvents {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      events: globalThis.Array.isArray(object?.events)
+        ? object.events.map((e: any) => Event.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: VoteEvents): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.events?.length) {
+      obj.events = message.events.map((e) => Event.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<VoteEvents>, I>>(base?: I): VoteEvents {
+    return VoteEvents.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<VoteEvents>, I>>(
+    object: I,
+  ): VoteEvents {
+    const message = createBaseVoteEvents();
+    message.chain = object.chain ?? "";
+    message.events = object.events?.map((e) => Event.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseRedeemTxsConfirmed(): RedeemTxsConfirmed {
+  return { eventIds: [], utxoSnapshot: undefined };
+}
+
+export const RedeemTxsConfirmed = {
+  encode(
+    message: RedeemTxsConfirmed,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    for (const v of message.eventIds) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.utxoSnapshot !== undefined) {
+      UTXOSnapshot.encode(
+        message.utxoSnapshot,
+        writer.uint32(18).fork(),
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RedeemTxsConfirmed {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRedeemTxsConfirmed();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.eventIds.push(reader.string());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.utxoSnapshot = UTXOSnapshot.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RedeemTxsConfirmed {
+    return {
+      eventIds: globalThis.Array.isArray(object?.eventIds)
+        ? object.eventIds.map((e: any) => globalThis.String(e))
+        : [],
+      utxoSnapshot: isSet(object.utxoSnapshot)
+        ? UTXOSnapshot.fromJSON(object.utxoSnapshot)
+        : undefined,
+    };
+  },
+
+  toJSON(message: RedeemTxsConfirmed): unknown {
+    const obj: any = {};
+    if (message.eventIds?.length) {
+      obj.eventIds = message.eventIds;
+    }
+    if (message.utxoSnapshot !== undefined) {
+      obj.utxoSnapshot = UTXOSnapshot.toJSON(message.utxoSnapshot);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RedeemTxsConfirmed>, I>>(
+    base?: I,
+  ): RedeemTxsConfirmed {
+    return RedeemTxsConfirmed.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RedeemTxsConfirmed>, I>>(
+    object: I,
+  ): RedeemTxsConfirmed {
+    const message = createBaseRedeemTxsConfirmed();
+    message.eventIds = object.eventIds?.map((e) => e) || [];
+    message.utxoSnapshot =
+      object.utxoSnapshot !== undefined && object.utxoSnapshot !== null
+        ? UTXOSnapshot.fromPartial(object.utxoSnapshot)
+        : undefined;
+    return message;
+  },
+};
+
+function createBaseSwitchedPhaseConfirmed(): SwitchedPhaseConfirmed {
+  return {
+    eventId: "",
+    custodianGroupUid: new Uint8Array(0),
+    sequence: Long.UZERO,
+    fromPhase: Long.UZERO,
+    toPhase: Long.UZERO,
+  };
+}
+
+export const SwitchedPhaseConfirmed = {
+  encode(
+    message: SwitchedPhaseConfirmed,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.eventId !== "") {
+      writer.uint32(10).string(message.eventId);
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(18).bytes(message.custodianGroupUid);
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      writer.uint32(24).uint64(message.sequence);
+    }
+    if (!message.fromPhase.equals(Long.UZERO)) {
+      writer.uint32(32).uint64(message.fromPhase);
+    }
+    if (!message.toPhase.equals(Long.UZERO)) {
+      writer.uint32(40).uint64(message.toPhase);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): SwitchedPhaseConfirmed {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSwitchedPhaseConfirmed();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.eventId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.bytes();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.sequence = reader.uint64() as Long;
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.fromPhase = reader.uint64() as Long;
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.toPhase = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SwitchedPhaseConfirmed {
+    return {
+      eventId: isSet(object.eventId) ? globalThis.String(object.eventId) : "",
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
+      sequence: isSet(object.sequence)
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO,
+      fromPhase: isSet(object.fromPhase)
+        ? Long.fromValue(object.fromPhase)
+        : Long.UZERO,
+      toPhase: isSet(object.toPhase)
+        ? Long.fromValue(object.toPhase)
+        : Long.UZERO,
+    };
+  },
+
+  toJSON(message: SwitchedPhaseConfirmed): unknown {
+    const obj: any = {};
+    if (message.eventId !== "") {
+      obj.eventId = message.eventId;
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      obj.sequence = (message.sequence || Long.UZERO).toString();
+    }
+    if (!message.fromPhase.equals(Long.UZERO)) {
+      obj.fromPhase = (message.fromPhase || Long.UZERO).toString();
+    }
+    if (!message.toPhase.equals(Long.UZERO)) {
+      obj.toPhase = (message.toPhase || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SwitchedPhaseConfirmed>, I>>(
+    base?: I,
+  ): SwitchedPhaseConfirmed {
+    return SwitchedPhaseConfirmed.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SwitchedPhaseConfirmed>, I>>(
+    object: I,
+  ): SwitchedPhaseConfirmed {
+    const message = createBaseSwitchedPhaseConfirmed();
+    message.eventId = object.eventId ?? "";
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
+    message.sequence =
+      object.sequence !== undefined && object.sequence !== null
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO;
+    message.fromPhase =
+      object.fromPhase !== undefined && object.fromPhase !== null
+        ? Long.fromValue(object.fromPhase)
+        : Long.UZERO;
+    message.toPhase =
+      object.toPhase !== undefined && object.toPhase !== null
+        ? Long.fromValue(object.toPhase)
+        : Long.UZERO;
     return message;
   },
 };

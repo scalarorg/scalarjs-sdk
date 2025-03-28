@@ -7,14 +7,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { TapScriptSigsMap } from "../exported/v1beta1/types";
 import {
   Custodian,
   CustodianGroup,
   Status,
   statusFromJSON,
   statusToJSON,
-} from "./types";
+} from "../exported/v1beta1/custodian";
+import { TapScriptSigsMap } from "../exported/v1beta1/types";
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 
@@ -106,6 +106,42 @@ export interface RotateKeyRequest {
 }
 
 export interface RotateKeyResponse {}
+
+export interface ConfirmSwitchedPhaseRequest {
+  sender: Uint8Array;
+  chain: string;
+  custodianGroupUid: Uint8Array;
+  txId: Uint8Array;
+}
+
+export interface ConfirmSwitchedPhaseResponse {}
+
+export interface ReserveRedeemUtxoRequest {
+  sender: Uint8Array;
+  /** User evm address */
+  address: string;
+  /** Evm chain */
+  sourceChain: string;
+  /** BTC chain */
+  destChain: string;
+  /** Token symbol */
+  symbol: string;
+  /** Redeem amount */
+  amount: Long;
+  lockingScript: Uint8Array;
+}
+
+export interface ReserveRedeemUtxoResponse {}
+
+/** Confirm exectuted transaction on bitcoin */
+export interface ConfirmRedeemTxsRequest {
+  sender: Uint8Array;
+  chain: string;
+  txIds: Uint8Array[];
+  custodianGroupUid: Uint8Array;
+}
+
+export interface ConfirmRedeemTxsResponse {}
 
 function createBaseCreateCustodianRequest(): CreateCustodianRequest {
   return {
@@ -1673,6 +1709,599 @@ export const RotateKeyResponse = {
     _: I,
   ): RotateKeyResponse {
     const message = createBaseRotateKeyResponse();
+    return message;
+  },
+};
+
+function createBaseConfirmSwitchedPhaseRequest(): ConfirmSwitchedPhaseRequest {
+  return {
+    sender: new Uint8Array(0),
+    chain: "",
+    custodianGroupUid: new Uint8Array(0),
+    txId: new Uint8Array(0),
+  };
+}
+
+export const ConfirmSwitchedPhaseRequest = {
+  encode(
+    message: ConfirmSwitchedPhaseRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.sender.length !== 0) {
+      writer.uint32(10).bytes(message.sender);
+    }
+    if (message.chain !== "") {
+      writer.uint32(18).string(message.chain);
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(26).bytes(message.custodianGroupUid);
+    }
+    if (message.txId.length !== 0) {
+      writer.uint32(34).bytes(message.txId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmSwitchedPhaseRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmSwitchedPhaseRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.bytes();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.txId = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConfirmSwitchedPhaseRequest {
+    return {
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
+      txId: isSet(object.txId)
+        ? bytesFromBase64(object.txId)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: ConfirmSwitchedPhaseRequest): unknown {
+    const obj: any = {};
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
+    }
+    if (message.txId.length !== 0) {
+      obj.txId = base64FromBytes(message.txId);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ConfirmSwitchedPhaseRequest>, I>>(
+    base?: I,
+  ): ConfirmSwitchedPhaseRequest {
+    return ConfirmSwitchedPhaseRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ConfirmSwitchedPhaseRequest>, I>>(
+    object: I,
+  ): ConfirmSwitchedPhaseRequest {
+    const message = createBaseConfirmSwitchedPhaseRequest();
+    message.sender = object.sender ?? new Uint8Array(0);
+    message.chain = object.chain ?? "";
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
+    message.txId = object.txId ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseConfirmSwitchedPhaseResponse(): ConfirmSwitchedPhaseResponse {
+  return {};
+}
+
+export const ConfirmSwitchedPhaseResponse = {
+  encode(
+    _: ConfirmSwitchedPhaseResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmSwitchedPhaseResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmSwitchedPhaseResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ConfirmSwitchedPhaseResponse {
+    return {};
+  },
+
+  toJSON(_: ConfirmSwitchedPhaseResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ConfirmSwitchedPhaseResponse>, I>>(
+    base?: I,
+  ): ConfirmSwitchedPhaseResponse {
+    return ConfirmSwitchedPhaseResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ConfirmSwitchedPhaseResponse>, I>>(
+    _: I,
+  ): ConfirmSwitchedPhaseResponse {
+    const message = createBaseConfirmSwitchedPhaseResponse();
+    return message;
+  },
+};
+
+function createBaseReserveRedeemUtxoRequest(): ReserveRedeemUtxoRequest {
+  return {
+    sender: new Uint8Array(0),
+    address: "",
+    sourceChain: "",
+    destChain: "",
+    symbol: "",
+    amount: Long.UZERO,
+    lockingScript: new Uint8Array(0),
+  };
+}
+
+export const ReserveRedeemUtxoRequest = {
+  encode(
+    message: ReserveRedeemUtxoRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.sender.length !== 0) {
+      writer.uint32(10).bytes(message.sender);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    if (message.sourceChain !== "") {
+      writer.uint32(26).string(message.sourceChain);
+    }
+    if (message.destChain !== "") {
+      writer.uint32(34).string(message.destChain);
+    }
+    if (message.symbol !== "") {
+      writer.uint32(42).string(message.symbol);
+    }
+    if (!message.amount.equals(Long.UZERO)) {
+      writer.uint32(48).uint64(message.amount);
+    }
+    if (message.lockingScript.length !== 0) {
+      writer.uint32(58).bytes(message.lockingScript);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ReserveRedeemUtxoRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReserveRedeemUtxoRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.sourceChain = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.destChain = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.symbol = reader.string();
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.amount = reader.uint64() as Long;
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.lockingScript = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ReserveRedeemUtxoRequest {
+    return {
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
+      address: isSet(object.address) ? globalThis.String(object.address) : "",
+      sourceChain: isSet(object.sourceChain)
+        ? globalThis.String(object.sourceChain)
+        : "",
+      destChain: isSet(object.destChain)
+        ? globalThis.String(object.destChain)
+        : "",
+      symbol: isSet(object.symbol) ? globalThis.String(object.symbol) : "",
+      amount: isSet(object.amount) ? Long.fromValue(object.amount) : Long.UZERO,
+      lockingScript: isSet(object.lockingScript)
+        ? bytesFromBase64(object.lockingScript)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: ReserveRedeemUtxoRequest): unknown {
+    const obj: any = {};
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    if (message.sourceChain !== "") {
+      obj.sourceChain = message.sourceChain;
+    }
+    if (message.destChain !== "") {
+      obj.destChain = message.destChain;
+    }
+    if (message.symbol !== "") {
+      obj.symbol = message.symbol;
+    }
+    if (!message.amount.equals(Long.UZERO)) {
+      obj.amount = (message.amount || Long.UZERO).toString();
+    }
+    if (message.lockingScript.length !== 0) {
+      obj.lockingScript = base64FromBytes(message.lockingScript);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ReserveRedeemUtxoRequest>, I>>(
+    base?: I,
+  ): ReserveRedeemUtxoRequest {
+    return ReserveRedeemUtxoRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ReserveRedeemUtxoRequest>, I>>(
+    object: I,
+  ): ReserveRedeemUtxoRequest {
+    const message = createBaseReserveRedeemUtxoRequest();
+    message.sender = object.sender ?? new Uint8Array(0);
+    message.address = object.address ?? "";
+    message.sourceChain = object.sourceChain ?? "";
+    message.destChain = object.destChain ?? "";
+    message.symbol = object.symbol ?? "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Long.fromValue(object.amount)
+        : Long.UZERO;
+    message.lockingScript = object.lockingScript ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseReserveRedeemUtxoResponse(): ReserveRedeemUtxoResponse {
+  return {};
+}
+
+export const ReserveRedeemUtxoResponse = {
+  encode(
+    _: ReserveRedeemUtxoResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ReserveRedeemUtxoResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReserveRedeemUtxoResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ReserveRedeemUtxoResponse {
+    return {};
+  },
+
+  toJSON(_: ReserveRedeemUtxoResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ReserveRedeemUtxoResponse>, I>>(
+    base?: I,
+  ): ReserveRedeemUtxoResponse {
+    return ReserveRedeemUtxoResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ReserveRedeemUtxoResponse>, I>>(
+    _: I,
+  ): ReserveRedeemUtxoResponse {
+    const message = createBaseReserveRedeemUtxoResponse();
+    return message;
+  },
+};
+
+function createBaseConfirmRedeemTxsRequest(): ConfirmRedeemTxsRequest {
+  return {
+    sender: new Uint8Array(0),
+    chain: "",
+    txIds: [],
+    custodianGroupUid: new Uint8Array(0),
+  };
+}
+
+export const ConfirmRedeemTxsRequest = {
+  encode(
+    message: ConfirmRedeemTxsRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.sender.length !== 0) {
+      writer.uint32(10).bytes(message.sender);
+    }
+    if (message.chain !== "") {
+      writer.uint32(18).string(message.chain);
+    }
+    for (const v of message.txIds) {
+      writer.uint32(26).bytes(v!);
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(34).bytes(message.custodianGroupUid);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmRedeemTxsRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmRedeemTxsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.txIds.push(reader.bytes());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConfirmRedeemTxsRequest {
+    return {
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      txIds: globalThis.Array.isArray(object?.txIds)
+        ? object.txIds.map((e: any) => bytesFromBase64(e))
+        : [],
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: ConfirmRedeemTxsRequest): unknown {
+    const obj: any = {};
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.txIds?.length) {
+      obj.txIds = message.txIds.map((e) => base64FromBytes(e));
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ConfirmRedeemTxsRequest>, I>>(
+    base?: I,
+  ): ConfirmRedeemTxsRequest {
+    return ConfirmRedeemTxsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ConfirmRedeemTxsRequest>, I>>(
+    object: I,
+  ): ConfirmRedeemTxsRequest {
+    const message = createBaseConfirmRedeemTxsRequest();
+    message.sender = object.sender ?? new Uint8Array(0);
+    message.chain = object.chain ?? "";
+    message.txIds = object.txIds?.map((e) => e) || [];
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseConfirmRedeemTxsResponse(): ConfirmRedeemTxsResponse {
+  return {};
+}
+
+export const ConfirmRedeemTxsResponse = {
+  encode(
+    _: ConfirmRedeemTxsResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmRedeemTxsResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmRedeemTxsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ConfirmRedeemTxsResponse {
+    return {};
+  },
+
+  toJSON(_: ConfirmRedeemTxsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ConfirmRedeemTxsResponse>, I>>(
+    base?: I,
+  ): ConfirmRedeemTxsResponse {
+    return ConfirmRedeemTxsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ConfirmRedeemTxsResponse>, I>>(
+    _: I,
+  ): ConfirmRedeemTxsResponse {
+    const message = createBaseConfirmRedeemTxsResponse();
     return message;
   },
 };

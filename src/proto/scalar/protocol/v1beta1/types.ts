@@ -8,7 +8,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Asset } from "../../chains/v1beta1/types";
-import { CustodianGroup } from "../../covenant/v1beta1/types";
+import { CustodianGroup } from "../../covenant/exported/v1beta1/custodian";
 import { TokenDetails } from "../../nexus/exported/v1beta1/types";
 import {
   ProtocolAttributes,
@@ -29,8 +29,7 @@ export interface Protocol {
   tag: Uint8Array;
   attributes?: ProtocolAttributes | undefined;
   status: Status;
-  /** scalar.covenant.v1beta1.CustodianGroup custodian_group = 8; */
-  custodianGroupUid: string;
+  custodianGroupUid: Uint8Array;
   /** Other chains with internal asset */
   chains: SupportedChain[];
   /** Avatar of the protocol, base64 encoded */
@@ -50,7 +49,7 @@ export interface ProtocolDetails {
   tag: Uint8Array;
   attributes?: ProtocolAttributes | undefined;
   status: Status;
-  custodianGroupUid: string;
+  custodianGroupUid: Uint8Array;
   /** Other chains with internal asset */
   chains: SupportedChain[];
   /** Avatar of the protocol, base64 encoded */
@@ -70,7 +69,7 @@ function createBaseProtocol(): Protocol {
     tag: new Uint8Array(0),
     attributes: undefined,
     status: 0,
-    custodianGroupUid: "",
+    custodianGroupUid: new Uint8Array(0),
     chains: [],
     avatar: new Uint8Array(0),
     asset: undefined,
@@ -105,8 +104,8 @@ export const Protocol = {
     if (message.status !== 0) {
       writer.uint32(48).int32(message.status);
     }
-    if (message.custodianGroupUid !== "") {
-      writer.uint32(58).string(message.custodianGroupUid);
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(58).bytes(message.custodianGroupUid);
     }
     for (const v of message.chains) {
       SupportedChain.encode(v!, writer.uint32(66).fork()).ldelim();
@@ -187,7 +186,7 @@ export const Protocol = {
             break;
           }
 
-          message.custodianGroupUid = reader.string();
+          message.custodianGroupUid = reader.bytes();
           continue;
         case 8:
           if (tag !== 66) {
@@ -248,8 +247,8 @@ export const Protocol = {
         : undefined,
       status: isSet(object.status) ? statusFromJSON(object.status) : 0,
       custodianGroupUid: isSet(object.custodianGroupUid)
-        ? globalThis.String(object.custodianGroupUid)
-        : "",
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
       chains: globalThis.Array.isArray(object?.chains)
         ? object.chains.map((e: any) => SupportedChain.fromJSON(e))
         : [],
@@ -286,8 +285,8 @@ export const Protocol = {
     if (message.status !== 0) {
       obj.status = statusToJSON(message.status);
     }
-    if (message.custodianGroupUid !== "") {
-      obj.custodianGroupUid = message.custodianGroupUid;
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
     }
     if (message.chains?.length) {
       obj.chains = message.chains.map((e) => SupportedChain.toJSON(e));
@@ -321,7 +320,7 @@ export const Protocol = {
         ? ProtocolAttributes.fromPartial(object.attributes)
         : undefined;
     message.status = object.status ?? 0;
-    message.custodianGroupUid = object.custodianGroupUid ?? "";
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
     message.chains =
       object.chains?.map((e) => SupportedChain.fromPartial(e)) || [];
     message.avatar = object.avatar ?? new Uint8Array(0);
@@ -347,7 +346,7 @@ function createBaseProtocolDetails(): ProtocolDetails {
     tag: new Uint8Array(0),
     attributes: undefined,
     status: 0,
-    custodianGroupUid: "",
+    custodianGroupUid: new Uint8Array(0),
     chains: [],
     avatar: new Uint8Array(0),
     custodianGroup: undefined,
@@ -383,8 +382,8 @@ export const ProtocolDetails = {
     if (message.status !== 0) {
       writer.uint32(48).int32(message.status);
     }
-    if (message.custodianGroupUid !== "") {
-      writer.uint32(58).string(message.custodianGroupUid);
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(58).bytes(message.custodianGroupUid);
     }
     for (const v of message.chains) {
       SupportedChain.encode(v!, writer.uint32(66).fork()).ldelim();
@@ -471,7 +470,7 @@ export const ProtocolDetails = {
             break;
           }
 
-          message.custodianGroupUid = reader.string();
+          message.custodianGroupUid = reader.bytes();
           continue;
         case 8:
           if (tag !== 66) {
@@ -542,8 +541,8 @@ export const ProtocolDetails = {
         : undefined,
       status: isSet(object.status) ? statusFromJSON(object.status) : 0,
       custodianGroupUid: isSet(object.custodianGroupUid)
-        ? globalThis.String(object.custodianGroupUid)
-        : "",
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
       chains: globalThis.Array.isArray(object?.chains)
         ? object.chains.map((e: any) => SupportedChain.fromJSON(e))
         : [],
@@ -583,8 +582,8 @@ export const ProtocolDetails = {
     if (message.status !== 0) {
       obj.status = statusToJSON(message.status);
     }
-    if (message.custodianGroupUid !== "") {
-      obj.custodianGroupUid = message.custodianGroupUid;
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
     }
     if (message.chains?.length) {
       obj.chains = message.chains.map((e) => SupportedChain.toJSON(e));
@@ -625,7 +624,7 @@ export const ProtocolDetails = {
         ? ProtocolAttributes.fromPartial(object.attributes)
         : undefined;
     message.status = object.status ?? 0;
-    message.custodianGroupUid = object.custodianGroupUid ?? "";
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
     message.chains =
       object.chains?.map((e) => SupportedChain.fromPartial(e)) || [];
     message.avatar = object.avatar ?? new Uint8Array(0);

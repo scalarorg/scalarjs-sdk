@@ -7,8 +7,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Custodian, CustodianGroup } from "../exported/v1beta1/custodian";
 import { Params } from "./params";
-import { Custodian, CustodianGroup, SigningSession } from "./types";
+import { SigningSession } from "./types";
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 

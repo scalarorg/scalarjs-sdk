@@ -18,84 +18,6 @@ import {
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 
-export enum Status {
-  STATUS_UNSPECIFIED = 0,
-  STATUS_ACTIVATED = 1,
-  STATUS_DEACTIVATED = 2,
-  STATUS_PENDING = 3,
-  UNRECOGNIZED = -1,
-}
-
-export function statusFromJSON(object: any): Status {
-  switch (object) {
-    case 0:
-    case "STATUS_UNSPECIFIED":
-      return Status.STATUS_UNSPECIFIED;
-    case 1:
-    case "STATUS_ACTIVATED":
-      return Status.STATUS_ACTIVATED;
-    case 2:
-    case "STATUS_DEACTIVATED":
-      return Status.STATUS_DEACTIVATED;
-    case 3:
-    case "STATUS_PENDING":
-      return Status.STATUS_PENDING;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return Status.UNRECOGNIZED;
-  }
-}
-
-export function statusToJSON(object: Status): string {
-  switch (object) {
-    case Status.STATUS_UNSPECIFIED:
-      return "STATUS_UNSPECIFIED";
-    case Status.STATUS_ACTIVATED:
-      return "STATUS_ACTIVATED";
-    case Status.STATUS_DEACTIVATED:
-      return "STATUS_DEACTIVATED";
-    case Status.STATUS_PENDING:
-      return "STATUS_PENDING";
-    case Status.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
-/** Custodian represents an individual custodian configuration */
-export interface Custodian {
-  /** e.g., "Custodian1" */
-  name: string;
-  /** e.g., "scalarvaloper1..." */
-  valAddress: string;
-  /** e.g., */
-  bitcoinPubkey: Uint8Array;
-  /** "0215da913b3e87b4932b1e1b87d9667c28e7250aa0ed60b3a31095f541e1641488" */
-  status: Status;
-  description: string;
-}
-
-/**
- * CustodianGroup represents a group of custodians with their configuration
- * uid is used as identity of the group, btc_pubkey is change by list of
- * custodians
- */
-export interface CustodianGroup {
-  /** the UID is unique, to distinguish between custodian groups */
-  uid: string;
-  /** e.g., "All" */
-  name: string;
-  /** e.g., */
-  bitcoinPubkey: Uint8Array;
-  /** "tb1p07q440mdl4uyywns325dk8pvjphwety3psp4zvkngtjf3z3hhr2sfar3hv" */
-  quorum: number;
-  /** Whether the custodian is active */
-  status: Status;
-  description: string;
-  custodians: Custodian[];
-}
-
 export interface PsbtMultiSig {
   keyId: string;
   multiPsbt: Uint8Array[];
@@ -120,314 +42,34 @@ export interface SigningSession {
   moduleMetadata?: Any | undefined;
 }
 
-function createBaseCustodian(): Custodian {
-  return {
-    name: "",
-    valAddress: "",
-    bitcoinPubkey: new Uint8Array(0),
-    status: 0,
-    description: "",
-  };
+export interface BasicPollMetadata {
+  chain: string;
+  data: Uint8Array;
 }
 
-export const Custodian = {
-  encode(
-    message: Custodian,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (message.valAddress !== "") {
-      writer.uint32(18).string(message.valAddress);
-    }
-    if (message.bitcoinPubkey.length !== 0) {
-      writer.uint32(26).bytes(message.bitcoinPubkey);
-    }
-    if (message.status !== 0) {
-      writer.uint32(32).int32(message.status);
-    }
-    if (message.description !== "") {
-      writer.uint32(42).string(message.description);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): Custodian {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCustodian();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.name = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.valAddress = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.bitcoinPubkey = reader.bytes();
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.status = reader.int32() as any;
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.description = reader.string();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Custodian {
-    return {
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
-      valAddress: isSet(object.valAddress)
-        ? globalThis.String(object.valAddress)
-        : "",
-      bitcoinPubkey: isSet(object.bitcoinPubkey)
-        ? bytesFromBase64(object.bitcoinPubkey)
-        : new Uint8Array(0),
-      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
-      description: isSet(object.description)
-        ? globalThis.String(object.description)
-        : "",
-    };
-  },
-
-  toJSON(message: Custodian): unknown {
-    const obj: any = {};
-    if (message.name !== "") {
-      obj.name = message.name;
-    }
-    if (message.valAddress !== "") {
-      obj.valAddress = message.valAddress;
-    }
-    if (message.bitcoinPubkey.length !== 0) {
-      obj.bitcoinPubkey = base64FromBytes(message.bitcoinPubkey);
-    }
-    if (message.status !== 0) {
-      obj.status = statusToJSON(message.status);
-    }
-    if (message.description !== "") {
-      obj.description = message.description;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Custodian>, I>>(base?: I): Custodian {
-    return Custodian.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<Custodian>, I>>(
-    object: I,
-  ): Custodian {
-    const message = createBaseCustodian();
-    message.name = object.name ?? "";
-    message.valAddress = object.valAddress ?? "";
-    message.bitcoinPubkey = object.bitcoinPubkey ?? new Uint8Array(0);
-    message.status = object.status ?? 0;
-    message.description = object.description ?? "";
-    return message;
-  },
-};
-
-function createBaseCustodianGroup(): CustodianGroup {
-  return {
-    uid: "",
-    name: "",
-    bitcoinPubkey: new Uint8Array(0),
-    quorum: 0,
-    status: 0,
-    description: "",
-    custodians: [],
-  };
+export interface BasicPollFailed {
+  chain: string;
+  data: Uint8Array;
+  pollId: Long;
 }
 
-export const CustodianGroup = {
-  encode(
-    message: CustodianGroup,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.uid !== "") {
-      writer.uint32(10).string(message.uid);
-    }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
-    }
-    if (message.bitcoinPubkey.length !== 0) {
-      writer.uint32(26).bytes(message.bitcoinPubkey);
-    }
-    if (message.quorum !== 0) {
-      writer.uint32(32).uint32(message.quorum);
-    }
-    if (message.status !== 0) {
-      writer.uint32(40).int32(message.status);
-    }
-    if (message.description !== "") {
-      writer.uint32(50).string(message.description);
-    }
-    for (const v of message.custodians) {
-      Custodian.encode(v!, writer.uint32(58).fork()).ldelim();
-    }
-    return writer;
-  },
+export interface BasicPollExpired {
+  chain: string;
+  data: Uint8Array;
+  pollId: Long;
+}
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CustodianGroup {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCustodianGroup();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
+export interface BasicPollCompleted {
+  chain: string;
+  data: Uint8Array;
+  pollId: Long;
+}
 
-          message.uid = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.name = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.bitcoinPubkey = reader.bytes();
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.quorum = reader.uint32();
-          continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.status = reader.int32() as any;
-          continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.description = reader.string();
-          continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.custodians.push(Custodian.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): CustodianGroup {
-    return {
-      uid: isSet(object.uid) ? globalThis.String(object.uid) : "",
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
-      bitcoinPubkey: isSet(object.bitcoinPubkey)
-        ? bytesFromBase64(object.bitcoinPubkey)
-        : new Uint8Array(0),
-      quorum: isSet(object.quorum) ? globalThis.Number(object.quorum) : 0,
-      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
-      description: isSet(object.description)
-        ? globalThis.String(object.description)
-        : "",
-      custodians: globalThis.Array.isArray(object?.custodians)
-        ? object.custodians.map((e: any) => Custodian.fromJSON(e))
-        : [],
-    };
-  },
-
-  toJSON(message: CustodianGroup): unknown {
-    const obj: any = {};
-    if (message.uid !== "") {
-      obj.uid = message.uid;
-    }
-    if (message.name !== "") {
-      obj.name = message.name;
-    }
-    if (message.bitcoinPubkey.length !== 0) {
-      obj.bitcoinPubkey = base64FromBytes(message.bitcoinPubkey);
-    }
-    if (message.quorum !== 0) {
-      obj.quorum = Math.round(message.quorum);
-    }
-    if (message.status !== 0) {
-      obj.status = statusToJSON(message.status);
-    }
-    if (message.description !== "") {
-      obj.description = message.description;
-    }
-    if (message.custodians?.length) {
-      obj.custodians = message.custodians.map((e) => Custodian.toJSON(e));
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<CustodianGroup>, I>>(
-    base?: I,
-  ): CustodianGroup {
-    return CustodianGroup.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<CustodianGroup>, I>>(
-    object: I,
-  ): CustodianGroup {
-    const message = createBaseCustodianGroup();
-    message.uid = object.uid ?? "";
-    message.name = object.name ?? "";
-    message.bitcoinPubkey = object.bitcoinPubkey ?? new Uint8Array(0);
-    message.quorum = object.quorum ?? 0;
-    message.status = object.status ?? 0;
-    message.description = object.description ?? "";
-    message.custodians =
-      object.custodians?.map((e) => Custodian.fromPartial(e)) || [];
-    return message;
-  },
-};
+export interface BasicPollNoEventsConfirmed {
+  chain: string;
+  data: Uint8Array;
+  pollId: Long;
+}
 
 function createBasePsbtMultiSig(): PsbtMultiSig {
   return {
@@ -915,6 +557,501 @@ export const SigningSession = {
       object.moduleMetadata !== undefined && object.moduleMetadata !== null
         ? Any.fromPartial(object.moduleMetadata)
         : undefined;
+    return message;
+  },
+};
+
+function createBaseBasicPollMetadata(): BasicPollMetadata {
+  return { chain: "", data: new Uint8Array(0) };
+}
+
+export const BasicPollMetadata = {
+  encode(
+    message: BasicPollMetadata,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(18).bytes(message.data);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BasicPollMetadata {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBasicPollMetadata();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BasicPollMetadata {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      data: isSet(object.data)
+        ? bytesFromBase64(object.data)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: BasicPollMetadata): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BasicPollMetadata>, I>>(
+    base?: I,
+  ): BasicPollMetadata {
+    return BasicPollMetadata.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BasicPollMetadata>, I>>(
+    object: I,
+  ): BasicPollMetadata {
+    const message = createBaseBasicPollMetadata();
+    message.chain = object.chain ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseBasicPollFailed(): BasicPollFailed {
+  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+}
+
+export const BasicPollFailed = {
+  encode(
+    message: BasicPollFailed,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(18).bytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      writer.uint32(24).uint64(message.pollId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BasicPollFailed {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBasicPollFailed();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.pollId = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BasicPollFailed {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      data: isSet(object.data)
+        ? bytesFromBase64(object.data)
+        : new Uint8Array(0),
+      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+    };
+  },
+
+  toJSON(message: BasicPollFailed): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      obj.pollId = (message.pollId || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BasicPollFailed>, I>>(
+    base?: I,
+  ): BasicPollFailed {
+    return BasicPollFailed.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BasicPollFailed>, I>>(
+    object: I,
+  ): BasicPollFailed {
+    const message = createBaseBasicPollFailed();
+    message.chain = object.chain ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    message.pollId =
+      object.pollId !== undefined && object.pollId !== null
+        ? Long.fromValue(object.pollId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+function createBaseBasicPollExpired(): BasicPollExpired {
+  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+}
+
+export const BasicPollExpired = {
+  encode(
+    message: BasicPollExpired,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(18).bytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      writer.uint32(24).uint64(message.pollId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BasicPollExpired {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBasicPollExpired();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.pollId = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BasicPollExpired {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      data: isSet(object.data)
+        ? bytesFromBase64(object.data)
+        : new Uint8Array(0),
+      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+    };
+  },
+
+  toJSON(message: BasicPollExpired): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      obj.pollId = (message.pollId || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BasicPollExpired>, I>>(
+    base?: I,
+  ): BasicPollExpired {
+    return BasicPollExpired.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BasicPollExpired>, I>>(
+    object: I,
+  ): BasicPollExpired {
+    const message = createBaseBasicPollExpired();
+    message.chain = object.chain ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    message.pollId =
+      object.pollId !== undefined && object.pollId !== null
+        ? Long.fromValue(object.pollId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+function createBaseBasicPollCompleted(): BasicPollCompleted {
+  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+}
+
+export const BasicPollCompleted = {
+  encode(
+    message: BasicPollCompleted,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(18).bytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      writer.uint32(24).uint64(message.pollId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BasicPollCompleted {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBasicPollCompleted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.pollId = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BasicPollCompleted {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      data: isSet(object.data)
+        ? bytesFromBase64(object.data)
+        : new Uint8Array(0),
+      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+    };
+  },
+
+  toJSON(message: BasicPollCompleted): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      obj.pollId = (message.pollId || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BasicPollCompleted>, I>>(
+    base?: I,
+  ): BasicPollCompleted {
+    return BasicPollCompleted.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BasicPollCompleted>, I>>(
+    object: I,
+  ): BasicPollCompleted {
+    const message = createBaseBasicPollCompleted();
+    message.chain = object.chain ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    message.pollId =
+      object.pollId !== undefined && object.pollId !== null
+        ? Long.fromValue(object.pollId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+function createBaseBasicPollNoEventsConfirmed(): BasicPollNoEventsConfirmed {
+  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+}
+
+export const BasicPollNoEventsConfirmed = {
+  encode(
+    message: BasicPollNoEventsConfirmed,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(18).bytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      writer.uint32(24).uint64(message.pollId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): BasicPollNoEventsConfirmed {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBasicPollNoEventsConfirmed();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.pollId = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BasicPollNoEventsConfirmed {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      data: isSet(object.data)
+        ? bytesFromBase64(object.data)
+        : new Uint8Array(0),
+      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+    };
+  },
+
+  toJSON(message: BasicPollNoEventsConfirmed): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    if (!message.pollId.equals(Long.UZERO)) {
+      obj.pollId = (message.pollId || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BasicPollNoEventsConfirmed>, I>>(
+    base?: I,
+  ): BasicPollNoEventsConfirmed {
+    return BasicPollNoEventsConfirmed.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BasicPollNoEventsConfirmed>, I>>(
+    object: I,
+  ): BasicPollNoEventsConfirmed {
+    const message = createBaseBasicPollNoEventsConfirmed();
+    message.chain = object.chain ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    message.pollId =
+      object.pollId !== undefined && object.pollId !== null
+        ? Long.fromValue(object.pollId)
+        : Long.UZERO;
     return message;
   },
 };

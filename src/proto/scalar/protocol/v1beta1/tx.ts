@@ -20,7 +20,11 @@ import { Protocol } from "./types";
 export const protobufPackage = "scalar.protocol.v1beta1";
 
 export interface CreateProtocolRequest {
-  /** address */
+  /**
+   * // TODO: Consider to add rbac for this message
+   * option (permission.exported.v1beta1.permission_role) =
+   * ROLE_CHAIN_MANAGEMENT;
+   */
   sender: Uint8Array;
   /** BTC's pubkey */
   bitcoinPubkey: Uint8Array;
@@ -29,7 +33,7 @@ export interface CreateProtocolRequest {
   /** e.g., "pools" */
   tag: string;
   attributes?: ProtocolAttributes | undefined;
-  custodianGroupUid: string;
+  custodianGroupUid: Uint8Array;
   /** Avatar of the protocol, base64 encoded */
   avatar: Uint8Array;
   /** External asset */
@@ -83,7 +87,7 @@ function createBaseCreateProtocolRequest(): CreateProtocolRequest {
     name: "",
     tag: "",
     attributes: undefined,
-    custodianGroupUid: "",
+    custodianGroupUid: new Uint8Array(0),
     avatar: new Uint8Array(0),
     asset: undefined,
     tokenName: "",
@@ -116,8 +120,8 @@ export const CreateProtocolRequest = {
         writer.uint32(42).fork(),
       ).ldelim();
     }
-    if (message.custodianGroupUid !== "") {
-      writer.uint32(50).string(message.custodianGroupUid);
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(50).bytes(message.custodianGroupUid);
     }
     if (message.avatar.length !== 0) {
       writer.uint32(58).bytes(message.avatar);
@@ -194,7 +198,7 @@ export const CreateProtocolRequest = {
             break;
           }
 
-          message.custodianGroupUid = reader.string();
+          message.custodianGroupUid = reader.bytes();
           continue;
         case 7:
           if (tag !== 58) {
@@ -261,8 +265,8 @@ export const CreateProtocolRequest = {
         ? ProtocolAttributes.fromJSON(object.attributes)
         : undefined,
       custodianGroupUid: isSet(object.custodianGroupUid)
-        ? globalThis.String(object.custodianGroupUid)
-        : "",
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
       avatar: isSet(object.avatar)
         ? bytesFromBase64(object.avatar)
         : new Uint8Array(0),
@@ -299,8 +303,8 @@ export const CreateProtocolRequest = {
     if (message.attributes !== undefined) {
       obj.attributes = ProtocolAttributes.toJSON(message.attributes);
     }
-    if (message.custodianGroupUid !== "") {
-      obj.custodianGroupUid = message.custodianGroupUid;
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
     }
     if (message.avatar.length !== 0) {
       obj.avatar = base64FromBytes(message.avatar);
@@ -340,7 +344,7 @@ export const CreateProtocolRequest = {
       object.attributes !== undefined && object.attributes !== null
         ? ProtocolAttributes.fromPartial(object.attributes)
         : undefined;
-    message.custodianGroupUid = object.custodianGroupUid ?? "";
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
     message.avatar = object.avatar ?? new Uint8Array(0);
     message.asset =
       object.asset !== undefined && object.asset !== null

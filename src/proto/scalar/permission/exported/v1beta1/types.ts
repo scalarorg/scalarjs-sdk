@@ -13,6 +13,7 @@ export enum Role {
   ROLE_UNRESTRICTED = 1,
   ROLE_CHAIN_MANAGEMENT = 2,
   ROLE_ACCESS_CONTROL = 3,
+  ROLE_PROTOCOL_MANAGEMENT = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -30,6 +31,9 @@ export function roleFromJSON(object: any): Role {
     case 3:
     case "ROLE_ACCESS_CONTROL":
       return Role.ROLE_ACCESS_CONTROL;
+    case 4:
+    case "ROLE_PROTOCOL_MANAGEMENT":
+      return Role.ROLE_PROTOCOL_MANAGEMENT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -47,6 +51,8 @@ export function roleToJSON(object: Role): string {
       return "ROLE_CHAIN_MANAGEMENT";
     case Role.ROLE_ACCESS_CONTROL:
       return "ROLE_ACCESS_CONTROL";
+    case Role.ROLE_PROTOCOL_MANAGEMENT:
+      return "ROLE_PROTOCOL_MANAGEMENT";
     case Role.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";

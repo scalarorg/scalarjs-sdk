@@ -100,6 +100,9 @@ export interface EventTokenSent {
   destinationChain: string;
   destinationAddress: string;
   asset?: Coin | undefined;
+  /** Extra fields for form new utxo */
+  scriptPubkey: Uint8Array;
+  vout: number;
 }
 
 export interface EventContractCall {
@@ -1698,6 +1701,8 @@ function createBaseEventTokenSent(): EventTokenSent {
     destinationChain: "",
     destinationAddress: "",
     asset: undefined,
+    scriptPubkey: new Uint8Array(0),
+    vout: 0,
   };
 }
 
@@ -1729,6 +1734,12 @@ export const EventTokenSent = {
     }
     if (message.asset !== undefined) {
       Coin.encode(message.asset, writer.uint32(66).fork()).ldelim();
+    }
+    if (message.scriptPubkey.length !== 0) {
+      writer.uint32(74).bytes(message.scriptPubkey);
+    }
+    if (message.vout !== 0) {
+      writer.uint32(80).uint32(message.vout);
     }
     return writer;
   },
@@ -1797,6 +1808,20 @@ export const EventTokenSent = {
 
           message.asset = Coin.decode(reader, reader.uint32());
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.scriptPubkey = reader.bytes();
+          continue;
+        case 10:
+          if (tag !== 80) {
+            break;
+          }
+
+          message.vout = reader.uint32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1824,6 +1849,10 @@ export const EventTokenSent = {
         ? globalThis.String(object.destinationAddress)
         : "",
       asset: isSet(object.asset) ? Coin.fromJSON(object.asset) : undefined,
+      scriptPubkey: isSet(object.scriptPubkey)
+        ? bytesFromBase64(object.scriptPubkey)
+        : new Uint8Array(0),
+      vout: isSet(object.vout) ? globalThis.Number(object.vout) : 0,
     };
   },
 
@@ -1853,6 +1882,12 @@ export const EventTokenSent = {
     if (message.asset !== undefined) {
       obj.asset = Coin.toJSON(message.asset);
     }
+    if (message.scriptPubkey.length !== 0) {
+      obj.scriptPubkey = base64FromBytes(message.scriptPubkey);
+    }
+    if (message.vout !== 0) {
+      obj.vout = Math.round(message.vout);
+    }
     return obj;
   },
 
@@ -1879,6 +1914,8 @@ export const EventTokenSent = {
       object.asset !== undefined && object.asset !== null
         ? Coin.fromPartial(object.asset)
         : undefined;
+    message.scriptPubkey = object.scriptPubkey ?? new Uint8Array(0);
+    message.vout = object.vout ?? 0;
     return message;
   },
 };

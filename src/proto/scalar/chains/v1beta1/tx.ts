@@ -142,17 +142,6 @@ export interface SignBtcCommandsRequest {
   chain: string;
 }
 
-export interface SignPsbtCommandRequest {
-  sender: Uint8Array;
-  chain: string;
-  psbt: Uint8Array;
-}
-
-export interface SignPsbtCommandResponse {
-  batchedCommandsId: Uint8Array;
-  commandCount: number;
-}
-
 export interface AddChainRequest {
   sender: Uint8Array;
   name: string;
@@ -168,6 +157,22 @@ export interface RetryFailedEventRequest {
 }
 
 export interface RetryFailedEventResponse {}
+
+export interface RegisterCustodianGroupRequest {
+  sender: Uint8Array;
+  chain: string;
+  custodianGroupUid: Uint8Array;
+}
+
+export interface RegisterCustodianGroupResponse {}
+
+export interface ConfirmRegisterCustodianGroupRequest {
+  sender: Uint8Array;
+  chain: string;
+  txId: Uint8Array;
+}
+
+export interface ConfirmRegisterCustodianGroupResponse {}
 
 function createBaseConfirmSourceTxsRequest(): ConfirmSourceTxsRequest {
   return { sender: new Uint8Array(0), chain: "", txIds: [] };
@@ -2271,199 +2276,6 @@ export const SignBtcCommandsRequest = {
   },
 };
 
-function createBaseSignPsbtCommandRequest(): SignPsbtCommandRequest {
-  return { sender: new Uint8Array(0), chain: "", psbt: new Uint8Array(0) };
-}
-
-export const SignPsbtCommandRequest = {
-  encode(
-    message: SignPsbtCommandRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.sender.length !== 0) {
-      writer.uint32(10).bytes(message.sender);
-    }
-    if (message.chain !== "") {
-      writer.uint32(18).string(message.chain);
-    }
-    if (message.psbt.length !== 0) {
-      writer.uint32(26).bytes(message.psbt);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SignPsbtCommandRequest {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSignPsbtCommandRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.sender = reader.bytes();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.chain = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.psbt = reader.bytes();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SignPsbtCommandRequest {
-    return {
-      sender: isSet(object.sender)
-        ? bytesFromBase64(object.sender)
-        : new Uint8Array(0),
-      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
-      psbt: isSet(object.psbt)
-        ? bytesFromBase64(object.psbt)
-        : new Uint8Array(0),
-    };
-  },
-
-  toJSON(message: SignPsbtCommandRequest): unknown {
-    const obj: any = {};
-    if (message.sender.length !== 0) {
-      obj.sender = base64FromBytes(message.sender);
-    }
-    if (message.chain !== "") {
-      obj.chain = message.chain;
-    }
-    if (message.psbt.length !== 0) {
-      obj.psbt = base64FromBytes(message.psbt);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SignPsbtCommandRequest>, I>>(
-    base?: I,
-  ): SignPsbtCommandRequest {
-    return SignPsbtCommandRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SignPsbtCommandRequest>, I>>(
-    object: I,
-  ): SignPsbtCommandRequest {
-    const message = createBaseSignPsbtCommandRequest();
-    message.sender = object.sender ?? new Uint8Array(0);
-    message.chain = object.chain ?? "";
-    message.psbt = object.psbt ?? new Uint8Array(0);
-    return message;
-  },
-};
-
-function createBaseSignPsbtCommandResponse(): SignPsbtCommandResponse {
-  return { batchedCommandsId: new Uint8Array(0), commandCount: 0 };
-}
-
-export const SignPsbtCommandResponse = {
-  encode(
-    message: SignPsbtCommandResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.batchedCommandsId.length !== 0) {
-      writer.uint32(10).bytes(message.batchedCommandsId);
-    }
-    if (message.commandCount !== 0) {
-      writer.uint32(16).uint32(message.commandCount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SignPsbtCommandResponse {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSignPsbtCommandResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.batchedCommandsId = reader.bytes();
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.commandCount = reader.uint32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SignPsbtCommandResponse {
-    return {
-      batchedCommandsId: isSet(object.batchedCommandsId)
-        ? bytesFromBase64(object.batchedCommandsId)
-        : new Uint8Array(0),
-      commandCount: isSet(object.commandCount)
-        ? globalThis.Number(object.commandCount)
-        : 0,
-    };
-  },
-
-  toJSON(message: SignPsbtCommandResponse): unknown {
-    const obj: any = {};
-    if (message.batchedCommandsId.length !== 0) {
-      obj.batchedCommandsId = base64FromBytes(message.batchedCommandsId);
-    }
-    if (message.commandCount !== 0) {
-      obj.commandCount = Math.round(message.commandCount);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SignPsbtCommandResponse>, I>>(
-    base?: I,
-  ): SignPsbtCommandResponse {
-    return SignPsbtCommandResponse.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SignPsbtCommandResponse>, I>>(
-    object: I,
-  ): SignPsbtCommandResponse {
-    const message = createBaseSignPsbtCommandResponse();
-    message.batchedCommandsId = object.batchedCommandsId ?? new Uint8Array(0);
-    message.commandCount = object.commandCount ?? 0;
-    return message;
-  },
-};
-
 function createBaseAddChainRequest(): AddChainRequest {
   return { sender: new Uint8Array(0), name: "", params: new Uint8Array(0) };
 }
@@ -2768,6 +2580,330 @@ export const RetryFailedEventResponse = {
     _: I,
   ): RetryFailedEventResponse {
     const message = createBaseRetryFailedEventResponse();
+    return message;
+  },
+};
+
+function createBaseRegisterCustodianGroupRequest(): RegisterCustodianGroupRequest {
+  return {
+    sender: new Uint8Array(0),
+    chain: "",
+    custodianGroupUid: new Uint8Array(0),
+  };
+}
+
+export const RegisterCustodianGroupRequest = {
+  encode(
+    message: RegisterCustodianGroupRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.sender.length !== 0) {
+      writer.uint32(10).bytes(message.sender);
+    }
+    if (message.chain !== "") {
+      writer.uint32(18).string(message.chain);
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(26).bytes(message.custodianGroupUid);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): RegisterCustodianGroupRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRegisterCustodianGroupRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RegisterCustodianGroupRequest {
+    return {
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: RegisterCustodianGroupRequest): unknown {
+    const obj: any = {};
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RegisterCustodianGroupRequest>, I>>(
+    base?: I,
+  ): RegisterCustodianGroupRequest {
+    return RegisterCustodianGroupRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RegisterCustodianGroupRequest>, I>>(
+    object: I,
+  ): RegisterCustodianGroupRequest {
+    const message = createBaseRegisterCustodianGroupRequest();
+    message.sender = object.sender ?? new Uint8Array(0);
+    message.chain = object.chain ?? "";
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseRegisterCustodianGroupResponse(): RegisterCustodianGroupResponse {
+  return {};
+}
+
+export const RegisterCustodianGroupResponse = {
+  encode(
+    _: RegisterCustodianGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): RegisterCustodianGroupResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRegisterCustodianGroupResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): RegisterCustodianGroupResponse {
+    return {};
+  },
+
+  toJSON(_: RegisterCustodianGroupResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RegisterCustodianGroupResponse>, I>>(
+    base?: I,
+  ): RegisterCustodianGroupResponse {
+    return RegisterCustodianGroupResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RegisterCustodianGroupResponse>, I>>(
+    _: I,
+  ): RegisterCustodianGroupResponse {
+    const message = createBaseRegisterCustodianGroupResponse();
+    return message;
+  },
+};
+
+function createBaseConfirmRegisterCustodianGroupRequest(): ConfirmRegisterCustodianGroupRequest {
+  return { sender: new Uint8Array(0), chain: "", txId: new Uint8Array(0) };
+}
+
+export const ConfirmRegisterCustodianGroupRequest = {
+  encode(
+    message: ConfirmRegisterCustodianGroupRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.sender.length !== 0) {
+      writer.uint32(10).bytes(message.sender);
+    }
+    if (message.chain !== "") {
+      writer.uint32(18).string(message.chain);
+    }
+    if (message.txId.length !== 0) {
+      writer.uint32(26).bytes(message.txId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmRegisterCustodianGroupRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmRegisterCustodianGroupRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.txId = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ConfirmRegisterCustodianGroupRequest {
+    return {
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      txId: isSet(object.txId)
+        ? bytesFromBase64(object.txId)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: ConfirmRegisterCustodianGroupRequest): unknown {
+    const obj: any = {};
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.txId.length !== 0) {
+      obj.txId = base64FromBytes(message.txId);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ConfirmRegisterCustodianGroupRequest>, I>>(
+    base?: I,
+  ): ConfirmRegisterCustodianGroupRequest {
+    return ConfirmRegisterCustodianGroupRequest.fromPartial(
+      base ?? ({} as any),
+    );
+  },
+  fromPartial<
+    I extends Exact<DeepPartial<ConfirmRegisterCustodianGroupRequest>, I>,
+  >(object: I): ConfirmRegisterCustodianGroupRequest {
+    const message = createBaseConfirmRegisterCustodianGroupRequest();
+    message.sender = object.sender ?? new Uint8Array(0);
+    message.chain = object.chain ?? "";
+    message.txId = object.txId ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseConfirmRegisterCustodianGroupResponse(): ConfirmRegisterCustodianGroupResponse {
+  return {};
+}
+
+export const ConfirmRegisterCustodianGroupResponse = {
+  encode(
+    _: ConfirmRegisterCustodianGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ConfirmRegisterCustodianGroupResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConfirmRegisterCustodianGroupResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ConfirmRegisterCustodianGroupResponse {
+    return {};
+  },
+
+  toJSON(_: ConfirmRegisterCustodianGroupResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<
+    I extends Exact<DeepPartial<ConfirmRegisterCustodianGroupResponse>, I>,
+  >(base?: I): ConfirmRegisterCustodianGroupResponse {
+    return ConfirmRegisterCustodianGroupResponse.fromPartial(
+      base ?? ({} as any),
+    );
+  },
+  fromPartial<
+    I extends Exact<DeepPartial<ConfirmRegisterCustodianGroupResponse>, I>,
+  >(_: I): ConfirmRegisterCustodianGroupResponse {
+    const message = createBaseConfirmRegisterCustodianGroupResponse();
     return message;
   },
 };

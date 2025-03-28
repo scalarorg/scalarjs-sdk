@@ -13,15 +13,23 @@ import {
   GroupsResponse,
   ParamsRequest,
   ParamsResponse,
+  RedeemSessionRequest,
+  RedeemSessionResponse,
 } from "./query";
 import {
   AddCustodianToGroupRequest,
+  ConfirmRedeemTxsRequest,
+  ConfirmRedeemTxsResponse,
+  ConfirmSwitchedPhaseRequest,
+  ConfirmSwitchedPhaseResponse,
   CreateCustodianGroupRequest,
   CreateCustodianGroupResponse,
   CreateCustodianRequest,
   CreateCustodianResponse,
   CustodianToGroupResponse,
   RemoveCustodianFromGroupRequest,
+  ReserveRedeemUtxoRequest,
+  ReserveRedeemUtxoResponse,
   RotateKeyRequest,
   RotateKeyResponse,
   SubmitTapScriptSigsRequest,
@@ -69,6 +77,15 @@ export interface MsgService {
   SubmitTapScriptSigs(
     request: SubmitTapScriptSigsRequest,
   ): Promise<SubmitTapScriptSigsResponse>;
+  ConfirmRedeemTxs(
+    request: ConfirmRedeemTxsRequest,
+  ): Promise<ConfirmRedeemTxsResponse>;
+  ReserveRedeemUtxo(
+    request: ReserveRedeemUtxoRequest,
+  ): Promise<ReserveRedeemUtxoResponse>;
+  ConfirmSwitchedPhase(
+    request: ConfirmSwitchedPhaseRequest,
+  ): Promise<ConfirmSwitchedPhaseResponse>;
 }
 
 export const MsgServiceServiceName = "scalar.covenant.v1beta1.MsgService";
@@ -86,6 +103,9 @@ export class MsgServiceClientImpl implements MsgService {
     this.RemoveCustodianFromGroup = this.RemoveCustodianFromGroup.bind(this);
     this.RotateKey = this.RotateKey.bind(this);
     this.SubmitTapScriptSigs = this.SubmitTapScriptSigs.bind(this);
+    this.ConfirmRedeemTxs = this.ConfirmRedeemTxs.bind(this);
+    this.ReserveRedeemUtxo = this.ReserveRedeemUtxo.bind(this);
+    this.ConfirmSwitchedPhase = this.ConfirmSwitchedPhase.bind(this);
   }
   CreateCustodian(
     request: CreateCustodianRequest,
@@ -176,6 +196,40 @@ export class MsgServiceClientImpl implements MsgService {
       SubmitTapScriptSigsResponse.decode(_m0.Reader.create(data)),
     );
   }
+
+  ConfirmRedeemTxs(
+    request: ConfirmRedeemTxsRequest,
+  ): Promise<ConfirmRedeemTxsResponse> {
+    const data = ConfirmRedeemTxsRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "ConfirmRedeemTxs", data);
+    return promise.then((data) =>
+      ConfirmRedeemTxsResponse.decode(_m0.Reader.create(data)),
+    );
+  }
+
+  ReserveRedeemUtxo(
+    request: ReserveRedeemUtxoRequest,
+  ): Promise<ReserveRedeemUtxoResponse> {
+    const data = ReserveRedeemUtxoRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "ReserveRedeemUtxo", data);
+    return promise.then((data) =>
+      ReserveRedeemUtxoResponse.decode(_m0.Reader.create(data)),
+    );
+  }
+
+  ConfirmSwitchedPhase(
+    request: ConfirmSwitchedPhaseRequest,
+  ): Promise<ConfirmSwitchedPhaseResponse> {
+    const data = ConfirmSwitchedPhaseRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      this.service,
+      "ConfirmSwitchedPhase",
+      data,
+    );
+    return promise.then((data) =>
+      ConfirmSwitchedPhaseResponse.decode(_m0.Reader.create(data)),
+    );
+  }
 }
 
 export interface QueryService {
@@ -184,6 +238,7 @@ export interface QueryService {
   /** Get custodian groups */
   Groups(request: GroupsRequest): Promise<GroupsResponse>;
   Params(request: ParamsRequest): Promise<ParamsResponse>;
+  RedeemSession(request: RedeemSessionRequest): Promise<RedeemSessionResponse>;
 }
 
 export const QueryServiceServiceName = "scalar.covenant.v1beta1.QueryService";
@@ -196,6 +251,7 @@ export class QueryServiceClientImpl implements QueryService {
     this.Custodians = this.Custodians.bind(this);
     this.Groups = this.Groups.bind(this);
     this.Params = this.Params.bind(this);
+    this.RedeemSession = this.RedeemSession.bind(this);
   }
   Custodians(request: CustodiansRequest): Promise<CustodiansResponse> {
     const data = CustodiansRequest.encode(request).finish();
@@ -218,6 +274,14 @@ export class QueryServiceClientImpl implements QueryService {
     const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) =>
       ParamsResponse.decode(_m0.Reader.create(data)),
+    );
+  }
+
+  RedeemSession(request: RedeemSessionRequest): Promise<RedeemSessionResponse> {
+    const data = RedeemSessionRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "RedeemSession", data);
+    return promise.then((data) =>
+      RedeemSessionResponse.decode(_m0.Reader.create(data)),
     );
   }
 }
