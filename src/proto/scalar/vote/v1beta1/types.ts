@@ -18,7 +18,7 @@ export const protobufPackage = "scalar.vote.v1beta1";
 export interface TalliedVote {
   tally: Uint8Array;
   data?: Any | undefined;
-  pollId: Long;
+  pollId: string;
   isVoterLate: { [key: string]: boolean };
 }
 
@@ -31,7 +31,7 @@ function createBaseTalliedVote(): TalliedVote {
   return {
     tally: new Uint8Array(0),
     data: undefined,
-    pollId: Long.UZERO,
+    pollId: "",
     isVoterLate: {},
   };
 }
@@ -47,8 +47,8 @@ export const TalliedVote = {
     if (message.data !== undefined) {
       Any.encode(message.data, writer.uint32(26).fork()).ldelim();
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(32).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(34).string(message.pollId);
     }
     Object.entries(message.isVoterLate).forEach(([key, value]) => {
       TalliedVote_IsVoterLateEntry.encode(
@@ -82,11 +82,11 @@ export const TalliedVote = {
           message.data = Any.decode(reader, reader.uint32());
           continue;
         case 4:
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
         case 5:
           if (tag !== 42) {
@@ -116,7 +116,7 @@ export const TalliedVote = {
         ? bytesFromBase64(object.tally)
         : new Uint8Array(0),
       data: isSet(object.data) ? Any.fromJSON(object.data) : undefined,
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
       isVoterLate: isObject(object.isVoterLate)
         ? Object.entries(object.isVoterLate).reduce<{ [key: string]: boolean }>(
             (acc, [key, value]) => {
@@ -137,8 +137,8 @@ export const TalliedVote = {
     if (message.data !== undefined) {
       obj.data = Any.toJSON(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     if (message.isVoterLate) {
       const entries = Object.entries(message.isVoterLate);
@@ -164,10 +164,7 @@ export const TalliedVote = {
       object.data !== undefined && object.data !== null
         ? Any.fromPartial(object.data)
         : undefined;
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     message.isVoterLate = Object.entries(object.isVoterLate ?? {}).reduce<{
       [key: string]: boolean;
     }>((acc, [key, value]) => {

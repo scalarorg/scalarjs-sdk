@@ -10,6 +10,7 @@ import _m0 from "protobufjs/minimal";
 import { TokenDetails } from "../../nexus/exported/v1beta1/types";
 import { Event } from "./events";
 import { Params } from "./params";
+import { RedeemSession } from "./redeem";
 import {
   BatchedCommandsStatus,
   batchedCommandsStatusFromJSON,
@@ -300,6 +301,14 @@ export interface ParamsRequest {
 
 export interface ParamsResponse {
   params?: Params | undefined;
+}
+
+export interface RedeemSessionRequest {
+  chain: string;
+}
+
+export interface RedeemSessionResponse {
+  redeemSession: RedeemSession[];
 }
 
 function createBaseBatchedCommandsRequest(): BatchedCommandsRequest {
@@ -3545,6 +3554,153 @@ export const ParamsResponse = {
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)
         : undefined;
+    return message;
+  },
+};
+
+function createBaseRedeemSessionRequest(): RedeemSessionRequest {
+  return { chain: "" };
+}
+
+export const RedeemSessionRequest = {
+  encode(
+    message: RedeemSessionRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): RedeemSessionRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRedeemSessionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RedeemSessionRequest {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+    };
+  },
+
+  toJSON(message: RedeemSessionRequest): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RedeemSessionRequest>, I>>(
+    base?: I,
+  ): RedeemSessionRequest {
+    return RedeemSessionRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RedeemSessionRequest>, I>>(
+    object: I,
+  ): RedeemSessionRequest {
+    const message = createBaseRedeemSessionRequest();
+    message.chain = object.chain ?? "";
+    return message;
+  },
+};
+
+function createBaseRedeemSessionResponse(): RedeemSessionResponse {
+  return { redeemSession: [] };
+}
+
+export const RedeemSessionResponse = {
+  encode(
+    message: RedeemSessionResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    for (const v of message.redeemSession) {
+      RedeemSession.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): RedeemSessionResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRedeemSessionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.redeemSession.push(
+            RedeemSession.decode(reader, reader.uint32()),
+          );
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RedeemSessionResponse {
+    return {
+      redeemSession: globalThis.Array.isArray(object?.redeemSession)
+        ? object.redeemSession.map((e: any) => RedeemSession.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: RedeemSessionResponse): unknown {
+    const obj: any = {};
+    if (message.redeemSession?.length) {
+      obj.redeemSession = message.redeemSession.map((e) =>
+        RedeemSession.toJSON(e),
+      );
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RedeemSessionResponse>, I>>(
+    base?: I,
+  ): RedeemSessionResponse {
+    return RedeemSessionResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RedeemSessionResponse>, I>>(
+    object: I,
+  ): RedeemSessionResponse {
+    const message = createBaseRedeemSessionResponse();
+    message.redeemSession =
+      object.redeemSession?.map((e) => RedeemSession.fromPartial(e)) || [];
     return message;
   },
 };

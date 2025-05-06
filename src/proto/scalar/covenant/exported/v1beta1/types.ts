@@ -100,6 +100,39 @@ export function keyStateToJSON(object: KeyState): string {
   }
 }
 
+export enum Phase {
+  PHASE_PREPARING = 0,
+  PHASE_EXECUTING = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function phaseFromJSON(object: any): Phase {
+  switch (object) {
+    case 0:
+    case "PHASE_PREPARING":
+      return Phase.PHASE_PREPARING;
+    case 1:
+    case "PHASE_EXECUTING":
+      return Phase.PHASE_EXECUTING;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Phase.UNRECOGNIZED;
+  }
+}
+
+export function phaseToJSON(object: Phase): string {
+  switch (object) {
+    case Phase.PHASE_PREPARING:
+      return "PHASE_PREPARING";
+    case Phase.PHASE_EXECUTING:
+      return "PHASE_EXECUTING";
+    case Phase.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface TapScriptSig {
   keyXOnly: Uint8Array;
   leafHash: Uint8Array;

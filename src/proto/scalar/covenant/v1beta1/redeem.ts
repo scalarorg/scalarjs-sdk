@@ -7,46 +7,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Phase, phaseFromJSON, phaseToJSON } from "../exported/v1beta1/types";
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 
-export enum Phase {
-  PHASE_PREPARING = 0,
-  PHASE_EXECUTING = 1,
-  PHASE_UNSPECIFIED = 2,
-  UNRECOGNIZED = -1,
-}
-
-export function phaseFromJSON(object: any): Phase {
-  switch (object) {
-    case 0:
-    case "PHASE_PREPARING":
-      return Phase.PHASE_PREPARING;
-    case 1:
-    case "PHASE_EXECUTING":
-      return Phase.PHASE_EXECUTING;
-    case 2:
-    case "PHASE_UNSPECIFIED":
-      return Phase.PHASE_UNSPECIFIED;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return Phase.UNRECOGNIZED;
-  }
-}
-
-export function phaseToJSON(object: Phase): string {
-  switch (object) {
-    case Phase.PHASE_PREPARING:
-      return "PHASE_PREPARING";
-    case Phase.PHASE_EXECUTING:
-      return "PHASE_EXECUTING";
-    case Phase.PHASE_UNSPECIFIED:
-      return "PHASE_UNSPECIFIED";
-    case Phase.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
+export interface Reservation {
+  request: string;
+  amount: Long;
 }
 
 export interface UTXO {
@@ -55,12 +22,7 @@ export interface UTXO {
   scriptPubkey: Uint8Array;
   amountInSats: Long;
   /** Reserved amount for each request id */
-  reserved: { [key: string]: Long };
-}
-
-export interface UTXO_ReservedEntry {
-  key: string;
-  value: Long;
+  reservations: Reservation[];
 }
 
 export interface UTXOSnapshot {
@@ -86,13 +48,96 @@ export interface ExpiredEvmSession {
   tokens: string[];
 }
 
+function createBaseReservation(): Reservation {
+  return { request: "", amount: Long.UZERO };
+}
+
+export const Reservation = {
+  encode(
+    message: Reservation,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.request !== "") {
+      writer.uint32(10).string(message.request);
+    }
+    if (!message.amount.equals(Long.UZERO)) {
+      writer.uint32(16).uint64(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Reservation {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReservation();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.request = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.amount = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Reservation {
+    return {
+      request: isSet(object.request) ? globalThis.String(object.request) : "",
+      amount: isSet(object.amount) ? Long.fromValue(object.amount) : Long.UZERO,
+    };
+  },
+
+  toJSON(message: Reservation): unknown {
+    const obj: any = {};
+    if (message.request !== "") {
+      obj.request = message.request;
+    }
+    if (!message.amount.equals(Long.UZERO)) {
+      obj.amount = (message.amount || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Reservation>, I>>(base?: I): Reservation {
+    return Reservation.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Reservation>, I>>(
+    object: I,
+  ): Reservation {
+    const message = createBaseReservation();
+    message.request = object.request ?? "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Long.fromValue(object.amount)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 function createBaseUTXO(): UTXO {
   return {
     txid: new Uint8Array(0),
     vout: 0,
     scriptPubkey: new Uint8Array(0),
     amountInSats: Long.UZERO,
-    reserved: {},
+    reservations: [],
   };
 }
 
@@ -110,12 +155,9 @@ export const UTXO = {
     if (!message.amountInSats.equals(Long.UZERO)) {
       writer.uint32(32).uint64(message.amountInSats);
     }
-    Object.entries(message.reserved).forEach(([key, value]) => {
-      UTXO_ReservedEntry.encode(
-        { key: key as any, value },
-        writer.uint32(42).fork(),
-      ).ldelim();
-    });
+    for (const v of message.reservations) {
+      Reservation.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -160,10 +202,9 @@ export const UTXO = {
             break;
           }
 
-          const entry5 = UTXO_ReservedEntry.decode(reader, reader.uint32());
-          if (entry5.value !== undefined) {
-            message.reserved[entry5.key] = entry5.value;
-          }
+          message.reservations.push(
+            Reservation.decode(reader, reader.uint32()),
+          );
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -186,15 +227,9 @@ export const UTXO = {
       amountInSats: isSet(object.amountInSats)
         ? Long.fromValue(object.amountInSats)
         : Long.UZERO,
-      reserved: isObject(object.reserved)
-        ? Object.entries(object.reserved).reduce<{ [key: string]: Long }>(
-            (acc, [key, value]) => {
-              acc[key] = Long.fromValue(value as Long | string);
-              return acc;
-            },
-            {},
-          )
-        : {},
+      reservations: globalThis.Array.isArray(object?.reservations)
+        ? object.reservations.map((e: any) => Reservation.fromJSON(e))
+        : [],
     };
   },
 
@@ -212,14 +247,8 @@ export const UTXO = {
     if (!message.amountInSats.equals(Long.UZERO)) {
       obj.amountInSats = (message.amountInSats || Long.UZERO).toString();
     }
-    if (message.reserved) {
-      const entries = Object.entries(message.reserved);
-      if (entries.length > 0) {
-        obj.reserved = {};
-        entries.forEach(([k, v]) => {
-          obj.reserved[k] = v.toString();
-        });
-      }
+    if (message.reservations?.length) {
+      obj.reservations = message.reservations.map((e) => Reservation.toJSON(e));
     }
     return obj;
   },
@@ -236,99 +265,8 @@ export const UTXO = {
       object.amountInSats !== undefined && object.amountInSats !== null
         ? Long.fromValue(object.amountInSats)
         : Long.UZERO;
-    message.reserved = Object.entries(object.reserved ?? {}).reduce<{
-      [key: string]: Long;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = Long.fromValue(value);
-      }
-      return acc;
-    }, {});
-    return message;
-  },
-};
-
-function createBaseUTXO_ReservedEntry(): UTXO_ReservedEntry {
-  return { key: "", value: Long.UZERO };
-}
-
-export const UTXO_ReservedEntry = {
-  encode(
-    message: UTXO_ReservedEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (!message.value.equals(Long.UZERO)) {
-      writer.uint32(16).uint64(message.value);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UTXO_ReservedEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUTXO_ReservedEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.value = reader.uint64() as Long;
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UTXO_ReservedEntry {
-    return {
-      key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? Long.fromValue(object.value) : Long.UZERO,
-    };
-  },
-
-  toJSON(message: UTXO_ReservedEntry): unknown {
-    const obj: any = {};
-    if (message.key !== "") {
-      obj.key = message.key;
-    }
-    if (!message.value.equals(Long.UZERO)) {
-      obj.value = (message.value || Long.UZERO).toString();
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UTXO_ReservedEntry>, I>>(
-    base?: I,
-  ): UTXO_ReservedEntry {
-    return UTXO_ReservedEntry.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<UTXO_ReservedEntry>, I>>(
-    object: I,
-  ): UTXO_ReservedEntry {
-    const message = createBaseUTXO_ReservedEntry();
-    message.key = object.key ?? "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Long.fromValue(object.value)
-        : Long.UZERO;
+    message.reservations =
+      object.reservations?.map((e) => Reservation.fromPartial(e)) || [];
     return message;
   },
 };
@@ -810,10 +748,6 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function isObject(value: any): boolean {
-  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

@@ -15,6 +15,10 @@ import {
   ParamsResponse,
   RedeemSessionRequest,
   RedeemSessionResponse,
+  StandaloneCommandRequest,
+  StandaloneCommandResponse,
+  UTXOSnapshotRequest,
+  UTXOSnapshotResponse,
 } from "./query";
 import {
   AddCustodianToGroupRequest,
@@ -27,6 +31,8 @@ import {
   CreateCustodianRequest,
   CreateCustodianResponse,
   CustodianToGroupResponse,
+  InitializeUtxoRequest,
+  InitializeUtxoResponse,
   RemoveCustodianFromGroupRequest,
   ReserveRedeemUtxoRequest,
   ReserveRedeemUtxoResponse,
@@ -86,6 +92,9 @@ export interface MsgService {
   ConfirmSwitchedPhase(
     request: ConfirmSwitchedPhaseRequest,
   ): Promise<ConfirmSwitchedPhaseResponse>;
+  InitializeUtxo(
+    request: InitializeUtxoRequest,
+  ): Promise<InitializeUtxoResponse>;
 }
 
 export const MsgServiceServiceName = "scalar.covenant.v1beta1.MsgService";
@@ -106,6 +115,7 @@ export class MsgServiceClientImpl implements MsgService {
     this.ConfirmRedeemTxs = this.ConfirmRedeemTxs.bind(this);
     this.ReserveRedeemUtxo = this.ReserveRedeemUtxo.bind(this);
     this.ConfirmSwitchedPhase = this.ConfirmSwitchedPhase.bind(this);
+    this.InitializeUtxo = this.InitializeUtxo.bind(this);
   }
   CreateCustodian(
     request: CreateCustodianRequest,
@@ -230,6 +240,16 @@ export class MsgServiceClientImpl implements MsgService {
       ConfirmSwitchedPhaseResponse.decode(_m0.Reader.create(data)),
     );
   }
+
+  InitializeUtxo(
+    request: InitializeUtxoRequest,
+  ): Promise<InitializeUtxoResponse> {
+    const data = InitializeUtxoRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "InitializeUtxo", data);
+    return promise.then((data) =>
+      InitializeUtxoResponse.decode(_m0.Reader.create(data)),
+    );
+  }
 }
 
 export interface QueryService {
@@ -239,6 +259,10 @@ export interface QueryService {
   Groups(request: GroupsRequest): Promise<GroupsResponse>;
   Params(request: ParamsRequest): Promise<ParamsResponse>;
   RedeemSession(request: RedeemSessionRequest): Promise<RedeemSessionResponse>;
+  UTXOSnapshot(request: UTXOSnapshotRequest): Promise<UTXOSnapshotResponse>;
+  StandaloneCommand(
+    request: StandaloneCommandRequest,
+  ): Promise<StandaloneCommandResponse>;
 }
 
 export const QueryServiceServiceName = "scalar.covenant.v1beta1.QueryService";
@@ -252,6 +276,8 @@ export class QueryServiceClientImpl implements QueryService {
     this.Groups = this.Groups.bind(this);
     this.Params = this.Params.bind(this);
     this.RedeemSession = this.RedeemSession.bind(this);
+    this.UTXOSnapshot = this.UTXOSnapshot.bind(this);
+    this.StandaloneCommand = this.StandaloneCommand.bind(this);
   }
   Custodians(request: CustodiansRequest): Promise<CustodiansResponse> {
     const data = CustodiansRequest.encode(request).finish();
@@ -282,6 +308,24 @@ export class QueryServiceClientImpl implements QueryService {
     const promise = this.rpc.request(this.service, "RedeemSession", data);
     return promise.then((data) =>
       RedeemSessionResponse.decode(_m0.Reader.create(data)),
+    );
+  }
+
+  UTXOSnapshot(request: UTXOSnapshotRequest): Promise<UTXOSnapshotResponse> {
+    const data = UTXOSnapshotRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "UTXOSnapshot", data);
+    return promise.then((data) =>
+      UTXOSnapshotResponse.decode(_m0.Reader.create(data)),
+    );
+  }
+
+  StandaloneCommand(
+    request: StandaloneCommandRequest,
+  ): Promise<StandaloneCommandResponse> {
+    const data = StandaloneCommandRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "StandaloneCommand", data);
+    return promise.then((data) =>
+      StandaloneCommandResponse.decode(_m0.Reader.create(data)),
     );
   }
 }

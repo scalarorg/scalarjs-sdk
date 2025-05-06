@@ -71,7 +71,7 @@ export interface PollMetadata {
   rewardPoolName: string;
   gracePeriod: Long;
   completedAt: Long;
-  id: Long;
+  id: string;
   snapshot?: Snapshot | undefined;
   module: string;
   moduleMetadata?: Any | undefined;
@@ -89,7 +89,7 @@ export interface PollKey {
 
 /** PollParticipants should be embedded in poll events in other modules */
 export interface PollParticipants {
-  pollId: Long;
+  pollId: string;
   participants: Uint8Array[];
 }
 
@@ -103,7 +103,7 @@ function createBasePollMetadata(): PollMetadata {
     rewardPoolName: "",
     gracePeriod: Long.ZERO,
     completedAt: Long.ZERO,
-    id: Long.UZERO,
+    id: "",
     snapshot: undefined,
     module: "",
     moduleMetadata: undefined,
@@ -142,8 +142,8 @@ export const PollMetadata = {
     if (!message.completedAt.equals(Long.ZERO)) {
       writer.uint32(96).int64(message.completedAt);
     }
-    if (!message.id.equals(Long.UZERO)) {
-      writer.uint32(104).uint64(message.id);
+    if (message.id !== "") {
+      writer.uint32(106).string(message.id);
     }
     if (message.snapshot !== undefined) {
       Snapshot.encode(message.snapshot, writer.uint32(122).fork()).ldelim();
@@ -222,11 +222,11 @@ export const PollMetadata = {
           message.completedAt = reader.int64() as Long;
           continue;
         case 13:
-          if (tag !== 104) {
+          if (tag !== 106) {
             break;
           }
 
-          message.id = reader.uint64() as Long;
+          message.id = reader.string();
           continue;
         case 15:
           if (tag !== 122) {
@@ -280,7 +280,7 @@ export const PollMetadata = {
       completedAt: isSet(object.completedAt)
         ? Long.fromValue(object.completedAt)
         : Long.ZERO,
-      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
       snapshot: isSet(object.snapshot)
         ? Snapshot.fromJSON(object.snapshot)
         : undefined,
@@ -317,8 +317,8 @@ export const PollMetadata = {
     if (!message.completedAt.equals(Long.ZERO)) {
       obj.completedAt = (message.completedAt || Long.ZERO).toString();
     }
-    if (!message.id.equals(Long.UZERO)) {
-      obj.id = (message.id || Long.UZERO).toString();
+    if (message.id !== "") {
+      obj.id = message.id;
     }
     if (message.snapshot !== undefined) {
       obj.snapshot = Snapshot.toJSON(message.snapshot);
@@ -367,10 +367,7 @@ export const PollMetadata = {
       object.completedAt !== undefined && object.completedAt !== null
         ? Long.fromValue(object.completedAt)
         : Long.ZERO;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = object.id ?? "";
     message.snapshot =
       object.snapshot !== undefined && object.snapshot !== null
         ? Snapshot.fromPartial(object.snapshot)
@@ -463,7 +460,7 @@ export const PollKey = {
 };
 
 function createBasePollParticipants(): PollParticipants {
-  return { pollId: Long.UZERO, participants: [] };
+  return { pollId: "", participants: [] };
 }
 
 export const PollParticipants = {
@@ -471,8 +468,8 @@ export const PollParticipants = {
     message: PollParticipants,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(8).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(10).string(message.pollId);
     }
     for (const v of message.participants) {
       writer.uint32(18).bytes(v!);
@@ -489,11 +486,11 @@ export const PollParticipants = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
@@ -513,7 +510,7 @@ export const PollParticipants = {
 
   fromJSON(object: any): PollParticipants {
     return {
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
       participants: globalThis.Array.isArray(object?.participants)
         ? object.participants.map((e: any) => bytesFromBase64(e))
         : [],
@@ -522,8 +519,8 @@ export const PollParticipants = {
 
   toJSON(message: PollParticipants): unknown {
     const obj: any = {};
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     if (message.participants?.length) {
       obj.participants = message.participants.map((e) => base64FromBytes(e));
@@ -540,10 +537,7 @@ export const PollParticipants = {
     object: I,
   ): PollParticipants {
     const message = createBasePollParticipants();
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     message.participants = object.participants?.map((e) => e) || [];
     return message;
   },

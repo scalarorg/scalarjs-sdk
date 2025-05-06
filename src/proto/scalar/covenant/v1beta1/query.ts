@@ -21,8 +21,13 @@ import {
   statusFromJSON,
   statusToJSON,
 } from "../exported/v1beta1/custodian";
+import {
+  StandaloneCommandStatus,
+  standaloneCommandStatusFromJSON,
+  standaloneCommandStatusToJSON,
+} from "./command";
 import { Params } from "./params";
-import { RedeemSession } from "./redeem";
+import { RedeemSession, UTXOSnapshot } from "./redeem";
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 
@@ -73,6 +78,26 @@ export interface RedeemSessionRequest {
 
 export interface RedeemSessionResponse {
   session?: RedeemSession | undefined;
+}
+
+export interface UTXOSnapshotRequest {
+  uid: Uint8Array;
+}
+
+export interface UTXOSnapshotResponse {
+  utxoSnapshot?: UTXOSnapshot | undefined;
+}
+
+export interface StandaloneCommandRequest {
+  id: Uint8Array;
+}
+
+export interface StandaloneCommandResponse {
+  id: Uint8Array;
+  data: string;
+  status: StandaloneCommandStatus;
+  keyId: string;
+  executeData: string;
 }
 
 function createBaseCustodiansRequest(): CustodiansRequest {
@@ -894,6 +919,361 @@ export const RedeemSessionResponse = {
       object.session !== undefined && object.session !== null
         ? RedeemSession.fromPartial(object.session)
         : undefined;
+    return message;
+  },
+};
+
+function createBaseUTXOSnapshotRequest(): UTXOSnapshotRequest {
+  return { uid: new Uint8Array(0) };
+}
+
+export const UTXOSnapshotRequest = {
+  encode(
+    message: UTXOSnapshotRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.uid.length !== 0) {
+      writer.uint32(10).bytes(message.uid);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UTXOSnapshotRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUTXOSnapshotRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UTXOSnapshotRequest {
+    return {
+      uid: isSet(object.uid) ? bytesFromBase64(object.uid) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: UTXOSnapshotRequest): unknown {
+    const obj: any = {};
+    if (message.uid.length !== 0) {
+      obj.uid = base64FromBytes(message.uid);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UTXOSnapshotRequest>, I>>(
+    base?: I,
+  ): UTXOSnapshotRequest {
+    return UTXOSnapshotRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UTXOSnapshotRequest>, I>>(
+    object: I,
+  ): UTXOSnapshotRequest {
+    const message = createBaseUTXOSnapshotRequest();
+    message.uid = object.uid ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseUTXOSnapshotResponse(): UTXOSnapshotResponse {
+  return { utxoSnapshot: undefined };
+}
+
+export const UTXOSnapshotResponse = {
+  encode(
+    message: UTXOSnapshotResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.utxoSnapshot !== undefined) {
+      UTXOSnapshot.encode(
+        message.utxoSnapshot,
+        writer.uint32(10).fork(),
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): UTXOSnapshotResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUTXOSnapshotResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.utxoSnapshot = UTXOSnapshot.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UTXOSnapshotResponse {
+    return {
+      utxoSnapshot: isSet(object.utxoSnapshot)
+        ? UTXOSnapshot.fromJSON(object.utxoSnapshot)
+        : undefined,
+    };
+  },
+
+  toJSON(message: UTXOSnapshotResponse): unknown {
+    const obj: any = {};
+    if (message.utxoSnapshot !== undefined) {
+      obj.utxoSnapshot = UTXOSnapshot.toJSON(message.utxoSnapshot);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UTXOSnapshotResponse>, I>>(
+    base?: I,
+  ): UTXOSnapshotResponse {
+    return UTXOSnapshotResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UTXOSnapshotResponse>, I>>(
+    object: I,
+  ): UTXOSnapshotResponse {
+    const message = createBaseUTXOSnapshotResponse();
+    message.utxoSnapshot =
+      object.utxoSnapshot !== undefined && object.utxoSnapshot !== null
+        ? UTXOSnapshot.fromPartial(object.utxoSnapshot)
+        : undefined;
+    return message;
+  },
+};
+
+function createBaseStandaloneCommandRequest(): StandaloneCommandRequest {
+  return { id: new Uint8Array(0) };
+}
+
+export const StandaloneCommandRequest = {
+  encode(
+    message: StandaloneCommandRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.id.length !== 0) {
+      writer.uint32(10).bytes(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): StandaloneCommandRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStandaloneCommandRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StandaloneCommandRequest {
+    return {
+      id: isSet(object.id) ? bytesFromBase64(object.id) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: StandaloneCommandRequest): unknown {
+    const obj: any = {};
+    if (message.id.length !== 0) {
+      obj.id = base64FromBytes(message.id);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<StandaloneCommandRequest>, I>>(
+    base?: I,
+  ): StandaloneCommandRequest {
+    return StandaloneCommandRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<StandaloneCommandRequest>, I>>(
+    object: I,
+  ): StandaloneCommandRequest {
+    const message = createBaseStandaloneCommandRequest();
+    message.id = object.id ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseStandaloneCommandResponse(): StandaloneCommandResponse {
+  return {
+    id: new Uint8Array(0),
+    data: "",
+    status: 0,
+    keyId: "",
+    executeData: "",
+  };
+}
+
+export const StandaloneCommandResponse = {
+  encode(
+    message: StandaloneCommandResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.id.length !== 0) {
+      writer.uint32(10).bytes(message.id);
+    }
+    if (message.data !== "") {
+      writer.uint32(18).string(message.data);
+    }
+    if (message.status !== 0) {
+      writer.uint32(24).int32(message.status);
+    }
+    if (message.keyId !== "") {
+      writer.uint32(34).string(message.keyId);
+    }
+    if (message.executeData !== "") {
+      writer.uint32(42).string(message.executeData);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): StandaloneCommandResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStandaloneCommandResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.keyId = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.executeData = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StandaloneCommandResponse {
+    return {
+      id: isSet(object.id) ? bytesFromBase64(object.id) : new Uint8Array(0),
+      data: isSet(object.data) ? globalThis.String(object.data) : "",
+      status: isSet(object.status)
+        ? standaloneCommandStatusFromJSON(object.status)
+        : 0,
+      keyId: isSet(object.keyId) ? globalThis.String(object.keyId) : "",
+      executeData: isSet(object.executeData)
+        ? globalThis.String(object.executeData)
+        : "",
+    };
+  },
+
+  toJSON(message: StandaloneCommandResponse): unknown {
+    const obj: any = {};
+    if (message.id.length !== 0) {
+      obj.id = base64FromBytes(message.id);
+    }
+    if (message.data !== "") {
+      obj.data = message.data;
+    }
+    if (message.status !== 0) {
+      obj.status = standaloneCommandStatusToJSON(message.status);
+    }
+    if (message.keyId !== "") {
+      obj.keyId = message.keyId;
+    }
+    if (message.executeData !== "") {
+      obj.executeData = message.executeData;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<StandaloneCommandResponse>, I>>(
+    base?: I,
+  ): StandaloneCommandResponse {
+    return StandaloneCommandResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<StandaloneCommandResponse>, I>>(
+    object: I,
+  ): StandaloneCommandResponse {
+    const message = createBaseStandaloneCommandResponse();
+    message.id = object.id ?? new Uint8Array(0);
+    message.data = object.data ?? "";
+    message.status = object.status ?? 0;
+    message.keyId = object.keyId ?? "";
+    message.executeData = object.executeData ?? "";
     return message;
   },
 };

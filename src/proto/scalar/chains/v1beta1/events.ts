@@ -91,6 +91,17 @@ export interface EventContractCallWithMintApproved {
   asset?: Coin | undefined;
 }
 
+export interface EventRedeemTokenApproved {
+  chain: string;
+  eventId: string;
+  commandId: Uint8Array;
+  sender: string;
+  destinationChain: string;
+  contractAddress: string;
+  payloadHash: Uint8Array;
+  asset?: Coin | undefined;
+}
+
 export interface EventTokenSent {
   chain: string;
   eventId: string;
@@ -103,6 +114,7 @@ export interface EventTokenSent {
   /** Extra fields for form new utxo */
   scriptPubkey: Uint8Array;
   vout: number;
+  blockHeight: Long;
 }
 
 export interface EventContractCall {
@@ -120,6 +132,18 @@ export interface EventContractCallWithToken {
   symbol: string;
   amount: Uint8Array;
   payload: Uint8Array;
+}
+
+export interface EventRedeemToken {
+  sender: Uint8Array;
+  sequence: Long;
+  custodianGroupId: Uint8Array;
+  destinationChain: string;
+  destinationContractAddress: string;
+  payloadHash: Uint8Array;
+  payload: Uint8Array;
+  symbol: string;
+  amount: Uint8Array;
 }
 
 export interface EventTransfer {
@@ -162,6 +186,8 @@ export interface Event {
     | undefined;
   /** for general chains */
   sourceTxConfirmationEvent?: SourceTxConfirmationEvent | undefined;
+  /** for btc */
+  redeemToken?: EventRedeemToken | undefined;
 }
 
 export enum Event_Status {
@@ -212,7 +238,7 @@ export function event_StatusToJSON(object: Event_Status): string {
 export interface NoEventsConfirmed {
   txId: Uint8Array;
   chain: string;
-  pollId: Long;
+  pollId: string;
 }
 
 export interface ChainEventConfirmed {
@@ -1691,6 +1717,201 @@ export const EventContractCallWithMintApproved = {
   },
 };
 
+function createBaseEventRedeemTokenApproved(): EventRedeemTokenApproved {
+  return {
+    chain: "",
+    eventId: "",
+    commandId: new Uint8Array(0),
+    sender: "",
+    destinationChain: "",
+    contractAddress: "",
+    payloadHash: new Uint8Array(0),
+    asset: undefined,
+  };
+}
+
+export const EventRedeemTokenApproved = {
+  encode(
+    message: EventRedeemTokenApproved,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.chain !== "") {
+      writer.uint32(10).string(message.chain);
+    }
+    if (message.eventId !== "") {
+      writer.uint32(18).string(message.eventId);
+    }
+    if (message.commandId.length !== 0) {
+      writer.uint32(26).bytes(message.commandId);
+    }
+    if (message.sender !== "") {
+      writer.uint32(34).string(message.sender);
+    }
+    if (message.destinationChain !== "") {
+      writer.uint32(42).string(message.destinationChain);
+    }
+    if (message.contractAddress !== "") {
+      writer.uint32(50).string(message.contractAddress);
+    }
+    if (message.payloadHash.length !== 0) {
+      writer.uint32(58).bytes(message.payloadHash);
+    }
+    if (message.asset !== undefined) {
+      Coin.encode(message.asset, writer.uint32(66).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): EventRedeemTokenApproved {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventRedeemTokenApproved();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.eventId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.commandId = reader.bytes();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.destinationChain = reader.string();
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.contractAddress = reader.string();
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.payloadHash = reader.bytes();
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.asset = Coin.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventRedeemTokenApproved {
+    return {
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      eventId: isSet(object.eventId) ? globalThis.String(object.eventId) : "",
+      commandId: isSet(object.commandId)
+        ? bytesFromBase64(object.commandId)
+        : new Uint8Array(0),
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      destinationChain: isSet(object.destinationChain)
+        ? globalThis.String(object.destinationChain)
+        : "",
+      contractAddress: isSet(object.contractAddress)
+        ? globalThis.String(object.contractAddress)
+        : "",
+      payloadHash: isSet(object.payloadHash)
+        ? bytesFromBase64(object.payloadHash)
+        : new Uint8Array(0),
+      asset: isSet(object.asset) ? Coin.fromJSON(object.asset) : undefined,
+    };
+  },
+
+  toJSON(message: EventRedeemTokenApproved): unknown {
+    const obj: any = {};
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (message.eventId !== "") {
+      obj.eventId = message.eventId;
+    }
+    if (message.commandId.length !== 0) {
+      obj.commandId = base64FromBytes(message.commandId);
+    }
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.destinationChain !== "") {
+      obj.destinationChain = message.destinationChain;
+    }
+    if (message.contractAddress !== "") {
+      obj.contractAddress = message.contractAddress;
+    }
+    if (message.payloadHash.length !== 0) {
+      obj.payloadHash = base64FromBytes(message.payloadHash);
+    }
+    if (message.asset !== undefined) {
+      obj.asset = Coin.toJSON(message.asset);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EventRedeemTokenApproved>, I>>(
+    base?: I,
+  ): EventRedeemTokenApproved {
+    return EventRedeemTokenApproved.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<EventRedeemTokenApproved>, I>>(
+    object: I,
+  ): EventRedeemTokenApproved {
+    const message = createBaseEventRedeemTokenApproved();
+    message.chain = object.chain ?? "";
+    message.eventId = object.eventId ?? "";
+    message.commandId = object.commandId ?? new Uint8Array(0);
+    message.sender = object.sender ?? "";
+    message.destinationChain = object.destinationChain ?? "";
+    message.contractAddress = object.contractAddress ?? "";
+    message.payloadHash = object.payloadHash ?? new Uint8Array(0);
+    message.asset =
+      object.asset !== undefined && object.asset !== null
+        ? Coin.fromPartial(object.asset)
+        : undefined;
+    return message;
+  },
+};
+
 function createBaseEventTokenSent(): EventTokenSent {
   return {
     chain: "",
@@ -1703,6 +1924,7 @@ function createBaseEventTokenSent(): EventTokenSent {
     asset: undefined,
     scriptPubkey: new Uint8Array(0),
     vout: 0,
+    blockHeight: Long.UZERO,
   };
 }
 
@@ -1740,6 +1962,9 @@ export const EventTokenSent = {
     }
     if (message.vout !== 0) {
       writer.uint32(80).uint32(message.vout);
+    }
+    if (!message.blockHeight.equals(Long.UZERO)) {
+      writer.uint32(88).uint64(message.blockHeight);
     }
     return writer;
   },
@@ -1822,6 +2047,13 @@ export const EventTokenSent = {
 
           message.vout = reader.uint32();
           continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.blockHeight = reader.uint64() as Long;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1853,6 +2085,9 @@ export const EventTokenSent = {
         ? bytesFromBase64(object.scriptPubkey)
         : new Uint8Array(0),
       vout: isSet(object.vout) ? globalThis.Number(object.vout) : 0,
+      blockHeight: isSet(object.blockHeight)
+        ? Long.fromValue(object.blockHeight)
+        : Long.UZERO,
     };
   },
 
@@ -1888,6 +2123,9 @@ export const EventTokenSent = {
     if (message.vout !== 0) {
       obj.vout = Math.round(message.vout);
     }
+    if (!message.blockHeight.equals(Long.UZERO)) {
+      obj.blockHeight = (message.blockHeight || Long.UZERO).toString();
+    }
     return obj;
   },
 
@@ -1916,6 +2154,10 @@ export const EventTokenSent = {
         : undefined;
     message.scriptPubkey = object.scriptPubkey ?? new Uint8Array(0);
     message.vout = object.vout ?? 0;
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.UZERO;
     return message;
   },
 };
@@ -2221,6 +2463,223 @@ export const EventContractCallWithToken = {
     message.symbol = object.symbol ?? "";
     message.amount = object.amount ?? new Uint8Array(0);
     message.payload = object.payload ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseEventRedeemToken(): EventRedeemToken {
+  return {
+    sender: new Uint8Array(0),
+    sequence: Long.UZERO,
+    custodianGroupId: new Uint8Array(0),
+    destinationChain: "",
+    destinationContractAddress: "",
+    payloadHash: new Uint8Array(0),
+    payload: new Uint8Array(0),
+    symbol: "",
+    amount: new Uint8Array(0),
+  };
+}
+
+export const EventRedeemToken = {
+  encode(
+    message: EventRedeemToken,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.sender.length !== 0) {
+      writer.uint32(10).bytes(message.sender);
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      writer.uint32(16).uint64(message.sequence);
+    }
+    if (message.custodianGroupId.length !== 0) {
+      writer.uint32(26).bytes(message.custodianGroupId);
+    }
+    if (message.destinationChain !== "") {
+      writer.uint32(34).string(message.destinationChain);
+    }
+    if (message.destinationContractAddress !== "") {
+      writer.uint32(42).string(message.destinationContractAddress);
+    }
+    if (message.payloadHash.length !== 0) {
+      writer.uint32(50).bytes(message.payloadHash);
+    }
+    if (message.payload.length !== 0) {
+      writer.uint32(58).bytes(message.payload);
+    }
+    if (message.symbol !== "") {
+      writer.uint32(66).string(message.symbol);
+    }
+    if (message.amount.length !== 0) {
+      writer.uint32(74).bytes(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventRedeemToken {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventRedeemToken();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.sequence = reader.uint64() as Long;
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.custodianGroupId = reader.bytes();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.destinationChain = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.destinationContractAddress = reader.string();
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.payloadHash = reader.bytes();
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.payload = reader.bytes();
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.symbol = reader.string();
+          continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.amount = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventRedeemToken {
+    return {
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
+      sequence: isSet(object.sequence)
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO,
+      custodianGroupId: isSet(object.custodianGroupId)
+        ? bytesFromBase64(object.custodianGroupId)
+        : new Uint8Array(0),
+      destinationChain: isSet(object.destinationChain)
+        ? globalThis.String(object.destinationChain)
+        : "",
+      destinationContractAddress: isSet(object.destinationContractAddress)
+        ? globalThis.String(object.destinationContractAddress)
+        : "",
+      payloadHash: isSet(object.payloadHash)
+        ? bytesFromBase64(object.payloadHash)
+        : new Uint8Array(0),
+      payload: isSet(object.payload)
+        ? bytesFromBase64(object.payload)
+        : new Uint8Array(0),
+      symbol: isSet(object.symbol) ? globalThis.String(object.symbol) : "",
+      amount: isSet(object.amount)
+        ? bytesFromBase64(object.amount)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: EventRedeemToken): unknown {
+    const obj: any = {};
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
+    if (!message.sequence.equals(Long.UZERO)) {
+      obj.sequence = (message.sequence || Long.UZERO).toString();
+    }
+    if (message.custodianGroupId.length !== 0) {
+      obj.custodianGroupId = base64FromBytes(message.custodianGroupId);
+    }
+    if (message.destinationChain !== "") {
+      obj.destinationChain = message.destinationChain;
+    }
+    if (message.destinationContractAddress !== "") {
+      obj.destinationContractAddress = message.destinationContractAddress;
+    }
+    if (message.payloadHash.length !== 0) {
+      obj.payloadHash = base64FromBytes(message.payloadHash);
+    }
+    if (message.payload.length !== 0) {
+      obj.payload = base64FromBytes(message.payload);
+    }
+    if (message.symbol !== "") {
+      obj.symbol = message.symbol;
+    }
+    if (message.amount.length !== 0) {
+      obj.amount = base64FromBytes(message.amount);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EventRedeemToken>, I>>(
+    base?: I,
+  ): EventRedeemToken {
+    return EventRedeemToken.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<EventRedeemToken>, I>>(
+    object: I,
+  ): EventRedeemToken {
+    const message = createBaseEventRedeemToken();
+    message.sender = object.sender ?? new Uint8Array(0);
+    message.sequence =
+      object.sequence !== undefined && object.sequence !== null
+        ? Long.fromValue(object.sequence)
+        : Long.UZERO;
+    message.custodianGroupId = object.custodianGroupId ?? new Uint8Array(0);
+    message.destinationChain = object.destinationChain ?? "";
+    message.destinationContractAddress =
+      object.destinationContractAddress ?? "";
+    message.payloadHash = object.payloadHash ?? new Uint8Array(0);
+    message.payload = object.payload ?? new Uint8Array(0);
+    message.symbol = object.symbol ?? "";
+    message.amount = object.amount ?? new Uint8Array(0);
     return message;
   },
 };
@@ -2643,6 +3102,7 @@ function createBaseEvent(): Event {
     tokenDeployed: undefined,
     multisigOperatorshipTransferred: undefined,
     sourceTxConfirmationEvent: undefined,
+    redeemToken: undefined,
   };
 }
 
@@ -2703,6 +3163,12 @@ export const Event = {
       SourceTxConfirmationEvent.encode(
         message.sourceTxConfirmationEvent,
         writer.uint32(98).fork(),
+      ).ldelim();
+    }
+    if (message.redeemToken !== undefined) {
+      EventRedeemToken.encode(
+        message.redeemToken,
+        writer.uint32(106).fork(),
       ).ldelim();
     }
     return writer;
@@ -2817,6 +3283,16 @@ export const Event = {
             reader.uint32(),
           );
           continue;
+        case 13:
+          if (tag !== 106) {
+            break;
+          }
+
+          message.redeemToken = EventRedeemToken.decode(
+            reader,
+            reader.uint32(),
+          );
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2863,6 +3339,9 @@ export const Event = {
         : undefined,
       sourceTxConfirmationEvent: isSet(object.sourceTxConfirmationEvent)
         ? SourceTxConfirmationEvent.fromJSON(object.sourceTxConfirmationEvent)
+        : undefined,
+      redeemToken: isSet(object.redeemToken)
+        ? EventRedeemToken.fromJSON(object.redeemToken)
         : undefined,
     };
   },
@@ -2914,6 +3393,9 @@ export const Event = {
       obj.sourceTxConfirmationEvent = SourceTxConfirmationEvent.toJSON(
         message.sourceTxConfirmationEvent,
       );
+    }
+    if (message.redeemToken !== undefined) {
+      obj.redeemToken = EventRedeemToken.toJSON(message.redeemToken);
     }
     return obj;
   },
@@ -2972,12 +3454,16 @@ export const Event = {
             object.sourceTxConfirmationEvent,
           )
         : undefined;
+    message.redeemToken =
+      object.redeemToken !== undefined && object.redeemToken !== null
+        ? EventRedeemToken.fromPartial(object.redeemToken)
+        : undefined;
     return message;
   },
 };
 
 function createBaseNoEventsConfirmed(): NoEventsConfirmed {
-  return { txId: new Uint8Array(0), chain: "", pollId: Long.UZERO };
+  return { txId: new Uint8Array(0), chain: "", pollId: "" };
 }
 
 export const NoEventsConfirmed = {
@@ -2991,8 +3477,8 @@ export const NoEventsConfirmed = {
     if (message.chain !== "") {
       writer.uint32(18).string(message.chain);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -3020,11 +3506,11 @@ export const NoEventsConfirmed = {
           message.chain = reader.string();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -3041,7 +3527,7 @@ export const NoEventsConfirmed = {
         ? bytesFromBase64(object.txId)
         : new Uint8Array(0),
       chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -3053,8 +3539,8 @@ export const NoEventsConfirmed = {
     if (message.chain !== "") {
       obj.chain = message.chain;
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -3070,10 +3556,7 @@ export const NoEventsConfirmed = {
     const message = createBaseNoEventsConfirmed();
     message.txId = object.txId ?? new Uint8Array(0);
     message.chain = object.chain ?? "";
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };

@@ -50,25 +50,25 @@ export interface BasicPollMetadata {
 export interface BasicPollFailed {
   chain: string;
   data: Uint8Array;
-  pollId: Long;
+  pollId: string;
 }
 
 export interface BasicPollExpired {
   chain: string;
   data: Uint8Array;
-  pollId: Long;
+  pollId: string;
 }
 
 export interface BasicPollCompleted {
   chain: string;
   data: Uint8Array;
-  pollId: Long;
+  pollId: string;
 }
 
 export interface BasicPollNoEventsConfirmed {
   chain: string;
   data: Uint8Array;
-  pollId: Long;
+  pollId: string;
 }
 
 function createBasePsbtMultiSig(): PsbtMultiSig {
@@ -646,7 +646,7 @@ export const BasicPollMetadata = {
 };
 
 function createBaseBasicPollFailed(): BasicPollFailed {
-  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+  return { chain: "", data: new Uint8Array(0), pollId: "" };
 }
 
 export const BasicPollFailed = {
@@ -660,8 +660,8 @@ export const BasicPollFailed = {
     if (message.data.length !== 0) {
       writer.uint32(18).bytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -689,11 +689,11 @@ export const BasicPollFailed = {
           message.data = reader.bytes();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -710,7 +710,7 @@ export const BasicPollFailed = {
       data: isSet(object.data)
         ? bytesFromBase64(object.data)
         : new Uint8Array(0),
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -722,8 +722,8 @@ export const BasicPollFailed = {
     if (message.data.length !== 0) {
       obj.data = base64FromBytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -739,16 +739,13 @@ export const BasicPollFailed = {
     const message = createBaseBasicPollFailed();
     message.chain = object.chain ?? "";
     message.data = object.data ?? new Uint8Array(0);
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };
 
 function createBaseBasicPollExpired(): BasicPollExpired {
-  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+  return { chain: "", data: new Uint8Array(0), pollId: "" };
 }
 
 export const BasicPollExpired = {
@@ -762,8 +759,8 @@ export const BasicPollExpired = {
     if (message.data.length !== 0) {
       writer.uint32(18).bytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -791,11 +788,11 @@ export const BasicPollExpired = {
           message.data = reader.bytes();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -812,7 +809,7 @@ export const BasicPollExpired = {
       data: isSet(object.data)
         ? bytesFromBase64(object.data)
         : new Uint8Array(0),
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -824,8 +821,8 @@ export const BasicPollExpired = {
     if (message.data.length !== 0) {
       obj.data = base64FromBytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -841,16 +838,13 @@ export const BasicPollExpired = {
     const message = createBaseBasicPollExpired();
     message.chain = object.chain ?? "";
     message.data = object.data ?? new Uint8Array(0);
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };
 
 function createBaseBasicPollCompleted(): BasicPollCompleted {
-  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+  return { chain: "", data: new Uint8Array(0), pollId: "" };
 }
 
 export const BasicPollCompleted = {
@@ -864,8 +858,8 @@ export const BasicPollCompleted = {
     if (message.data.length !== 0) {
       writer.uint32(18).bytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -893,11 +887,11 @@ export const BasicPollCompleted = {
           message.data = reader.bytes();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -914,7 +908,7 @@ export const BasicPollCompleted = {
       data: isSet(object.data)
         ? bytesFromBase64(object.data)
         : new Uint8Array(0),
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -926,8 +920,8 @@ export const BasicPollCompleted = {
     if (message.data.length !== 0) {
       obj.data = base64FromBytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -943,16 +937,13 @@ export const BasicPollCompleted = {
     const message = createBaseBasicPollCompleted();
     message.chain = object.chain ?? "";
     message.data = object.data ?? new Uint8Array(0);
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };
 
 function createBaseBasicPollNoEventsConfirmed(): BasicPollNoEventsConfirmed {
-  return { chain: "", data: new Uint8Array(0), pollId: Long.UZERO };
+  return { chain: "", data: new Uint8Array(0), pollId: "" };
 }
 
 export const BasicPollNoEventsConfirmed = {
@@ -966,8 +957,8 @@ export const BasicPollNoEventsConfirmed = {
     if (message.data.length !== 0) {
       writer.uint32(18).bytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -998,11 +989,11 @@ export const BasicPollNoEventsConfirmed = {
           message.data = reader.bytes();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1019,7 +1010,7 @@ export const BasicPollNoEventsConfirmed = {
       data: isSet(object.data)
         ? bytesFromBase64(object.data)
         : new Uint8Array(0),
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -1031,8 +1022,8 @@ export const BasicPollNoEventsConfirmed = {
     if (message.data.length !== 0) {
       obj.data = base64FromBytes(message.data);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -1048,10 +1039,7 @@ export const BasicPollNoEventsConfirmed = {
     const message = createBaseBasicPollNoEventsConfirmed();
     message.chain = object.chain ?? "";
     message.data = object.data ?? new Uint8Array(0);
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };

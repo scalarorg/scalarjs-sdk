@@ -7,8 +7,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { TapScriptSigsMap } from "../exported/v1beta1/types";
-import { Phase, phaseFromJSON, phaseToJSON, UTXOSnapshot } from "./redeem";
+import {
+  Phase,
+  phaseFromJSON,
+  phaseToJSON,
+  TapScriptSigsMap,
+} from "../exported/v1beta1/types";
+import { UTXOSnapshot } from "./redeem";
 
 export const protobufPackage = "scalar.covenant.v1beta1";
 
@@ -69,7 +74,7 @@ export interface SwitchPhaseCompleted {
 
 /** For Validation process */
 export interface ConfirmSwitchedPhaseStarted {
-  pollId: Long;
+  pollId: string;
   txId: Uint8Array;
   chain: string;
   confirmationHeight: Long;
@@ -78,7 +83,7 @@ export interface ConfirmSwitchedPhaseStarted {
 }
 
 export interface ConfirmRedeemTxStarted {
-  pollId: Long;
+  pollId: string;
   txIds: Uint8Array[];
   chain: string;
   confirmationHeight: Long;
@@ -88,6 +93,16 @@ export interface ConfirmRedeemTxStarted {
   networkParams: string;
 }
 
+export interface IntializeUtxoSnapshotStarted {
+  pollId: string;
+  chain: string;
+  confirmationHeight: Long;
+  participants: Uint8Array[];
+  custodianGroupUid: Uint8Array;
+  address: string;
+  blockCheckpoint: Long;
+}
+
 export interface Event {
   chain: string;
   hash: Uint8Array;
@@ -95,6 +110,7 @@ export interface Event {
   index: Long;
   redeemTxsConfirmed?: RedeemTxsConfirmed | undefined;
   switchedPhaseConfirmed?: SwitchedPhaseConfirmed | undefined;
+  intializeUtxoSnapshotCompleted?: IntializeUtxoSnapshotCompleted | undefined;
 }
 
 export enum Event_Status {
@@ -158,6 +174,11 @@ export interface SwitchedPhaseConfirmed {
   sequence: Long;
   fromPhase: Long;
   toPhase: Long;
+}
+
+export interface IntializeUtxoSnapshotCompleted {
+  eventId: string;
+  utxoSnapshot?: UTXOSnapshot | undefined;
 }
 
 function createBaseSigningPsbtStarted(): SigningPsbtStarted {
@@ -1118,7 +1139,7 @@ export const SwitchPhaseCompleted = {
 
 function createBaseConfirmSwitchedPhaseStarted(): ConfirmSwitchedPhaseStarted {
   return {
-    pollId: Long.UZERO,
+    pollId: "",
     txId: new Uint8Array(0),
     chain: "",
     confirmationHeight: Long.UZERO,
@@ -1132,8 +1153,8 @@ export const ConfirmSwitchedPhaseStarted = {
     message: ConfirmSwitchedPhaseStarted,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(8).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(10).string(message.pollId);
     }
     if (message.txId.length !== 0) {
       writer.uint32(18).bytes(message.txId);
@@ -1165,11 +1186,11 @@ export const ConfirmSwitchedPhaseStarted = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
@@ -1217,7 +1238,7 @@ export const ConfirmSwitchedPhaseStarted = {
 
   fromJSON(object: any): ConfirmSwitchedPhaseStarted {
     return {
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
       txId: isSet(object.txId)
         ? bytesFromBase64(object.txId)
         : new Uint8Array(0),
@@ -1236,8 +1257,8 @@ export const ConfirmSwitchedPhaseStarted = {
 
   toJSON(message: ConfirmSwitchedPhaseStarted): unknown {
     const obj: any = {};
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     if (message.txId.length !== 0) {
       obj.txId = base64FromBytes(message.txId);
@@ -1268,10 +1289,7 @@ export const ConfirmSwitchedPhaseStarted = {
     object: I,
   ): ConfirmSwitchedPhaseStarted {
     const message = createBaseConfirmSwitchedPhaseStarted();
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     message.txId = object.txId ?? new Uint8Array(0);
     message.chain = object.chain ?? "";
     message.confirmationHeight =
@@ -1287,7 +1305,7 @@ export const ConfirmSwitchedPhaseStarted = {
 
 function createBaseConfirmRedeemTxStarted(): ConfirmRedeemTxStarted {
   return {
-    pollId: Long.UZERO,
+    pollId: "",
     txIds: [],
     chain: "",
     confirmationHeight: Long.UZERO,
@@ -1303,8 +1321,8 @@ export const ConfirmRedeemTxStarted = {
     message: ConfirmRedeemTxStarted,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(8).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(10).string(message.pollId);
     }
     for (const v of message.txIds) {
       writer.uint32(18).bytes(v!);
@@ -1342,11 +1360,11 @@ export const ConfirmRedeemTxStarted = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
@@ -1408,7 +1426,7 @@ export const ConfirmRedeemTxStarted = {
 
   fromJSON(object: any): ConfirmRedeemTxStarted {
     return {
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
       txIds: globalThis.Array.isArray(object?.txIds)
         ? object.txIds.map((e: any) => bytesFromBase64(e))
         : [],
@@ -1433,8 +1451,8 @@ export const ConfirmRedeemTxStarted = {
 
   toJSON(message: ConfirmRedeemTxStarted): unknown {
     const obj: any = {};
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     if (message.txIds?.length) {
       obj.txIds = message.txIds.map((e) => base64FromBytes(e));
@@ -1471,10 +1489,7 @@ export const ConfirmRedeemTxStarted = {
     object: I,
   ): ConfirmRedeemTxStarted {
     const message = createBaseConfirmRedeemTxStarted();
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     message.txIds = object.txIds?.map((e) => e) || [];
     message.chain = object.chain ?? "";
     message.confirmationHeight =
@@ -1490,6 +1505,191 @@ export const ConfirmRedeemTxStarted = {
   },
 };
 
+function createBaseIntializeUtxoSnapshotStarted(): IntializeUtxoSnapshotStarted {
+  return {
+    pollId: "",
+    chain: "",
+    confirmationHeight: Long.UZERO,
+    participants: [],
+    custodianGroupUid: new Uint8Array(0),
+    address: "",
+    blockCheckpoint: Long.UZERO,
+  };
+}
+
+export const IntializeUtxoSnapshotStarted = {
+  encode(
+    message: IntializeUtxoSnapshotStarted,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.pollId !== "") {
+      writer.uint32(10).string(message.pollId);
+    }
+    if (message.chain !== "") {
+      writer.uint32(18).string(message.chain);
+    }
+    if (!message.confirmationHeight.equals(Long.UZERO)) {
+      writer.uint32(24).uint64(message.confirmationHeight);
+    }
+    for (const v of message.participants) {
+      writer.uint32(34).bytes(v!);
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      writer.uint32(42).bytes(message.custodianGroupUid);
+    }
+    if (message.address !== "") {
+      writer.uint32(50).string(message.address);
+    }
+    if (!message.blockCheckpoint.equals(Long.UZERO)) {
+      writer.uint32(56).uint64(message.blockCheckpoint);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): IntializeUtxoSnapshotStarted {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIntializeUtxoSnapshotStarted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.pollId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.confirmationHeight = reader.uint64() as Long;
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.participants.push(reader.bytes());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.custodianGroupUid = reader.bytes();
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.blockCheckpoint = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IntializeUtxoSnapshotStarted {
+    return {
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      confirmationHeight: isSet(object.confirmationHeight)
+        ? Long.fromValue(object.confirmationHeight)
+        : Long.UZERO,
+      participants: globalThis.Array.isArray(object?.participants)
+        ? object.participants.map((e: any) => bytesFromBase64(e))
+        : [],
+      custodianGroupUid: isSet(object.custodianGroupUid)
+        ? bytesFromBase64(object.custodianGroupUid)
+        : new Uint8Array(0),
+      address: isSet(object.address) ? globalThis.String(object.address) : "",
+      blockCheckpoint: isSet(object.blockCheckpoint)
+        ? Long.fromValue(object.blockCheckpoint)
+        : Long.UZERO,
+    };
+  },
+
+  toJSON(message: IntializeUtxoSnapshotStarted): unknown {
+    const obj: any = {};
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (!message.confirmationHeight.equals(Long.UZERO)) {
+      obj.confirmationHeight = (
+        message.confirmationHeight || Long.UZERO
+      ).toString();
+    }
+    if (message.participants?.length) {
+      obj.participants = message.participants.map((e) => base64FromBytes(e));
+    }
+    if (message.custodianGroupUid.length !== 0) {
+      obj.custodianGroupUid = base64FromBytes(message.custodianGroupUid);
+    }
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    if (!message.blockCheckpoint.equals(Long.UZERO)) {
+      obj.blockCheckpoint = (message.blockCheckpoint || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IntializeUtxoSnapshotStarted>, I>>(
+    base?: I,
+  ): IntializeUtxoSnapshotStarted {
+    return IntializeUtxoSnapshotStarted.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IntializeUtxoSnapshotStarted>, I>>(
+    object: I,
+  ): IntializeUtxoSnapshotStarted {
+    const message = createBaseIntializeUtxoSnapshotStarted();
+    message.pollId = object.pollId ?? "";
+    message.chain = object.chain ?? "";
+    message.confirmationHeight =
+      object.confirmationHeight !== undefined &&
+      object.confirmationHeight !== null
+        ? Long.fromValue(object.confirmationHeight)
+        : Long.UZERO;
+    message.participants = object.participants?.map((e) => e) || [];
+    message.custodianGroupUid = object.custodianGroupUid ?? new Uint8Array(0);
+    message.address = object.address ?? "";
+    message.blockCheckpoint =
+      object.blockCheckpoint !== undefined && object.blockCheckpoint !== null
+        ? Long.fromValue(object.blockCheckpoint)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 function createBaseEvent(): Event {
   return {
     chain: "",
@@ -1498,6 +1698,7 @@ function createBaseEvent(): Event {
     index: Long.UZERO,
     redeemTxsConfirmed: undefined,
     switchedPhaseConfirmed: undefined,
+    intializeUtxoSnapshotCompleted: undefined,
   };
 }
 
@@ -1525,6 +1726,12 @@ export const Event = {
       SwitchedPhaseConfirmed.encode(
         message.switchedPhaseConfirmed,
         writer.uint32(50).fork(),
+      ).ldelim();
+    }
+    if (message.intializeUtxoSnapshotCompleted !== undefined) {
+      IntializeUtxoSnapshotCompleted.encode(
+        message.intializeUtxoSnapshotCompleted,
+        writer.uint32(58).fork(),
       ).ldelim();
     }
     return writer;
@@ -1586,6 +1793,14 @@ export const Event = {
             reader.uint32(),
           );
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.intializeUtxoSnapshotCompleted =
+            IntializeUtxoSnapshotCompleted.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1608,6 +1823,13 @@ export const Event = {
         : undefined,
       switchedPhaseConfirmed: isSet(object.switchedPhaseConfirmed)
         ? SwitchedPhaseConfirmed.fromJSON(object.switchedPhaseConfirmed)
+        : undefined,
+      intializeUtxoSnapshotCompleted: isSet(
+        object.intializeUtxoSnapshotCompleted,
+      )
+        ? IntializeUtxoSnapshotCompleted.fromJSON(
+            object.intializeUtxoSnapshotCompleted,
+          )
         : undefined,
     };
   },
@@ -1636,6 +1858,12 @@ export const Event = {
         message.switchedPhaseConfirmed,
       );
     }
+    if (message.intializeUtxoSnapshotCompleted !== undefined) {
+      obj.intializeUtxoSnapshotCompleted =
+        IntializeUtxoSnapshotCompleted.toJSON(
+          message.intializeUtxoSnapshotCompleted,
+        );
+    }
     return obj;
   },
 
@@ -1660,6 +1888,13 @@ export const Event = {
       object.switchedPhaseConfirmed !== undefined &&
       object.switchedPhaseConfirmed !== null
         ? SwitchedPhaseConfirmed.fromPartial(object.switchedPhaseConfirmed)
+        : undefined;
+    message.intializeUtxoSnapshotCompleted =
+      object.intializeUtxoSnapshotCompleted !== undefined &&
+      object.intializeUtxoSnapshotCompleted !== null
+        ? IntializeUtxoSnapshotCompleted.fromPartial(
+            object.intializeUtxoSnapshotCompleted,
+          )
         : undefined;
     return message;
   },
@@ -1988,6 +2223,99 @@ export const SwitchedPhaseConfirmed = {
       object.toPhase !== undefined && object.toPhase !== null
         ? Long.fromValue(object.toPhase)
         : Long.UZERO;
+    return message;
+  },
+};
+
+function createBaseIntializeUtxoSnapshotCompleted(): IntializeUtxoSnapshotCompleted {
+  return { eventId: "", utxoSnapshot: undefined };
+}
+
+export const IntializeUtxoSnapshotCompleted = {
+  encode(
+    message: IntializeUtxoSnapshotCompleted,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.eventId !== "") {
+      writer.uint32(10).string(message.eventId);
+    }
+    if (message.utxoSnapshot !== undefined) {
+      UTXOSnapshot.encode(
+        message.utxoSnapshot,
+        writer.uint32(18).fork(),
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): IntializeUtxoSnapshotCompleted {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIntializeUtxoSnapshotCompleted();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.eventId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.utxoSnapshot = UTXOSnapshot.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IntializeUtxoSnapshotCompleted {
+    return {
+      eventId: isSet(object.eventId) ? globalThis.String(object.eventId) : "",
+      utxoSnapshot: isSet(object.utxoSnapshot)
+        ? UTXOSnapshot.fromJSON(object.utxoSnapshot)
+        : undefined,
+    };
+  },
+
+  toJSON(message: IntializeUtxoSnapshotCompleted): unknown {
+    const obj: any = {};
+    if (message.eventId !== "") {
+      obj.eventId = message.eventId;
+    }
+    if (message.utxoSnapshot !== undefined) {
+      obj.utxoSnapshot = UTXOSnapshot.toJSON(message.utxoSnapshot);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IntializeUtxoSnapshotCompleted>, I>>(
+    base?: I,
+  ): IntializeUtxoSnapshotCompleted {
+    return IntializeUtxoSnapshotCompleted.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IntializeUtxoSnapshotCompleted>, I>>(
+    object: I,
+  ): IntializeUtxoSnapshotCompleted {
+    const message = createBaseIntializeUtxoSnapshotCompleted();
+    message.eventId = object.eventId ?? "";
+    message.utxoSnapshot =
+      object.utxoSnapshot !== undefined && object.utxoSnapshot !== null
+        ? UTXOSnapshot.fromPartial(object.utxoSnapshot)
+        : undefined;
     return message;
   },
 };

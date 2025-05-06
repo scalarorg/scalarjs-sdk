@@ -13,7 +13,7 @@ export const protobufPackage = "scalar.vote.v1beta1";
 
 export interface VoteRequest {
   sender: Uint8Array;
-  pollId: Long;
+  pollId: string;
   vote?: Any | undefined;
 }
 
@@ -22,7 +22,7 @@ export interface VoteResponse {
 }
 
 function createBaseVoteRequest(): VoteRequest {
-  return { sender: new Uint8Array(0), pollId: Long.UZERO, vote: undefined };
+  return { sender: new Uint8Array(0), pollId: "", vote: undefined };
 }
 
 export const VoteRequest = {
@@ -33,8 +33,8 @@ export const VoteRequest = {
     if (message.sender.length !== 0) {
       writer.uint32(10).bytes(message.sender);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(32).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(34).string(message.pollId);
     }
     if (message.vote !== undefined) {
       Any.encode(message.vote, writer.uint32(42).fork()).ldelim();
@@ -58,11 +58,11 @@ export const VoteRequest = {
           message.sender = reader.bytes();
           continue;
         case 4:
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
         case 5:
           if (tag !== 42) {
@@ -85,7 +85,7 @@ export const VoteRequest = {
       sender: isSet(object.sender)
         ? bytesFromBase64(object.sender)
         : new Uint8Array(0),
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
       vote: isSet(object.vote) ? Any.fromJSON(object.vote) : undefined,
     };
   },
@@ -95,8 +95,8 @@ export const VoteRequest = {
     if (message.sender.length !== 0) {
       obj.sender = base64FromBytes(message.sender);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     if (message.vote !== undefined) {
       obj.vote = Any.toJSON(message.vote);
@@ -112,10 +112,7 @@ export const VoteRequest = {
   ): VoteRequest {
     const message = createBaseVoteRequest();
     message.sender = object.sender ?? new Uint8Array(0);
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     message.vote =
       object.vote !== undefined && object.vote !== null
         ? Any.fromPartial(object.vote)

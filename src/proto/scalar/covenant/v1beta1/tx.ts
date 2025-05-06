@@ -143,6 +143,15 @@ export interface ConfirmRedeemTxsRequest {
 
 export interface ConfirmRedeemTxsResponse {}
 
+export interface InitializeUtxoRequest {
+  sender: Uint8Array;
+  chain: string;
+  /** Current block height sent from the relayer */
+  blockCheckpoint: Long;
+}
+
+export interface InitializeUtxoResponse {}
+
 function createBaseCreateCustodianRequest(): CreateCustodianRequest {
   return {
     sender: new Uint8Array(0),
@@ -2302,6 +2311,167 @@ export const ConfirmRedeemTxsResponse = {
     _: I,
   ): ConfirmRedeemTxsResponse {
     const message = createBaseConfirmRedeemTxsResponse();
+    return message;
+  },
+};
+
+function createBaseInitializeUtxoRequest(): InitializeUtxoRequest {
+  return { sender: new Uint8Array(0), chain: "", blockCheckpoint: Long.UZERO };
+}
+
+export const InitializeUtxoRequest = {
+  encode(
+    message: InitializeUtxoRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.sender.length !== 0) {
+      writer.uint32(10).bytes(message.sender);
+    }
+    if (message.chain !== "") {
+      writer.uint32(18).string(message.chain);
+    }
+    if (!message.blockCheckpoint.equals(Long.UZERO)) {
+      writer.uint32(24).uint64(message.blockCheckpoint);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): InitializeUtxoRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInitializeUtxoRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.bytes();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chain = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.blockCheckpoint = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InitializeUtxoRequest {
+    return {
+      sender: isSet(object.sender)
+        ? bytesFromBase64(object.sender)
+        : new Uint8Array(0),
+      chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
+      blockCheckpoint: isSet(object.blockCheckpoint)
+        ? Long.fromValue(object.blockCheckpoint)
+        : Long.UZERO,
+    };
+  },
+
+  toJSON(message: InitializeUtxoRequest): unknown {
+    const obj: any = {};
+    if (message.sender.length !== 0) {
+      obj.sender = base64FromBytes(message.sender);
+    }
+    if (message.chain !== "") {
+      obj.chain = message.chain;
+    }
+    if (!message.blockCheckpoint.equals(Long.UZERO)) {
+      obj.blockCheckpoint = (message.blockCheckpoint || Long.UZERO).toString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<InitializeUtxoRequest>, I>>(
+    base?: I,
+  ): InitializeUtxoRequest {
+    return InitializeUtxoRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<InitializeUtxoRequest>, I>>(
+    object: I,
+  ): InitializeUtxoRequest {
+    const message = createBaseInitializeUtxoRequest();
+    message.sender = object.sender ?? new Uint8Array(0);
+    message.chain = object.chain ?? "";
+    message.blockCheckpoint =
+      object.blockCheckpoint !== undefined && object.blockCheckpoint !== null
+        ? Long.fromValue(object.blockCheckpoint)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+function createBaseInitializeUtxoResponse(): InitializeUtxoResponse {
+  return {};
+}
+
+export const InitializeUtxoResponse = {
+  encode(
+    _: InitializeUtxoResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): InitializeUtxoResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInitializeUtxoResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): InitializeUtxoResponse {
+    return {};
+  },
+
+  toJSON(_: InitializeUtxoResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<InitializeUtxoResponse>, I>>(
+    base?: I,
+  ): InitializeUtxoResponse {
+    return InitializeUtxoResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<InitializeUtxoResponse>, I>>(
+    _: I,
+  ): InitializeUtxoResponse {
+    const message = createBaseInitializeUtxoResponse();
     return message;
   },
 };

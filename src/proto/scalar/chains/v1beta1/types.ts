@@ -242,14 +242,14 @@ export enum CommandType {
   COMMAND_TYPE_UNSPECIFIED = 0,
   COMMAND_TYPE_MINT_TOKEN = 1,
   COMMAND_TYPE_DEPLOY_TOKEN = 2,
-  COMMAND_TYPE_DEPLOY_TOKEN2 = 3,
-  COMMAND_TYPE_BURN_TOKEN = 4,
-  COMMAND_TYPE_TRANSFER_OPERATORSHIP = 5,
-  COMMAND_TYPE_APPROVE_CONTRACT_CALL_WITH_MINT = 6,
-  COMMAND_TYPE_APPROVE_CONTRACT_CALL = 7,
-  COMMAND_TYPE_REGISTER_CUSTODIAN_GROUP = 8,
-  COMMAND_TYPE_SWITCH_PHASE = 9,
-  COMMAND_TYPE_REDEEM_TOKEN = 10,
+  COMMAND_TYPE_BURN_TOKEN = 3,
+  COMMAND_TYPE_TRANSFER_OPERATORSHIP = 4,
+  COMMAND_TYPE_APPROVE_CONTRACT_CALL_WITH_MINT = 5,
+  COMMAND_TYPE_APPROVE_CONTRACT_CALL = 6,
+  COMMAND_TYPE_REGISTER_CUSTODIAN_GROUP = 7,
+  COMMAND_TYPE_SWITCH_PHASE = 8,
+  COMMAND_TYPE_REDEEM_TOKEN = 9,
+  COMMAND_TYPE_APPROVE_REDEEM_TOKEN = 10,
   UNRECOGNIZED = -1,
 }
 
@@ -265,29 +265,29 @@ export function commandTypeFromJSON(object: any): CommandType {
     case "COMMAND_TYPE_DEPLOY_TOKEN":
       return CommandType.COMMAND_TYPE_DEPLOY_TOKEN;
     case 3:
-    case "COMMAND_TYPE_DEPLOY_TOKEN2":
-      return CommandType.COMMAND_TYPE_DEPLOY_TOKEN2;
-    case 4:
     case "COMMAND_TYPE_BURN_TOKEN":
       return CommandType.COMMAND_TYPE_BURN_TOKEN;
-    case 5:
+    case 4:
     case "COMMAND_TYPE_TRANSFER_OPERATORSHIP":
       return CommandType.COMMAND_TYPE_TRANSFER_OPERATORSHIP;
-    case 6:
+    case 5:
     case "COMMAND_TYPE_APPROVE_CONTRACT_CALL_WITH_MINT":
       return CommandType.COMMAND_TYPE_APPROVE_CONTRACT_CALL_WITH_MINT;
-    case 7:
+    case 6:
     case "COMMAND_TYPE_APPROVE_CONTRACT_CALL":
       return CommandType.COMMAND_TYPE_APPROVE_CONTRACT_CALL;
-    case 8:
+    case 7:
     case "COMMAND_TYPE_REGISTER_CUSTODIAN_GROUP":
       return CommandType.COMMAND_TYPE_REGISTER_CUSTODIAN_GROUP;
-    case 9:
+    case 8:
     case "COMMAND_TYPE_SWITCH_PHASE":
       return CommandType.COMMAND_TYPE_SWITCH_PHASE;
-    case 10:
+    case 9:
     case "COMMAND_TYPE_REDEEM_TOKEN":
       return CommandType.COMMAND_TYPE_REDEEM_TOKEN;
+    case 10:
+    case "COMMAND_TYPE_APPROVE_REDEEM_TOKEN":
+      return CommandType.COMMAND_TYPE_APPROVE_REDEEM_TOKEN;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -303,8 +303,6 @@ export function commandTypeToJSON(object: CommandType): string {
       return "COMMAND_TYPE_MINT_TOKEN";
     case CommandType.COMMAND_TYPE_DEPLOY_TOKEN:
       return "COMMAND_TYPE_DEPLOY_TOKEN";
-    case CommandType.COMMAND_TYPE_DEPLOY_TOKEN2:
-      return "COMMAND_TYPE_DEPLOY_TOKEN2";
     case CommandType.COMMAND_TYPE_BURN_TOKEN:
       return "COMMAND_TYPE_BURN_TOKEN";
     case CommandType.COMMAND_TYPE_TRANSFER_OPERATORSHIP:
@@ -319,6 +317,8 @@ export function commandTypeToJSON(object: CommandType): string {
       return "COMMAND_TYPE_SWITCH_PHASE";
     case CommandType.COMMAND_TYPE_REDEEM_TOKEN:
       return "COMMAND_TYPE_REDEEM_TOKEN";
+    case CommandType.COMMAND_TYPE_APPROVE_REDEEM_TOKEN:
+      return "COMMAND_TYPE_APPROVE_REDEEM_TOKEN";
     case CommandType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -370,7 +370,7 @@ export interface Command {
 
 export interface PollMapping {
   txId: Uint8Array;
-  pollId: Long;
+  pollId: string;
 }
 
 export interface PollMetadata {
@@ -381,19 +381,19 @@ export interface PollMetadata {
 export interface PollFailed {
   txId: Uint8Array;
   chain: string;
-  pollId: Long;
+  pollId: string;
 }
 
 export interface PollExpired {
   txId: Uint8Array;
   chain: string;
-  pollId: Long;
+  pollId: string;
 }
 
 export interface PollCompleted {
   txId: Uint8Array;
   chain: string;
-  pollId: Long;
+  pollId: string;
 }
 
 /**
@@ -1076,7 +1076,7 @@ export const Command = {
 };
 
 function createBasePollMapping(): PollMapping {
-  return { txId: new Uint8Array(0), pollId: Long.UZERO };
+  return { txId: new Uint8Array(0), pollId: "" };
 }
 
 export const PollMapping = {
@@ -1087,8 +1087,8 @@ export const PollMapping = {
     if (message.txId.length !== 0) {
       writer.uint32(10).bytes(message.txId);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(16).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(18).string(message.pollId);
     }
     return writer;
   },
@@ -1109,11 +1109,11 @@ export const PollMapping = {
           message.txId = reader.bytes();
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1129,7 +1129,7 @@ export const PollMapping = {
       txId: isSet(object.txId)
         ? bytesFromBase64(object.txId)
         : new Uint8Array(0),
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -1138,8 +1138,8 @@ export const PollMapping = {
     if (message.txId.length !== 0) {
       obj.txId = base64FromBytes(message.txId);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -1152,10 +1152,7 @@ export const PollMapping = {
   ): PollMapping {
     const message = createBasePollMapping();
     message.txId = object.txId ?? new Uint8Array(0);
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };
@@ -1245,7 +1242,7 @@ export const PollMetadata = {
 };
 
 function createBasePollFailed(): PollFailed {
-  return { txId: new Uint8Array(0), chain: "", pollId: Long.UZERO };
+  return { txId: new Uint8Array(0), chain: "", pollId: "" };
 }
 
 export const PollFailed = {
@@ -1259,8 +1256,8 @@ export const PollFailed = {
     if (message.chain !== "") {
       writer.uint32(18).string(message.chain);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -1288,11 +1285,11 @@ export const PollFailed = {
           message.chain = reader.string();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1309,7 +1306,7 @@ export const PollFailed = {
         ? bytesFromBase64(object.txId)
         : new Uint8Array(0),
       chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -1321,8 +1318,8 @@ export const PollFailed = {
     if (message.chain !== "") {
       obj.chain = message.chain;
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -1336,16 +1333,13 @@ export const PollFailed = {
     const message = createBasePollFailed();
     message.txId = object.txId ?? new Uint8Array(0);
     message.chain = object.chain ?? "";
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };
 
 function createBasePollExpired(): PollExpired {
-  return { txId: new Uint8Array(0), chain: "", pollId: Long.UZERO };
+  return { txId: new Uint8Array(0), chain: "", pollId: "" };
 }
 
 export const PollExpired = {
@@ -1359,8 +1353,8 @@ export const PollExpired = {
     if (message.chain !== "") {
       writer.uint32(18).string(message.chain);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -1388,11 +1382,11 @@ export const PollExpired = {
           message.chain = reader.string();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1409,7 +1403,7 @@ export const PollExpired = {
         ? bytesFromBase64(object.txId)
         : new Uint8Array(0),
       chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -1421,8 +1415,8 @@ export const PollExpired = {
     if (message.chain !== "") {
       obj.chain = message.chain;
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -1436,16 +1430,13 @@ export const PollExpired = {
     const message = createBasePollExpired();
     message.txId = object.txId ?? new Uint8Array(0);
     message.chain = object.chain ?? "";
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };
 
 function createBasePollCompleted(): PollCompleted {
-  return { txId: new Uint8Array(0), chain: "", pollId: Long.UZERO };
+  return { txId: new Uint8Array(0), chain: "", pollId: "" };
 }
 
 export const PollCompleted = {
@@ -1459,8 +1450,8 @@ export const PollCompleted = {
     if (message.chain !== "") {
       writer.uint32(18).string(message.chain);
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      writer.uint32(24).uint64(message.pollId);
+    if (message.pollId !== "") {
+      writer.uint32(26).string(message.pollId);
     }
     return writer;
   },
@@ -1488,11 +1479,11 @@ export const PollCompleted = {
           message.chain = reader.string();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.pollId = reader.uint64() as Long;
+          message.pollId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1509,7 +1500,7 @@ export const PollCompleted = {
         ? bytesFromBase64(object.txId)
         : new Uint8Array(0),
       chain: isSet(object.chain) ? globalThis.String(object.chain) : "",
-      pollId: isSet(object.pollId) ? Long.fromValue(object.pollId) : Long.UZERO,
+      pollId: isSet(object.pollId) ? globalThis.String(object.pollId) : "",
     };
   },
 
@@ -1521,8 +1512,8 @@ export const PollCompleted = {
     if (message.chain !== "") {
       obj.chain = message.chain;
     }
-    if (!message.pollId.equals(Long.UZERO)) {
-      obj.pollId = (message.pollId || Long.UZERO).toString();
+    if (message.pollId !== "") {
+      obj.pollId = message.pollId;
     }
     return obj;
   },
@@ -1538,10 +1529,7 @@ export const PollCompleted = {
     const message = createBasePollCompleted();
     message.txId = object.txId ?? new Uint8Array(0);
     message.chain = object.chain ?? "";
-    message.pollId =
-      object.pollId !== undefined && object.pollId !== null
-        ? Long.fromValue(object.pollId)
-        : Long.UZERO;
+    message.pollId = object.pollId ?? "";
     return message;
   },
 };

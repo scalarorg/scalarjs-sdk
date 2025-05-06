@@ -17,6 +17,7 @@ export interface Params {
   signingTimeout: Long;
   signingGracePeriod: Long;
   activeEpochCount: Long;
+  blockLimitPerSession: Long;
 }
 
 function createBaseParams(): Params {
@@ -25,6 +26,7 @@ function createBaseParams(): Params {
     signingTimeout: Long.ZERO,
     signingGracePeriod: Long.ZERO,
     activeEpochCount: Long.UZERO,
+    blockLimitPerSession: Long.UZERO,
   };
 }
 
@@ -47,6 +49,9 @@ export const Params = {
     }
     if (!message.activeEpochCount.equals(Long.UZERO)) {
       writer.uint32(32).uint64(message.activeEpochCount);
+    }
+    if (!message.blockLimitPerSession.equals(Long.UZERO)) {
+      writer.uint32(40).uint64(message.blockLimitPerSession);
     }
     return writer;
   },
@@ -87,6 +92,13 @@ export const Params = {
 
           message.activeEpochCount = reader.uint64() as Long;
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.blockLimitPerSession = reader.uint64() as Long;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -110,6 +122,9 @@ export const Params = {
       activeEpochCount: isSet(object.activeEpochCount)
         ? Long.fromValue(object.activeEpochCount)
         : Long.UZERO,
+      blockLimitPerSession: isSet(object.blockLimitPerSession)
+        ? Long.fromValue(object.blockLimitPerSession)
+        : Long.UZERO,
     };
   },
 
@@ -129,6 +144,11 @@ export const Params = {
     if (!message.activeEpochCount.equals(Long.UZERO)) {
       obj.activeEpochCount = (
         message.activeEpochCount || Long.UZERO
+      ).toString();
+    }
+    if (!message.blockLimitPerSession.equals(Long.UZERO)) {
+      obj.blockLimitPerSession = (
+        message.blockLimitPerSession || Long.UZERO
       ).toString();
     }
     return obj;
@@ -155,6 +175,11 @@ export const Params = {
     message.activeEpochCount =
       object.activeEpochCount !== undefined && object.activeEpochCount !== null
         ? Long.fromValue(object.activeEpochCount)
+        : Long.UZERO;
+    message.blockLimitPerSession =
+      object.blockLimitPerSession !== undefined &&
+      object.blockLimitPerSession !== null
+        ? Long.fromValue(object.blockLimitPerSession)
         : Long.UZERO;
     return message;
   },

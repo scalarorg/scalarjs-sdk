@@ -31,6 +31,8 @@ import {
   ParamsResponse,
   PendingCommandsRequest,
   PendingCommandsResponse,
+  RedeemSessionRequest,
+  RedeemSessionResponse,
   TokenInfoRequest,
   TokenInfoResponse,
 } from "./query";
@@ -326,6 +328,7 @@ export interface QueryService {
   /** TokenInfo queries the token info for a registered ERC20 Token */
   TokenInfo(request: TokenInfoRequest): Promise<TokenInfoResponse>;
   Params(request: ParamsRequest): Promise<ParamsResponse>;
+  RedeemSession(request: RedeemSessionRequest): Promise<RedeemSessionResponse>;
 }
 
 export const QueryServiceServiceName = "scalar.chains.v1beta1.QueryService";
@@ -348,6 +351,7 @@ export class QueryServiceClientImpl implements QueryService {
     this.ERC20Tokens = this.ERC20Tokens.bind(this);
     this.TokenInfo = this.TokenInfo.bind(this);
     this.Params = this.Params.bind(this);
+    this.RedeemSession = this.RedeemSession.bind(this);
   }
   BatchedCommands(
     request: BatchedCommandsRequest,
@@ -458,6 +462,14 @@ export class QueryServiceClientImpl implements QueryService {
     const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) =>
       ParamsResponse.decode(_m0.Reader.create(data)),
+    );
+  }
+
+  RedeemSession(request: RedeemSessionRequest): Promise<RedeemSessionResponse> {
+    const data = RedeemSessionRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "RedeemSession", data);
+    return promise.then((data) =>
+      RedeemSessionResponse.decode(_m0.Reader.create(data)),
     );
   }
 }

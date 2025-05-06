@@ -26,6 +26,9 @@ export interface Params {
   endBlockerLimit: Long;
   transferLimit: Long;
   metadata: { [key: string]: string };
+  /** limite redeem */
+  redeemSessionAmountLimit: Long;
+  redeemTxsVsizeLimit: Long;
 }
 
 export interface Params_MetadataEntry {
@@ -49,6 +52,8 @@ function createBaseParams(): Params {
     endBlockerLimit: Long.ZERO,
     transferLimit: Long.UZERO,
     metadata: {},
+    redeemSessionAmountLimit: Long.UZERO,
+    redeemTxsVsizeLimit: Long.UZERO,
   };
 }
 
@@ -105,6 +110,12 @@ export const Params = {
         writer.uint32(114).fork(),
       ).ldelim();
     });
+    if (!message.redeemSessionAmountLimit.equals(Long.UZERO)) {
+      writer.uint32(120).uint64(message.redeemSessionAmountLimit);
+    }
+    if (!message.redeemTxsVsizeLimit.equals(Long.UZERO)) {
+      writer.uint32(128).uint64(message.redeemTxsVsizeLimit);
+    }
     return writer;
   },
 
@@ -217,6 +228,20 @@ export const Params = {
             message.metadata[entry14.key] = entry14.value;
           }
           continue;
+        case 15:
+          if (tag !== 120) {
+            break;
+          }
+
+          message.redeemSessionAmountLimit = reader.uint64() as Long;
+          continue;
+        case 16:
+          if (tag !== 128) {
+            break;
+          }
+
+          message.redeemTxsVsizeLimit = reader.uint64() as Long;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -274,6 +299,12 @@ export const Params = {
             {},
           )
         : {},
+      redeemSessionAmountLimit: isSet(object.redeemSessionAmountLimit)
+        ? Long.fromValue(object.redeemSessionAmountLimit)
+        : Long.UZERO,
+      redeemTxsVsizeLimit: isSet(object.redeemTxsVsizeLimit)
+        ? Long.fromValue(object.redeemTxsVsizeLimit)
+        : Long.UZERO,
     };
   },
 
@@ -333,6 +364,16 @@ export const Params = {
         });
       }
     }
+    if (!message.redeemSessionAmountLimit.equals(Long.UZERO)) {
+      obj.redeemSessionAmountLimit = (
+        message.redeemSessionAmountLimit || Long.UZERO
+      ).toString();
+    }
+    if (!message.redeemTxsVsizeLimit.equals(Long.UZERO)) {
+      obj.redeemTxsVsizeLimit = (
+        message.redeemTxsVsizeLimit || Long.UZERO
+      ).toString();
+    }
     return obj;
   },
 
@@ -386,6 +427,16 @@ export const Params = {
       }
       return acc;
     }, {});
+    message.redeemSessionAmountLimit =
+      object.redeemSessionAmountLimit !== undefined &&
+      object.redeemSessionAmountLimit !== null
+        ? Long.fromValue(object.redeemSessionAmountLimit)
+        : Long.UZERO;
+    message.redeemTxsVsizeLimit =
+      object.redeemTxsVsizeLimit !== undefined &&
+      object.redeemTxsVsizeLimit !== null
+        ? Long.fromValue(object.redeemTxsVsizeLimit)
+        : Long.UZERO;
     return message;
   },
 };
